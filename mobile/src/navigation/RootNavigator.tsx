@@ -32,7 +32,11 @@ export function RootNavigator() {
       }}
     >
       {!isAuthenticated ? (
-        <Stack.Screen name="Auth" component={AuthNavigator} />
+        <Stack.Screen
+          name="Auth"
+          component={AuthNavigator}
+          options={{ contentStyle: { backgroundColor: 'transparent' } }}
+        />
       ) : (
         <>
           <Stack.Screen name="Main" component={MainTabNavigator} />

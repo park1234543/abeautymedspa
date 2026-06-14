@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -19,74 +19,84 @@ const { width, height } = Dimensions.get('window');
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
-function useDomVideo() {
+// Inject a <video> and supporting CSS directly into document.body via portal
+function VideoPortal() {
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     if (Platform.OS !== 'web') return;
 
-    const styleId = '__spa_video_style__';
+    // Inject style once
+    const styleId = '__spa_bg_style__';
     if (!document.getElementById(styleId)) {
-      const s = document.createElement('style');
-      s.id = styleId;
-      s.textContent = `
-        html { background: #0d0a06 !important; }
-        body { background: transparent !important; margin: 0; padding: 0; }
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
         #__spa_bg_video__ {
           position: fixed;
-          top: 0; left: 0;
-          width: 100vw; height: 100vh;
+          inset: 0;
+          width: 100vw;
+          height: 100vh;
           object-fit: cover;
           z-index: 0;
           pointer-events: none;
+          display: block;
         }
-        /* Make RN Web tree transparent so video shows through */
-        #root,
-        #root > div,
-        #root > div > div,
-        #root > div > div > div {
+        /* Lift the RN root above the video while keeping it transparent */
+        #root {
+          position: fixed !important;
+          inset: 0 !important;
+          z-index: 1 !important;
           background: transparent !important;
-          position: relative;
-          z-index: 1;
         }
       `;
-      document.head.appendChild(s);
+      document.head.appendChild(style);
     }
 
-    const existing = document.getElementById('__spa_bg_video__');
-    if (existing) return;
+    // Create and insert video before #root so stacking works correctly
+    let video = document.getElementById('__spa_bg_video__') as HTMLVideoElement | null;
+    if (!video) {
+      video = document.createElement('video');
+      video.id = '__spa_bg_video__';
+      video.src = '/spa-background.mp4';
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.setAttribute('playsinline', '');
 
-    const video = document.createElement('video');
-    video.id = '__spa_bg_video__';
-    video.src = '/spa-background.mp4';
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = true;
-    video.setAttribute('playsinline', '');
-    video.addEventListener('canplay', () => console.log('[SPA] video canplay ✓'));
-    video.addEventListener('error', (e) =>
-      console.error('[SPA] video error', (e.target as HTMLVideoElement).error)
-    );
-    document.body.insertBefore(video, document.body.firstChild);
-    video.play().catch((e) => console.warn('[SPA] play blocked:', e.message));
+      const root = document.getElementById('root');
+      if (root && root.parentNode) {
+        root.parentNode.insertBefore(video, root); // insert BEFORE #root
+      } else {
+        document.body.insertBefore(video, document.body.firstChild);
+      }
+
+      video.play().catch(() => {});
+    }
+
+    setMounted(true);
 
     return () => {
       const el = document.getElementById('__spa_bg_video__');
       if (el) el.remove();
-      const styleEl = document.getElementById(styleId);
+      const styleEl = document.getElementById('__spa_bg_style__');
       if (styleEl) styleEl.remove();
     };
   }, []);
+
+  return null;
 }
 
 export function WelcomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
 
-  useDomVideo();
-
   return (
     <View style={styles.container}>
+      {Platform.OS === 'web' && <VideoPortal />}
+
       <LinearGradient
-        colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.42)', 'rgba(0,0,0,0.88)']}
+        colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
         style={styles.overlay}
       >
         <View
