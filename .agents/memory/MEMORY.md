@@ -1,0 +1,1 @@
+- [RN Web video background](rn-web-video-background.md) — DOM-inject before #root; transcode to H.264 Level 4.1; make NavigationContainer + all ancestors transparent
