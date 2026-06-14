@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-  findNodeHandle,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -18,76 +17,76 @@ import { COLORS, RADIUS } from '../../constants/theme';
 
 const { width, height } = Dimensions.get('window');
 
-const SPA_VIDEO_URI =
-  'https://assets.mixkit.co/videos/preview/mixkit-relaxing-spa-stones-with-running-water-3209-large.mp4';
-
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
-function VideoBackground() {
-  const containerRef = useRef<View>(null);
-
+function useDomVideo() {
   useEffect(() => {
     if (Platform.OS !== 'web') return;
 
+    const styleId = '__spa_video_style__';
+    if (!document.getElementById(styleId)) {
+      const s = document.createElement('style');
+      s.id = styleId;
+      s.textContent = `
+        html { background: #0d0a06 !important; }
+        body { background: transparent !important; margin: 0; padding: 0; }
+        #__spa_bg_video__ {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100vw; height: 100vh;
+          object-fit: cover;
+          z-index: 0;
+          pointer-events: none;
+        }
+        /* Make RN Web tree transparent so video shows through */
+        #root,
+        #root > div,
+        #root > div > div,
+        #root > div > div > div {
+          background: transparent !important;
+          position: relative;
+          z-index: 1;
+        }
+      `;
+      document.head.appendChild(s);
+    }
+
+    const existing = document.getElementById('__spa_bg_video__');
+    if (existing) return;
+
     const video = document.createElement('video');
-    video.src = SPA_VIDEO_URI;
+    video.id = '__spa_bg_video__';
+    video.src = '/spa-background.mp4';
     video.autoplay = true;
     video.loop = true;
     video.muted = true;
     video.setAttribute('playsinline', '');
-    video.style.cssText = `
-      position:absolute;top:0;left:0;
-      width:100%;height:100%;
-      object-fit:cover;z-index:0;
-      pointer-events:none;
-    `;
-
-    const node = findNodeHandle(containerRef.current);
-    const dom: any = node ? document.getElementById(String(node)) || containerRef.current : null;
-    const parent: Element | null = dom
-      ? (dom as any)._nativeTag
-        ? null
-        : (dom as HTMLElement)
-      : null;
-
-    if (parent instanceof HTMLElement) {
-      parent.style.position = 'relative';
-      parent.appendChild(video);
-      video.play().catch(() => {});
-      return () => { try { parent.removeChild(video); } catch {} };
-    } else {
-      document.body.appendChild(video);
-      return () => { try { document.body.removeChild(video); } catch {} };
-    }
-  }, []);
-
-  if (Platform.OS === 'web') {
-    return (
-      <View
-        ref={containerRef}
-        style={[StyleSheet.absoluteFillObject, { overflow: 'hidden' as any }]}
-      >
-        {/*
-          We inject the video via DOM in useEffect above.
-          This View just acts as a mount point.
-        */}
-      </View>
+    video.addEventListener('canplay', () => console.log('[SPA] video canplay ✓'));
+    video.addEventListener('error', (e) =>
+      console.error('[SPA] video error', (e.target as HTMLVideoElement).error)
     );
-  }
+    document.body.insertBefore(video, document.body.firstChild);
+    video.play().catch((e) => console.warn('[SPA] play blocked:', e.message));
 
-  return null;
+    return () => {
+      const el = document.getElementById('__spa_bg_video__');
+      if (el) el.remove();
+      const styleEl = document.getElementById(styleId);
+      if (styleEl) styleEl.remove();
+    };
+  }, []);
 }
 
 export function WelcomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
 
+  useDomVideo();
+
   return (
     <View style={styles.container}>
-      {Platform.OS === 'web' && <VideoBackground />}
-
       <LinearGradient
-        colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.9)']}
+        colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.42)', 'rgba(0,0,0,0.88)']}
         style={styles.overlay}
       >
         <View
@@ -151,7 +150,7 @@ export function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0d0a06',
+    backgroundColor: 'transparent',
   },
   overlay: {
     flex: 1,
@@ -161,7 +160,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingTop: 24,
   },
-
   logoArea: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -185,7 +183,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.65)',
     letterSpacing: 6,
   },
-
   tagRow: {
     marginBottom: 20,
   },
@@ -204,7 +201,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.8,
   },
-
   headlineArea: {
     marginBottom: 40,
   },
@@ -229,7 +225,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     letterSpacing: 0.2,
   },
-
   buttonGroup: {
     gap: 12,
     marginBottom: 20,
@@ -260,7 +255,6 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     letterSpacing: 1.5,
   },
-
   footerNote: {
     textAlign: 'center',
     color: 'rgba(255,255,255,0.28)',
