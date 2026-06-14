@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
@@ -8,6 +8,15 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
 import { COLORS } from './src/constants/theme';
+
+// Make NavigationContainer background transparent so video can show through
+const navTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'transparent',
+  },
+};
 
 export default function App() {
   const { isLoading, loadUser } = useAuthStore();
@@ -27,8 +36,8 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <StatusBar style="dark" />
+        <NavigationContainer theme={navTheme}>
+          <StatusBar style="light" />
           <RootNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
