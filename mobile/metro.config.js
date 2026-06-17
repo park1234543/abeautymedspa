@@ -42,7 +42,7 @@ const QR_PAGE = `<!DOCTYPE html>
 <div class="note">Same WiFi not required — uses public URL<br>If scan fails, open Expo Go → Enter URL manually</div>
 <script>
   var host = '${DEV_DOMAIN}';
-  var url = host ? 'exp://' + host : 'exp://172.24.0.2:5000';
+  var url = host ? 'exps://' + host : 'exp://172.24.0.2:5000';
   document.getElementById('url-text').textContent = url;
   document.getElementById('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=2&data=' + encodeURIComponent(url);
 </script>

@@ -5,4 +5,4 @@ generated = []
 id = "nhOous5egOgTguUF6um54"
 uri = "file://screenshots/qr-code.jpg"
 type = "image"
-title = "📱 이거 폰 카메라로 찍으세요"
+title = "QR코드 — Expo Go로 스캔"
