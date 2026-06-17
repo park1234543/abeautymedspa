@@ -24,16 +24,6 @@ config.server.enhanceMiddleware = (metroMiddleware, server) => {
     : metroMiddleware;
 
   return (req, res, next) => {
-    // Prevent browser caching so Canvas always loads the latest bundle
-    const origWriteHead = res.writeHead.bind(res);
-    res.writeHead = function(statusCode, statusMessage, headers) {
-      const noCache = { 'Cache-Control': 'no-store, no-cache, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' };
-      if (typeof statusMessage === 'object' && statusMessage !== null) {
-        return origWriteHead(statusCode, { ...noCache, ...statusMessage });
-      }
-      return origWriteHead(statusCode, statusMessage, { ...noCache, ...(headers || {}) });
-    };
-
     const urlPath = req.url.split('?')[0];
     const videoFile = VIDEOS[urlPath];
     const imageFile = IMAGES[urlPath];
