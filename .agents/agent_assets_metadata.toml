@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "nhOous5egOgTguUF6um54"
+uri = "file://screenshots/qr-code.jpg"
+type = "image"
+title = "Expo Go QR코드"
