@@ -37,15 +37,15 @@ const QR_PAGE = `<!DOCTYPE html>
 </head>
 <body>
 <h2>A Beauty Med Spa</h2>
-<p>폰 카메라로 스캔 → 브라우저에서 앱 열림</p>
+<p>안드로이드 <strong style="color:#D4A574">Expo Go</strong> 앱으로 스캔하세요</p>
 <div class="qr-box">
   <img id="qr" src="" alt="QR Code" width="260" height="260"/>
 </div>
 <div class="url" id="url-text"></div>
-<div class="note">Expo Go 필요 없음 — 크롬/사파리 브라우저로 바로 열림</div>
+<div class="note">Expo Go 앱 없으면 Play 스토어에서 "Expo Go" 설치 후 스캔</div>
 <script>
-  var host = '${DEV_DOMAIN}';
-  var url = 'https://' + (host || 'localhost:5000');
+  var expoUrl = 'exp://kkvbcme-anonymous-5000.exp.direct';
+  var url = expoUrl;
   document.getElementById('url-text').textContent = url;
   document.getElementById('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=2&color=000000&bgcolor=ffffff&data=' + encodeURIComponent(url);
 </script>
