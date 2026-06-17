@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -19,18 +19,62 @@ import { Ionicons } from '@expo/vector-icons';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
+import { useGoogleAuth, fetchGoogleUserInfo } from '../../services/googleAuth';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+
+const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '';
 
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { login } = useAuthStore();
+  const { login, loginWithGoogle } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const { request, response, promptAsync } = useGoogleAuth();
+
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { access_token } = response.params;
+      handleGoogleSuccess(access_token);
+    } else if (response?.type === 'error') {
+      Alert.alert('Google 로그인 오류', response.error?.message || '다시 시도해주세요.');
+      setIsGoogleLoading(false);
+    } else if (response?.type === 'dismiss' || response?.type === 'cancel') {
+      setIsGoogleLoading(false);
+    }
+  }, [response]);
+
+  const handleGoogleSuccess = async (accessToken: string) => {
+    try {
+      const googleUser = await fetchGoogleUserInfo(accessToken);
+      const success = await loginWithGoogle(googleUser);
+      if (!success) {
+        Alert.alert('로그인 실패', 'Google 로그인 중 오류가 발생했습니다.');
+      }
+    } catch (e) {
+      Alert.alert('오류', 'Google 사용자 정보를 가져올 수 없습니다.');
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    if (!GOOGLE_CLIENT_ID) {
+      Alert.alert(
+        'Google 로그인 미설정',
+        'EXPO_PUBLIC_GOOGLE_CLIENT_ID 환경 변수를 설정해주세요.'
+      );
+      return;
+    }
+    setIsGoogleLoading(true);
+    await promptAsync();
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -74,6 +118,30 @@ export function LoginScreen() {
           <Text style={styles.subtitle}>
             계정에 로그인하고 예약을 관리하세요
           </Text>
+        </View>
+
+        {/* Google Login Button */}
+        <TouchableOpacity
+          style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
+          onPress={handleGoogleLogin}
+          disabled={isGoogleLoading || !request}
+          activeOpacity={0.8}
+        >
+          {isGoogleLoading ? (
+            <ActivityIndicator color={COLORS.text} size="small" />
+          ) : (
+            <>
+              <GoogleIcon />
+              <Text style={styles.googleButtonText}>Google로 계속하기</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Divider */}
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>또는</Text>
+          <View style={styles.dividerLine} />
         </View>
 
         {/* Form */}
@@ -122,7 +190,7 @@ export function LoginScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+            style={[styles.loginButton, isLoading && styles.buttonDisabled]}
             onPress={handleLogin}
             disabled={isLoading}
             activeOpacity={0.8}
@@ -147,6 +215,14 @@ export function LoginScreen() {
   );
 }
 
+function GoogleIcon() {
+  return (
+    <View style={styles.googleIconWrap}>
+      <Text style={styles.googleIconText}>G</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -163,7 +239,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   header: {
-    marginBottom: SPACING.xxl,
+    marginBottom: SPACING.xl,
   },
   logo: {
     fontSize: 32,
@@ -181,6 +257,52 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: FONTS.sizes.md,
     color: COLORS.textSecondary,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.md,
+    gap: SPACING.sm,
+    ...SHADOWS.small,
+  },
+  googleIconWrap: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#4285F4',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIconText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  googleButtonText: {
+    fontSize: FONTS.sizes.md,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: SPACING.lg,
+    gap: SPACING.sm,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: COLORS.border,
+  },
+  dividerText: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.textLight,
+    paddingHorizontal: SPACING.xs,
   },
   form: {
     gap: SPACING.lg,
@@ -226,7 +348,7 @@ const styles = StyleSheet.create({
     marginTop: SPACING.md,
     ...SHADOWS.small,
   },
-  loginButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.7,
   },
   loginButtonText: {

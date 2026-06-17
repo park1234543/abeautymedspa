@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Platform } from 'react-native';
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
+import type { GoogleUser } from '../services/googleAuth';
 
 const storage = {
   getItem: async (key: string): Promise<string | null> => {
@@ -42,6 +43,7 @@ interface AuthState {
   isAuthenticated: boolean;
   
   login: (email: string, password: string) => Promise<boolean>;
+  loginWithGoogle: (googleUser: GoogleUser) => Promise<boolean>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
   loadUser: () => Promise<void>;
@@ -53,6 +55,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
   isLoading: true,
   isAuthenticated: false,
+
+  loginWithGoogle: async (googleUser: GoogleUser) => {
+    try {
+      const mockToken = `google_${googleUser.id}_${Date.now()}`;
+      const user: User = {
+        id: googleUser.id,
+        email: googleUser.email,
+        name: googleUser.name,
+      };
+      await storage.setItem('token', mockToken);
+      await storage.setItem('user', JSON.stringify(user));
+      set({ user, token: mockToken, isAuthenticated: true });
+      return true;
+    } catch (error) {
+      console.error('Google login error:', error);
+      return false;
+    }
+  },
 
   login: async (email: string, password: string) => {
     try {
