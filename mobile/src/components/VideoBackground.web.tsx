@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 
 const CSS_ID = '__spa_bg_css__';
 const VIDEO_ID = '__spa_bg_video__';
+const IMG_ID = '__spa_bg_img__';
 const WRAP_ID = '__spa_bg_wrap__';
+
+const FALLBACK_IMG = require('../../assets/images/hero-spa.jpg');
 
 export function VideoBackground() {
   useEffect(() => {
-    // 1. Inject CSS
     if (!document.getElementById(CSS_ID)) {
       const style = document.createElement('style');
       style.id = CSS_ID;
@@ -19,7 +21,7 @@ export function VideoBackground() {
           pointer-events: none;
           overflow: hidden;
         }
-        #${VIDEO_ID} {
+        #${VIDEO_ID}, #${IMG_ID} {
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -33,11 +35,22 @@ export function VideoBackground() {
       document.head.appendChild(style);
     }
 
-    // 2. Create wrapper + video, insert before #root
     let wrap = document.getElementById(WRAP_ID);
     if (!wrap) {
       wrap = document.createElement('div');
       wrap.id = WRAP_ID;
+
+      const showFallbackImage = () => {
+        document.getElementById(VIDEO_ID)?.remove();
+        if (!document.getElementById(IMG_ID)) {
+          const img = document.createElement('img');
+          img.id = IMG_ID;
+          img.src = typeof FALLBACK_IMG === 'string' ? FALLBACK_IMG : String(FALLBACK_IMG);
+          img.alt = '';
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          wrap!.appendChild(img);
+        }
+      };
 
       const video = document.createElement('video');
       video.id = VIDEO_ID;
@@ -46,28 +59,26 @@ export function VideoBackground() {
       video.setAttribute('playsinline', '');
       video.setAttribute('preload', 'auto');
 
-      // Listen before setting src to catch early errors
       video.addEventListener('canplay', () => {
-        console.log('[SPA] video canplay ✓');
-        video.play().catch(() => {});
+        video.play().catch(() => showFallbackImage());
       });
-      video.addEventListener('error', () => {
-        const err = (video as any).error;
-        console.warn('[SPA] video error code:', err?.code, err?.message);
-      });
+      video.addEventListener('error', () => showFallbackImage());
 
-      // Set src after attaching listeners
-      // Use re-encoded 1080p/Level-4.1 version for browser compatibility
       video.src = '/spa-background-web.mp4';
-
       wrap.appendChild(video);
 
       const root = document.getElementById('root');
-      if (root && root.parentNode) {
+      if (root?.parentNode) {
         root.parentNode.insertBefore(wrap, root);
       } else {
         document.body.insertBefore(wrap, document.body.firstChild);
       }
+
+      // If video hasn't started in 3 seconds, show fallback
+      setTimeout(() => {
+        const v = document.getElementById(VIDEO_ID) as HTMLVideoElement | null;
+        if (v && v.paused) showFallbackImage();
+      }, 3000);
     }
 
     return () => {

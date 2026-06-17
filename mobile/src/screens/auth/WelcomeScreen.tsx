@@ -28,6 +28,7 @@ export function WelcomeScreen() {
       <LinearGradient
         colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.40)', 'rgba(0,0,0,0.90)']}
         style={styles.fill}
+        pointerEvents="none"
       />
       <View style={[styles.fill, styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16 }]}>
         <View style={styles.logoArea}>
@@ -77,7 +78,7 @@ export function WelcomeScreen() {
   );
 
   if (Platform.OS === 'web') {
-    return <View style={styles.root}>{content}</View>;
+    return <View style={[styles.root, { backgroundColor: 'transparent' }]}>{content}</View>;
   }
 
   return (
