@@ -15,6 +15,40 @@ const IMAGES = {
   '/hero-spa.jpg': path.join(__dirname, 'assets/images/hero-spa.jpg'),
 };
 
+const DEV_DOMAIN = process.env.REPLIT_DEV_DOMAIN || '';
+
+const QR_PAGE = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Expo Go QR</title>
+<style>
+  body{margin:0;background:#0d0a06;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,sans-serif;color:#fff;padding:24px;box-sizing:border-box}
+  h2{color:#D4A574;letter-spacing:2px;font-weight:300;margin:0 0 8px}
+  p{color:rgba(255,255,255,0.5);font-size:13px;margin:0 0 28px;text-align:center}
+  .qr-box{background:#fff;padding:16px;border-radius:12px;margin-bottom:20px}
+  .url{background:rgba(255,255,255,0.07);border:1px solid rgba(212,165,116,0.3);border-radius:8px;padding:12px 16px;font-size:12px;color:#D4A574;word-break:break-all;text-align:center;max-width:340px}
+  .note{color:rgba(255,255,255,0.35);font-size:11px;margin-top:16px;text-align:center}
+</style>
+</head>
+<body>
+<h2>A Beauty Med Spa</h2>
+<p>Scan with <strong style="color:#D4A574">Expo Go</strong> on Android</p>
+<div class="qr-box">
+  <img id="qr" src="" alt="QR Code" width="260" height="260"/>
+</div>
+<div class="url" id="url-text"></div>
+<div class="note">Same WiFi not required — uses public URL<br>If scan fails, open Expo Go → Enter URL manually</div>
+<script>
+  var host = '${DEV_DOMAIN}';
+  var url = host ? 'exp://' + host : 'exp://172.24.0.2:5000';
+  document.getElementById('url-text').textContent = url;
+  document.getElementById('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=2&data=' + encodeURIComponent(url);
+</script>
+</body>
+</html>`;
+
 const _originalEnhance = config.server && config.server.enhanceMiddleware;
 if (!config.server) config.server = {};
 
@@ -25,6 +59,12 @@ config.server.enhanceMiddleware = (metroMiddleware, server) => {
 
   return (req, res, next) => {
     const urlPath = req.url.split('?')[0];
+
+    if (urlPath === '/qr') {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(QR_PAGE);
+      return;
+    }
     const videoFile = VIDEOS[urlPath];
     const imageFile = IMAGES[urlPath];
 
