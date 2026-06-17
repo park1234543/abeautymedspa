@@ -17,21 +17,11 @@ const navTheme = {
   },
 };
 
-const WEB_DEMO_USER = { id: 'demo_user', email: 'demo@abeauty.com', name: 'Demo User' };
-
 export default function App() {
   const { isLoading, loadUser } = useAuthStore();
 
   useEffect(() => {
-    if (Platform.OS === 'web') {
-      // On web, immediately set demo user so Canvas always shows the full app
-      useAuthStore.setState({
-        user: WEB_DEMO_USER,
-        token: 'demo_web_token',
-        isAuthenticated: true,
-        isLoading: false,
-      });
-    } else {
+    if (Platform.OS !== 'web') {
       loadUser();
     }
   }, []);

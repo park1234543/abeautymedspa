@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Platform,
+  ImageBackground,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Video, ResizeMode } from 'expo-av';
@@ -17,49 +18,17 @@ import { COLORS, RADIUS } from '../../constants/theme';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
-const STYLE_ID = '__welcome_bg__';
-
-function useWebBackground() {
-  useEffect(() => {
-    if (Platform.OS !== 'web') return;
-    if (document.getElementById(STYLE_ID)) return;
-
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-      html, body, #root {
-        background: #0d0a06 !important;
-      }
-      #welcome-bg {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        background: url('/hero-spa.jpg') center/cover no-repeat #0d0a06;
-      }
-      #root > * {
-        position: relative;
-        z-index: 1;
-      }
-    `;
-    document.head.appendChild(style);
-
-    const bg = document.createElement('div');
-    bg.id = 'welcome-bg';
-    document.body.insertBefore(bg, document.body.firstChild);
-
-    return () => {
-      document.getElementById(STYLE_ID)?.remove();
-      document.getElementById('welcome-bg')?.remove();
-    };
-  }, []);
-}
-
 export function WelcomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
 
-  useWebBackground();
+  const overlay = (
+    <LinearGradient
+      colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
+      style={styles.fill}
+      pointerEvents="none"
+    />
+  );
 
   const buttons = (
     <View style={[styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16 }]}>
@@ -110,32 +79,28 @@ export function WelcomeScreen() {
 
   if (Platform.OS === 'web') {
     return (
-      <View style={styles.webRoot}>
-        <LinearGradient
-          colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
-          style={styles.webGradient}
-          pointerEvents="none"
-        />
+      <ImageBackground
+        source={require('../../../assets/images/hero-spa.jpg')}
+        style={styles.root}
+        resizeMode="cover"
+      >
+        {overlay}
         {buttons}
-      </View>
+      </ImageBackground>
     );
   }
 
   return (
     <View style={styles.root}>
       <Video
-        source={require('../../../assets/videos/spa-background.mp4')}
+        source={require('../../../assets/videos/spa-background-web.mp4')}
         style={StyleSheet.absoluteFill}
         resizeMode={ResizeMode.COVER}
         shouldPlay
         isLooping
         isMuted
       />
-      <LinearGradient
-        colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
-        style={styles.fill}
-        pointerEvents="none"
-      />
+      {overlay}
       {buttons}
     </View>
   );
@@ -145,18 +110,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: '#0d0a06',
-  },
-  webRoot: {
-    flex: 1,
-    backgroundColor: 'transparent',
     justifyContent: 'flex-end',
-  },
-  webGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
   },
   fill: {
     position: 'absolute',
@@ -166,7 +120,6 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   content: {
-    justifyContent: 'flex-end',
     paddingHorizontal: 28,
     paddingTop: 24,
   },
