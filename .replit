@@ -38,7 +38,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd mobile && npm install --legacy-peer-deps && npm install expo-av@~13.10.6 @expo/ngrok@^4.0.0 react-native-web@~0.19.6 @expo/metro-runtime@~3.1.3 react-native-gesture-handler@~2.14.0 react-dom@18.2.0 --legacy-peer-deps && npx expo start --port 5000 --tunnel"
+args = "cd mobile && npm install --legacy-peer-deps --force && npx expo start --port 5000 --tunnel"
 waitForPort = 5000
 
 [userenv]
