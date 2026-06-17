@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  ImageBackground,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -21,16 +22,13 @@ export function WelcomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
 
-  return (
-    <View style={styles.root}>
-      {/* VideoBackground: web → createPortal into body; native → null */}
+  const content = (
+    <>
       <VideoBackground />
-
       <LinearGradient
         colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.40)', 'rgba(0,0,0,0.90)']}
         style={styles.fill}
       />
-
       <View style={[styles.fill, styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16 }]}>
         <View style={styles.logoArea}>
           <Text style={styles.logoText}>A Beauty</Text>
@@ -72,17 +70,31 @@ export function WelcomeScreen() {
         </View>
 
         <Text style={styles.footerNote}>
-          By continuing, you agree to our Terms &amp; Privacy Policy
+          By continuing, you agree to our Terms & Privacy Policy
         </Text>
       </View>
-    </View>
+    </>
+  );
+
+  if (Platform.OS === 'web') {
+    return <View style={styles.root}>{content}</View>;
+  }
+
+  return (
+    <ImageBackground
+      source={require('../../../assets/images/hero-spa.jpg')}
+      style={styles.root}
+      resizeMode="cover"
+    >
+      {content}
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#0d0a06',
   },
   fill: {
     position: 'absolute',
