@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,23 +11,60 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../navigation/RootNavigator';
+import { useBookingStore, BookingRecord } from '../store/bookingStore';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+const days = ['일', '월', '화', '수', '목', '금', '토'];
+function formatDate(d: Date) {
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+}
+
 export function BookingConfirmationScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
+  const {
+    selectedService,
+    selectedDoctor,
+    selectedDate,
+    selectedTime,
+    customerInfo,
+    addBookingRecord,
+    resetBooking,
+  } = useBookingStore();
+
+  useEffect(() => {
+    if (selectedService && selectedDoctor && selectedDate && selectedTime) {
+      const record: BookingRecord = {
+        id: `bk_${Date.now()}`,
+        service: selectedService,
+        doctor: selectedDoctor,
+        date: selectedDate.toISOString(),
+        time: selectedTime,
+        customerInfo,
+        status: 'upcoming',
+        totalPrice: selectedService.price,
+        createdAt: new Date().toISOString(),
+      };
+      addBookingRecord(record);
+    }
+  }, []);
+
+  const dateLabel = selectedDate ? formatDate(selectedDate) : '날짜 미정';
+  const serviceLabel = selectedService ? `${selectedService.name}` : '서비스 미정';
+  const doctorLabel = selectedDoctor ? selectedDoctor.nameKo : '의사 미정';
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom + 24 }]}>
       <View style={styles.content}>
         {/* Success Icon */}
         <View style={styles.iconContainer}>
-          <Ionicons name="checkmark-circle" size={80} color={COLORS.success} />
+          <View style={styles.iconBg}>
+            <Ionicons name="checkmark" size={48} color={COLORS.textWhite} />
+          </View>
         </View>
 
-        {/* Title */}
         <Text style={styles.title}>예약이 완료되었습니다</Text>
         <Text style={styles.subtitle}>
           예약 확인 이메일이 발송되었습니다.{'\n'}
@@ -38,16 +75,22 @@ export function BookingConfirmationScreen() {
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
             <Ionicons name="calendar-outline" size={20} color={COLORS.primary} />
-            <Text style={styles.infoText}>2024년 1월 15일 (월) 14:00</Text>
+            <Text style={styles.infoText}>{dateLabel} {selectedTime}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Ionicons name="medkit-outline" size={20} color={COLORS.primary} />
-            <Text style={styles.infoText}>보톡스 - Dr. Kim</Text>
+            <Ionicons name="sparkles-outline" size={20} color={COLORS.primary} />
+            <Text style={styles.infoText}>{serviceLabel} · {doctorLabel}</Text>
           </View>
           <View style={styles.infoRow}>
             <Ionicons name="location-outline" size={20} color={COLORS.primary} />
             <Text style={styles.infoText}>A Beauty MedSpa</Text>
           </View>
+          {selectedService && (
+            <View style={styles.infoRow}>
+              <Ionicons name="card-outline" size={20} color={COLORS.primary} />
+              <Text style={styles.infoText}>${selectedService.price}</Text>
+            </View>
+          )}
         </View>
 
         {/* Notice */}
@@ -63,14 +106,20 @@ export function BookingConfirmationScreen() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => navigation.navigate('Main')}
+          onPress={() => {
+            resetBooking();
+            navigation.navigate('Main');
+          }}
           activeOpacity={0.8}
         >
           <Text style={styles.secondaryButtonText}>홈으로</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => navigation.navigate('Main')}
+          onPress={() => {
+            resetBooking();
+            navigation.navigate('MyBookings');
+          }}
           activeOpacity={0.8}
         >
           <Text style={styles.primaryButtonText}>내 예약 확인</Text>
@@ -81,18 +130,21 @@ export function BookingConfirmationScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
+  container: { flex: 1, backgroundColor: COLORS.background },
   content: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: SPACING.lg,
   },
-  iconContainer: {
-    marginBottom: SPACING.lg,
+  iconContainer: { marginBottom: SPACING.lg },
+  iconBg: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: COLORS.success,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: FONTS.sizes.xxl,
@@ -116,15 +168,8 @@ const styles = StyleSheet.create({
     gap: SPACING.md,
     marginBottom: SPACING.lg,
   },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.md,
-  },
-  infoText: {
-    fontSize: FONTS.sizes.md,
-    color: COLORS.text,
-  },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.md },
+  infoText: { fontSize: FONTS.sizes.md, color: COLORS.text },
   noticeCard: {
     width: '100%',
     flexDirection: 'row',
@@ -134,17 +179,8 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
     gap: SPACING.sm,
   },
-  noticeText: {
-    flex: 1,
-    fontSize: FONTS.sizes.sm,
-    color: COLORS.text,
-    lineHeight: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: SPACING.lg,
-    gap: SPACING.md,
-  },
+  noticeText: { flex: 1, fontSize: FONTS.sizes.sm, color: COLORS.text, lineHeight: 20 },
+  buttonContainer: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: SPACING.md },
   secondaryButton: {
     flex: 1,
     paddingVertical: SPACING.md,
@@ -153,11 +189,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     alignItems: 'center',
   },
-  secondaryButtonText: {
-    fontSize: FONTS.sizes.md,
-    fontWeight: '600',
-    color: COLORS.text,
-  },
+  secondaryButtonText: { fontSize: FONTS.sizes.md, fontWeight: '600', color: COLORS.text },
   primaryButton: {
     flex: 1,
     backgroundColor: COLORS.primary,
@@ -165,9 +197,5 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     alignItems: 'center',
   },
-  primaryButtonText: {
-    fontSize: FONTS.sizes.md,
-    fontWeight: '600',
-    color: COLORS.textWhite,
-  },
+  primaryButtonText: { fontSize: FONTS.sizes.md, fontWeight: '600', color: COLORS.textWhite },
 });

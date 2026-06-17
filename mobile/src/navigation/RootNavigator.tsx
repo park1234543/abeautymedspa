@@ -8,15 +8,17 @@ import { BookingScreen } from '../screens/BookingScreen';
 import { BookingConfirmationScreen } from '../screens/BookingConfirmationScreen';
 import { ServiceDetailScreen } from '../screens/ServiceDetailScreen';
 import { GalleryDetailScreen } from '../screens/GalleryDetailScreen';
+import { MyBookingsScreen } from '../screens/MyBookingsScreen';
 import { COLORS } from '../constants/theme';
 
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
   Booking: undefined;
-  BookingConfirmation: { bookingId: string };
+  BookingConfirmation: { bookingId?: string };
   ServiceDetail: { serviceId: string };
   GalleryDetail: { imageId: string };
+  MyBookings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -40,8 +42,8 @@ export function RootNavigator() {
       ) : (
         <>
           <Stack.Screen name="Main" component={MainTabNavigator} />
-          <Stack.Screen 
-            name="Booking" 
+          <Stack.Screen
+            name="Booking"
             component={BookingScreen}
             options={{
               headerShown: true,
@@ -51,8 +53,8 @@ export function RootNavigator() {
               headerStyle: { backgroundColor: COLORS.background },
             }}
           />
-          <Stack.Screen 
-            name="BookingConfirmation" 
+          <Stack.Screen
+            name="BookingConfirmation"
             component={BookingConfirmationScreen}
             options={{
               headerShown: true,
@@ -62,8 +64,8 @@ export function RootNavigator() {
               headerStyle: { backgroundColor: COLORS.background },
             }}
           />
-          <Stack.Screen 
-            name="ServiceDetail" 
+          <Stack.Screen
+            name="ServiceDetail"
             component={ServiceDetailScreen}
             options={{
               headerShown: true,
@@ -73,8 +75,8 @@ export function RootNavigator() {
               headerStyle: { backgroundColor: COLORS.background },
             }}
           />
-          <Stack.Screen 
-            name="GalleryDetail" 
+          <Stack.Screen
+            name="GalleryDetail"
             component={GalleryDetailScreen}
             options={{
               headerShown: true,
@@ -83,6 +85,11 @@ export function RootNavigator() {
               headerTintColor: COLORS.text,
               headerStyle: { backgroundColor: COLORS.background },
             }}
+          />
+          <Stack.Screen
+            name="MyBookings"
+            component={MyBookingsScreen}
+            options={{ headerShown: false }}
           />
         </>
       )}
