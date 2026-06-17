@@ -40,3 +40,8 @@ outputType = "webview"
 task = "shell.exec"
 args = "cd mobile && npm install --legacy-peer-deps && npm install react-native-web@~0.19.6 @expo/metro-runtime@~3.1.3 react-native-gesture-handler@~2.14.0 react-dom@18.2.0 expo-video --legacy-peer-deps && npx expo start --web --port 5000"
 waitForPort = 5000
+
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_GOOGLE_CLIENT_ID = "926639283525-1i8lhn77nlmhmfe24t8alautf7lm1q1f.apps.googleusercontent.com"
