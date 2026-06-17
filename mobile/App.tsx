@@ -9,7 +9,6 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
 import { COLORS } from './src/constants/theme';
 
-// Make NavigationContainer background transparent so video can show through
 const navTheme = {
   ...DefaultTheme,
   colors: {
@@ -18,11 +17,23 @@ const navTheme = {
   },
 };
 
+const WEB_DEMO_USER = { id: 'demo_user', email: 'demo@abeauty.com', name: 'Demo User' };
+
 export default function App() {
   const { isLoading, loadUser } = useAuthStore();
 
   useEffect(() => {
-    loadUser();
+    if (Platform.OS === 'web') {
+      // On web, immediately set demo user so Canvas always shows the full app
+      useAuthStore.setState({
+        user: WEB_DEMO_USER,
+        token: 'demo_web_token',
+        isAuthenticated: true,
+        isLoading: false,
+      });
+    } else {
+      loadUser();
+    }
   }, []);
 
   if (isLoading) {
@@ -37,7 +48,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NavigationContainer theme={navTheme}>
-          <StatusBar style="light" />
+          <StatusBar style="dark" />
           <RootNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
@@ -60,11 +71,12 @@ export default function App() {
 const styles = StyleSheet.create({
   webRoot: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: COLORS.background,
     alignItems: 'center',
   },
   webFrame: {
     width: 390,
+    maxWidth: '100%',
     flex: 1,
     alignSelf: 'center',
   },
