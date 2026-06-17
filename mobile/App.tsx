@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
@@ -39,7 +39,7 @@ export default function App() {
     );
   }
 
-  return (
+  const content = (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NavigationContainer theme={navTheme}>
@@ -49,9 +49,34 @@ export default function App() {
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
+
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.webRoot}>
+        <View style={styles.webFrame}>
+          {content}
+        </View>
+      </View>
+    );
+  }
+
+  return content;
 }
 
 const styles = StyleSheet.create({
+  webRoot: {
+    flex: 1,
+    backgroundColor: '#111',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  webFrame: {
+    width: 390,
+    height: '100%' as any,
+    maxHeight: 844,
+    overflow: 'hidden' as any,
+    alignSelf: 'center',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',

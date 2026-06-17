@@ -68,8 +68,9 @@ export function HomeScreen() {
             <View style={styles.heroDividerLine} />
           </View>
 
-          <Text style={styles.heroTitle}>당신의 아름다움을</Text>
-          <Text style={styles.heroTitleAccent}>빛나게 합니다</Text>
+          <Text style={styles.heroTitle}>당신의 아름다움을{'\n'}
+            <Text style={styles.heroTitleAccent}>빛나게 합니다</Text>
+          </Text>
 
           <Text style={styles.heroDesc}>
             board-certified specialists · advanced treatments
@@ -276,11 +277,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  heroBody: { paddingHorizontal: 28, alignItems: 'flex-start' },
+  heroBody: {
+    paddingHorizontal: 28,
+    paddingRight: 28,
+    width: '100%',
+  },
   heroDividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    width: '100%',
     marginBottom: 20,
   },
   heroDividerLine: { flex: 1, height: 0.5, backgroundColor: GOLD_BORDER },
@@ -289,26 +294,27 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     color: GOLD,
     fontWeight: '500',
+    marginHorizontal: 10,
   },
   heroTitle: {
-    fontSize: 34,
-    fontWeight: '200',
+    fontSize: 30,
+    fontWeight: '300',
     color: '#fff',
-    letterSpacing: 0.5,
-    lineHeight: 42,
+    letterSpacing: 0.3,
+    lineHeight: 40,
   },
   heroTitleAccent: {
-    fontSize: 34,
+    fontSize: 30,
     fontWeight: '700',
     color: GOLD,
-    letterSpacing: 0.5,
-    lineHeight: 44,
+    letterSpacing: 0.3,
+    lineHeight: 40,
     marginBottom: 16,
   },
   heroDesc: {
     fontSize: 11,
     color: 'rgba(255,255,255,0.5)',
-    letterSpacing: 1,
+    letterSpacing: 0.8,
   },
 
   heroBottom: { paddingHorizontal: 28, paddingBottom: 32 },
