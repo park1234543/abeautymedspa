@@ -25,12 +25,13 @@ export function WelcomeScreen() {
   const content = (
     <>
       <VideoBackground />
-      <LinearGradient
-        colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.40)', 'rgba(0,0,0,0.90)']}
-        style={styles.fill}
-        pointerEvents="none"
-      />
-      <View style={[styles.fill, styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16 }]}>
+      <View style={styles.fill} pointerEvents="none">
+        <LinearGradient
+          colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.40)', 'rgba(0,0,0,0.90)']}
+          style={{ flex: 1 }}
+        />
+      </View>
+      <View style={[styles.fill, styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16, zIndex: 10 }]}>
         <View style={styles.logoArea}>
           <Text style={styles.logoText}>A Beauty</Text>
           <View style={styles.logoDivider} />

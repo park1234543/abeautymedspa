@@ -67,7 +67,7 @@ export default function App() {
 const styles = StyleSheet.create({
   webRoot: {
     flex: 1,
-    backgroundColor: '#111',
+    backgroundColor: 'transparent',
     alignItems: 'center',
   },
   webFrame: {

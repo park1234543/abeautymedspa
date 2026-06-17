@@ -11,6 +11,10 @@ const VIDEOS = {
   '/spa-background-web.mp4': path.join(__dirname, 'assets/videos/spa-background-web.mp4'),
 };
 
+const IMAGES = {
+  '/hero-spa.jpg': path.join(__dirname, 'assets/images/hero-spa.jpg'),
+};
+
 const _originalEnhance = config.server && config.server.enhanceMiddleware;
 if (!config.server) config.server = {};
 
@@ -22,6 +26,24 @@ config.server.enhanceMiddleware = (metroMiddleware, server) => {
   return (req, res, next) => {
     const urlPath = req.url.split('?')[0];
     const videoFile = VIDEOS[urlPath];
+    const imageFile = IMAGES[urlPath];
+
+    if (imageFile) {
+      try {
+        const stat = fs.statSync(imageFile);
+        res.writeHead(200, {
+          'Content-Length': String(stat.size),
+          'Content-Type': 'image/jpeg',
+          'Cache-Control': 'public, max-age=86400',
+          'Access-Control-Allow-Origin': '*',
+        });
+        fs.createReadStream(imageFile).pipe(res);
+      } catch (e) {
+        console.error('[image] error:', e.message);
+        res.writeHead(404); res.end('Not found');
+      }
+      return;
+    }
 
     if (videoFile) {
       try {
@@ -37,7 +59,6 @@ config.server.enhanceMiddleware = (metroMiddleware, server) => {
             ? Math.min(parseInt(match[2], 10), fileSize - 1)
             : Math.min(start + 2 * 1024 * 1024 - 1, fileSize - 1);
           const chunkSize = end - start + 1;
-          console.log(`[video] ${urlPath} range ${start}-${end}/${fileSize}`);
           res.writeHead(206, {
             'Content-Range': `bytes ${start}-${end}/${fileSize}`,
             'Accept-Ranges': 'bytes',
@@ -47,7 +68,6 @@ config.server.enhanceMiddleware = (metroMiddleware, server) => {
           });
           fs.createReadStream(videoFile, { start, end }).pipe(res);
         } else {
-          console.log(`[video] ${urlPath} full ${fileSize} bytes`);
           res.writeHead(200, {
             'Content-Length': String(fileSize),
             'Content-Type': 'video/mp4',

@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 
 const CSS_ID = '__spa_bg_css__';
+const WRAP_ID = '__spa_bg_wrap__';
 const VIDEO_ID = '__spa_bg_video__';
 const IMG_ID = '__spa_bg_img__';
-const WRAP_ID = '__spa_bg_wrap__';
-
-const FALLBACK_IMG = require('../../assets/images/hero-spa.jpg');
 
 export function VideoBackground() {
   useEffect(() => {
+    // Inject CSS once
     if (!document.getElementById(CSS_ID)) {
       const style = document.createElement('style');
       style.id = CSS_ID;
@@ -20,65 +19,74 @@ export function VideoBackground() {
           z-index: 0;
           pointer-events: none;
           overflow: hidden;
+          background: #0d0a06;
         }
-        #${VIDEO_ID}, #${IMG_ID} {
+        #${IMG_ID} {
+          position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
-          display: block;
+        }
+        #${VIDEO_ID} {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0;
+          transition: opacity 0.8s ease;
+        }
+        #${VIDEO_ID}.ready {
+          opacity: 1;
         }
         #root {
-          z-index: 1 !important;
+          position: relative;
+          z-index: 1;
           background: transparent !important;
         }
       `;
       document.head.appendChild(style);
     }
 
-    let wrap = document.getElementById(WRAP_ID);
-    if (!wrap) {
-      wrap = document.createElement('div');
-      wrap.id = WRAP_ID;
+    // Only create wrap once
+    if (document.getElementById(WRAP_ID)) return;
 
-      const showFallbackImage = () => {
-        document.getElementById(VIDEO_ID)?.remove();
-        if (!document.getElementById(IMG_ID)) {
-          const img = document.createElement('img');
-          img.id = IMG_ID;
-          img.src = typeof FALLBACK_IMG === 'string' ? FALLBACK_IMG : String(FALLBACK_IMG);
-          img.alt = '';
-          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-          wrap!.appendChild(img);
-        }
-      };
+    const wrap = document.createElement('div');
+    wrap.id = WRAP_ID;
 
-      const video = document.createElement('video');
-      video.id = VIDEO_ID;
-      video.muted = true;
-      video.loop = true;
-      video.setAttribute('playsinline', '');
-      video.setAttribute('preload', 'auto');
+    // 1) Always show static image immediately
+    const img = document.createElement('img');
+    img.id = IMG_ID;
+    img.src = '/assets/images/hero-spa.jpg';
+    img.alt = '';
+    wrap.appendChild(img);
 
-      video.addEventListener('canplay', () => {
-        video.play().catch(() => showFallbackImage());
+    // 2) Try to play video silently on top; fade in if it works
+    const video = document.createElement('video');
+    video.id = VIDEO_ID;
+    video.muted = true;
+    video.loop = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('preload', 'metadata');
+    video.src = '/spa-background-web.mp4';
+
+    video.addEventListener('canplay', () => {
+      video.play().then(() => {
+        video.classList.add('ready');
+      }).catch(() => {
+        // autoplay blocked — image fallback already visible
       });
-      video.addEventListener('error', () => showFallbackImage());
+    });
 
-      video.src = '/spa-background-web.mp4';
-      wrap.appendChild(video);
+    wrap.appendChild(video);
 
-      const root = document.getElementById('root');
-      if (root?.parentNode) {
-        root.parentNode.insertBefore(wrap, root);
-      } else {
-        document.body.insertBefore(wrap, document.body.firstChild);
-      }
-
-      // If video hasn't started in 3 seconds, show fallback
-      setTimeout(() => {
-        const v = document.getElementById(VIDEO_ID) as HTMLVideoElement | null;
-        if (v && v.paused) showFallbackImage();
-      }, 3000);
+    // Insert before #root so it sits behind the app
+    const root = document.getElementById('root');
+    if (root?.parentNode) {
+      root.parentNode.insertBefore(wrap, root);
+    } else {
+      document.body.insertBefore(wrap, document.body.firstChild);
     }
 
     return () => {
