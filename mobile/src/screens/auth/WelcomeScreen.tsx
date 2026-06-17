@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,36 @@ import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { COLORS, RADIUS } from '../../constants/theme';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
+
+function WebVideoBackground() {
+  const videoRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src="/assets/videos/spa-background-web.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        zIndex: 0,
+      }}
+    />
+  );
+}
 
 export function WelcomeScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -79,14 +109,11 @@ export function WelcomeScreen() {
 
   if (Platform.OS === 'web') {
     return (
-      <ImageBackground
-        source={require('../../../assets/images/hero-spa.jpg')}
-        style={styles.root}
-        resizeMode="cover"
-      >
+      <View style={styles.root}>
+        <WebVideoBackground />
         {overlay}
         {buttons}
-      </ImageBackground>
+      </View>
     );
   }
 

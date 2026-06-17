@@ -7,12 +7,15 @@ const config = getDefaultConfig(__dirname);
 config.resolver.assetExts.push('mp4', 'mov', 'webm');
 
 const VIDEOS = {
-  '/spa-background.mp4':     path.join(__dirname, 'assets/videos/spa-background.mp4'),
-  '/spa-background-web.mp4': path.join(__dirname, 'assets/videos/spa-background-web.mp4'),
+  '/spa-background.mp4':                  path.join(__dirname, 'assets/videos/spa-background.mp4'),
+  '/spa-background-web.mp4':              path.join(__dirname, 'assets/videos/spa-background-web.mp4'),
+  '/assets/videos/spa-background.mp4':    path.join(__dirname, 'assets/videos/spa-background.mp4'),
+  '/assets/videos/spa-background-web.mp4': path.join(__dirname, 'assets/videos/spa-background-web.mp4'),
 };
 
 const IMAGES = {
-  '/hero-spa.jpg': path.join(__dirname, 'assets/images/hero-spa.jpg'),
+  '/hero-spa.jpg':                path.join(__dirname, 'assets/images/hero-spa.jpg'),
+  '/assets/images/hero-spa.jpg':  path.join(__dirname, 'assets/images/hero-spa.jpg'),
 };
 
 const DEV_DOMAIN = process.env.REPLIT_DEV_DOMAIN || '';

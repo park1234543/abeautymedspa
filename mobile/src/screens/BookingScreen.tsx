@@ -5,9 +5,11 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Pressable,
   Image,
   TextInput,
   Alert,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -55,7 +57,6 @@ export function BookingScreen() {
       Alert.alert('알림', '모든 필수 정보를 입력해주세요.');
       return;
     }
-    // Here you would make the API call
     navigation.navigate('BookingConfirmation', { bookingId: 'booking-123' });
     resetBooking();
   };
@@ -101,14 +102,13 @@ export function BookingScreen() {
       <Text style={styles.stepTitle}>서비스를 선택하세요</Text>
       <ScrollView showsVerticalScrollIndicator={false}>
         {SERVICES.map((service) => (
-          <TouchableOpacity
+          <Pressable
             key={service.id}
             style={[
               styles.selectionCard,
               selectedService?.id === service.id && styles.selectionCardActive,
             ]}
             onPress={() => setService(service as any)}
-            activeOpacity={0.8}
           >
             <Image source={service.image} style={styles.selectionImage} />
             <View style={styles.selectionContent}>
@@ -119,7 +119,7 @@ export function BookingScreen() {
             {selectedService?.id === service.id && (
               <Ionicons name="checkmark-circle" size={24} color={COLORS.primary} />
             )}
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </ScrollView>
     </View>
@@ -130,14 +130,13 @@ export function BookingScreen() {
       <Text style={styles.stepTitle}>담당 의사를 선택하세요</Text>
       <ScrollView showsVerticalScrollIndicator={false}>
         {DOCTORS.map((doctor) => (
-          <TouchableOpacity
+          <Pressable
             key={doctor.id}
             style={[
               styles.doctorCard,
               selectedDoctor?.id === doctor.id && styles.doctorCardActive,
             ]}
             onPress={() => setDoctor(doctor as any)}
-            activeOpacity={0.8}
           >
             <Image source={doctor.image} style={styles.doctorImage} />
             <View style={styles.doctorInfo}>
@@ -148,7 +147,7 @@ export function BookingScreen() {
             {selectedDoctor?.id === doctor.id && (
               <Ionicons name="checkmark-circle" size={24} color={COLORS.primary} />
             )}
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </ScrollView>
     </View>
@@ -158,41 +157,69 @@ export function BookingScreen() {
     const dates = Array.from({ length: 14 }, (_, i) => addDays(new Date(), i + 1));
 
     return (
-      <View style={styles.stepContent}>
+      <ScrollView style={styles.stepContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.stepTitle}>날짜를 선택하세요</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.dateScroll}
-        >
-          {dates.map((date) => {
-            const isSelected = selectedDate?.toDateString() === date.toDateString();
-            return (
-              <TouchableOpacity
-                key={date.toISOString()}
-                style={[styles.dateCard, isSelected && styles.dateCardActive]}
-                onPress={() => setDate(date)}
-              >
-                <Text style={[styles.dateDay, isSelected && styles.dateDayActive]}>
-                  {format(date, 'EEE', { locale: ko })}
-                </Text>
-                <Text style={[styles.dateNumber, isSelected && styles.dateNumberActive]}>
-                  {format(date, 'd')}
-                </Text>
-                <Text style={[styles.dateMonth, isSelected && styles.dateMonthActive]}>
-                  {format(date, 'MMM', { locale: ko })}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+
+        {/* 웹에서는 수평 flex wrap, native에서는 horizontal ScrollView */}
+        {Platform.OS === 'web' ? (
+          <View style={styles.dateGridWeb}>
+            {dates.map((date) => {
+              const isSelected = selectedDate?.toDateString() === date.toDateString();
+              return (
+                <Pressable
+                  key={date.toISOString()}
+                  style={[styles.dateCard, isSelected && styles.dateCardActive]}
+                  onPress={() => setDate(date)}
+                >
+                  <Text style={[styles.dateDay, isSelected && styles.dateDayActive]}>
+                    {format(date, 'EEE', { locale: ko })}
+                  </Text>
+                  <Text style={[styles.dateNumber, isSelected && styles.dateNumberActive]}>
+                    {format(date, 'd')}
+                  </Text>
+                  <Text style={[styles.dateMonth, isSelected && styles.dateMonthActive]}>
+                    {format(date, 'MMM', { locale: ko })}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        ) : (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.dateScroll}
+            contentContainerStyle={{ paddingRight: SPACING.md }}
+          >
+            {dates.map((date) => {
+              const isSelected = selectedDate?.toDateString() === date.toDateString();
+              return (
+                <Pressable
+                  key={date.toISOString()}
+                  style={[styles.dateCard, isSelected && styles.dateCardActive]}
+                  onPress={() => setDate(date)}
+                >
+                  <Text style={[styles.dateDay, isSelected && styles.dateDayActive]}>
+                    {format(date, 'EEE', { locale: ko })}
+                  </Text>
+                  <Text style={[styles.dateNumber, isSelected && styles.dateNumberActive]}>
+                    {format(date, 'd')}
+                  </Text>
+                  <Text style={[styles.dateMonth, isSelected && styles.dateMonthActive]}>
+                    {format(date, 'MMM', { locale: ko })}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        )}
 
         <Text style={[styles.stepTitle, { marginTop: SPACING.lg }]}>시간을 선택하세요</Text>
         <View style={styles.timeGrid}>
           {TIME_SLOTS.map((time) => {
             const isSelected = selectedTime === time;
             return (
-              <TouchableOpacity
+              <Pressable
                 key={time}
                 style={[styles.timeSlot, isSelected && styles.timeSlotActive]}
                 onPress={() => setTime(time)}
@@ -200,16 +227,16 @@ export function BookingScreen() {
                 <Text style={[styles.timeText, isSelected && styles.timeTextActive]}>
                   {time}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             );
           })}
         </View>
-      </View>
+      </ScrollView>
     );
   };
 
   const renderInfoStep = () => (
-    <View style={styles.stepContent}>
+    <ScrollView style={styles.stepContent} showsVerticalScrollIndicator={false}>
       <Text style={styles.stepTitle}>예약자 정보를 입력하세요</Text>
       <View style={styles.formContainer}>
         <View style={styles.inputGroup}>
@@ -258,11 +285,11 @@ export function BookingScreen() {
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 
   const renderConfirmStep = () => (
-    <View style={styles.stepContent}>
+    <ScrollView style={styles.stepContent} showsVerticalScrollIndicator={false}>
       <Text style={styles.stepTitle}>예약 정보를 확인하세요</Text>
       <View style={styles.summaryContainer}>
         <View style={styles.summaryItem}>
@@ -297,40 +324,28 @@ export function BookingScreen() {
           <Text style={styles.summaryPrice}>${selectedService?.price}</Text>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case 0:
-        return renderServiceStep();
-      case 1:
-        return renderDoctorStep();
-      case 2:
-        return renderDateTimeStep();
-      case 3:
-        return renderInfoStep();
-      case 4:
-        return renderConfirmStep();
-      default:
-        return null;
+      case 0: return renderServiceStep();
+      case 1: return renderDoctorStep();
+      case 2: return renderDateTimeStep();
+      case 3: return renderInfoStep();
+      case 4: return renderConfirmStep();
+      default: return null;
     }
   };
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0:
-        return !!selectedService;
-      case 1:
-        return !!selectedDoctor;
-      case 2:
-        return !!selectedDate && !!selectedTime;
-      case 3:
-        return !!customerInfo.name && !!customerInfo.email && !!customerInfo.phone;
-      case 4:
-        return true;
-      default:
-        return false;
+      case 0: return !!selectedService;
+      case 1: return !!selectedDoctor;
+      case 2: return !!selectedDate && !!selectedTime;
+      case 3: return !!customerInfo.name && !!customerInfo.email && !!customerInfo.phone;
+      case 4: return true;
+      default: return false;
     }
   };
 
@@ -339,18 +354,16 @@ export function BookingScreen() {
       {renderStepIndicator()}
       {renderCurrentStep()}
 
-      {/* Navigation Buttons */}
       <View style={styles.bottomButtons}>
         {currentStep > 0 && (
-          <TouchableOpacity
+          <Pressable
             style={styles.backButton}
             onPress={prevStep}
-            activeOpacity={0.8}
           >
             <Text style={styles.backButtonText}>이전</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
-        <TouchableOpacity
+        <Pressable
           style={[
             styles.nextButton,
             !canProceed() && styles.nextButtonDisabled,
@@ -358,12 +371,11 @@ export function BookingScreen() {
           ]}
           onPress={currentStep === 4 ? handleConfirmBooking : nextStep}
           disabled={!canProceed()}
-          activeOpacity={0.8}
         >
           <Text style={styles.nextButtonText}>
             {currentStep === 4 ? '예약 완료' : '다음'}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );
@@ -433,6 +445,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
     borderWidth: 2,
     borderColor: 'transparent',
+    cursor: 'pointer' as any,
     ...SHADOWS.small,
   },
   selectionCardActive: {
@@ -471,6 +484,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
     borderWidth: 2,
     borderColor: 'transparent',
+    cursor: 'pointer' as any,
     ...SHADOWS.small,
   },
   doctorCardActive: {
@@ -499,6 +513,12 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     marginTop: 2,
   },
+  dateGridWeb: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
   dateScroll: {
     marginBottom: SPACING.md,
     height: 110,
@@ -513,6 +533,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderWidth: 2,
     borderColor: 'transparent',
+    cursor: 'pointer' as any,
     ...SHADOWS.small,
   },
   dateCardActive: {
@@ -545,6 +566,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: SPACING.sm,
+    paddingBottom: SPACING.xl,
   },
   timeSlot: {
     paddingVertical: SPACING.sm,
@@ -553,6 +575,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderWidth: 1,
     borderColor: COLORS.border,
+    cursor: 'pointer' as any,
   },
   timeSlotActive: {
     backgroundColor: COLORS.primary,
@@ -568,6 +591,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     gap: SPACING.md,
+    paddingBottom: SPACING.xl,
   },
   inputGroup: {
     gap: SPACING.xs,
@@ -595,6 +619,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderRadius: RADIUS.lg,
     padding: SPACING.lg,
+    marginBottom: SPACING.xl,
     ...SHADOWS.small,
   },
   summaryItem: {
@@ -636,6 +661,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
     alignItems: 'center',
+    cursor: 'pointer' as any,
   },
   backButtonText: {
     fontSize: FONTS.sizes.md,
@@ -648,6 +674,7 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     borderRadius: RADIUS.md,
     alignItems: 'center',
+    cursor: 'pointer' as any,
   },
   nextButtonFull: {
     flex: 1,
