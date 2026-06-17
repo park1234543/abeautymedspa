@@ -34,17 +34,17 @@ const QR_PAGE = `<!DOCTYPE html>
 </head>
 <body>
 <h2>A Beauty Med Spa</h2>
-<p>Scan with <strong style="color:#D4A574">Expo Go</strong> on Android</p>
+<p>폰 카메라로 스캔 → 브라우저에서 앱 열림</p>
 <div class="qr-box">
   <img id="qr" src="" alt="QR Code" width="260" height="260"/>
 </div>
 <div class="url" id="url-text"></div>
-<div class="note">Same WiFi not required — uses public URL<br>If scan fails, open Expo Go → Enter URL manually</div>
+<div class="note">Expo Go 필요 없음 — 크롬/사파리 브라우저로 바로 열림</div>
 <script>
   var host = '${DEV_DOMAIN}';
-  var url = host ? 'exps://' + host : 'exp://172.24.0.2:5000';
+  var url = 'https://' + (host || 'localhost:5000');
   document.getElementById('url-text').textContent = url;
-  document.getElementById('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=2&data=' + encodeURIComponent(url);
+  document.getElementById('qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=2&color=000000&bgcolor=ffffff&data=' + encodeURIComponent(url);
 </script>
 </body>
 </html>`;
