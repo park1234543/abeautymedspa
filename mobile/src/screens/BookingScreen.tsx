@@ -501,6 +501,8 @@ const styles = StyleSheet.create({
   },
   dateScroll: {
     marginBottom: SPACING.md,
+    height: 110,
+    flexGrow: 0,
   },
   dateCard: {
     alignItems: 'center',

@@ -5,9 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-  ImageBackground,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Video, ResizeMode } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -122,18 +122,22 @@ export function WelcomeScreen() {
   }
 
   return (
-    <ImageBackground
-      source={require('../../../assets/images/hero-spa.jpg')}
-      style={styles.root}
-      resizeMode="cover"
-    >
+    <View style={styles.root}>
+      <Video
+        source={require('../../../assets/videos/spa-background.mp4')}
+        style={StyleSheet.absoluteFill}
+        resizeMode={ResizeMode.COVER}
+        shouldPlay
+        isLooping
+        isMuted
+      />
       <LinearGradient
         colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
         style={styles.fill}
         pointerEvents="none"
       />
       {buttons}
-    </ImageBackground>
+    </View>
   );
 }
 
