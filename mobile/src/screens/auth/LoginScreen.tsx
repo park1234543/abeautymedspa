@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -35,6 +34,7 @@ export function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const { request, response, promptAsync } = useGoogleAuth();
 
@@ -43,7 +43,7 @@ export function LoginScreen() {
       const { access_token } = response.params;
       handleGoogleSuccess(access_token);
     } else if (response?.type === 'error') {
-      Alert.alert('Google 로그인 오류', response.error?.message || '다시 시도해주세요.');
+      setError('Google 로그인 오류: ' + (response.error?.message || '다시 시도해주세요.'));
       setIsGoogleLoading(false);
     } else if (response?.type === 'dismiss' || response?.type === 'cancel') {
       setIsGoogleLoading(false);
@@ -55,10 +55,10 @@ export function LoginScreen() {
       const googleUser = await fetchGoogleUserInfo(accessToken);
       const success = await loginWithGoogle(googleUser);
       if (!success) {
-        Alert.alert('로그인 실패', 'Google 로그인 중 오류가 발생했습니다.');
+        setError('Google 로그인 중 오류가 발생했습니다.');
       }
     } catch (e) {
-      Alert.alert('오류', 'Google 사용자 정보를 가져올 수 없습니다.');
+      setError('Google 사용자 정보를 가져올 수 없습니다.');
     } finally {
       setIsGoogleLoading(false);
     }
@@ -66,19 +66,18 @@ export function LoginScreen() {
 
   const handleGoogleLogin = async () => {
     if (!GOOGLE_CLIENT_ID) {
-      Alert.alert(
-        'Google 로그인 미설정',
-        'EXPO_PUBLIC_GOOGLE_CLIENT_ID 환경 변수를 설정해주세요.'
-      );
+      setError('Google 로그인이 설정되지 않았습니다.');
       return;
     }
     setIsGoogleLoading(true);
+    setError('');
     await promptAsync();
   };
 
   const handleLogin = async () => {
+    setError('');
     if (!email || !password) {
-      Alert.alert('알림', '이메일과 비밀번호를 입력해주세요.');
+      setError('이메일과 비밀번호를 입력해주세요.');
       return;
     }
 
@@ -87,8 +86,15 @@ export function LoginScreen() {
     setIsLoading(false);
 
     if (!success) {
-      Alert.alert('로그인 실패', '이메일 또는 비밀번호를 확인해주세요.');
+      setError('이메일 또는 비밀번호를 확인해주세요.');
     }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setError('');
+    await login('demo@abeauty.com', 'demo1234');
+    setIsLoading(false);
   };
 
   return (
@@ -103,7 +109,6 @@ export function LoginScreen() {
         ]}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Back Button */}
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -111,7 +116,6 @@ export function LoginScreen() {
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
 
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.logo}>A Beauty</Text>
           <Text style={styles.title}>로그인</Text>
@@ -120,9 +124,18 @@ export function LoginScreen() {
           </Text>
         </View>
 
-        {/* Google Login Button */}
+        {/* Demo Login */}
         <TouchableOpacity
-          style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
+          style={styles.demoButton}
+          onPress={handleDemoLogin}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.demoButtonText}>⚡ 데모 로그인 (바로 체험하기)</Text>
+        </TouchableOpacity>
+
+        {/* Google Login */}
+        <TouchableOpacity
+          style={[styles.googleButton, (isGoogleLoading || !request) && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
           disabled={isGoogleLoading || !request}
           activeOpacity={0.8}
@@ -137,14 +150,18 @@ export function LoginScreen() {
           )}
         </TouchableOpacity>
 
-        {/* Divider */}
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>또는</Text>
+          <Text style={styles.dividerText}>또는 이메일로</Text>
           <View style={styles.dividerLine} />
         </View>
 
-        {/* Form */}
+        {error ? (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : null}
+
         <View style={styles.form}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>이메일</Text>
@@ -155,7 +172,7 @@ export function LoginScreen() {
                 placeholder="이메일을 입력하세요"
                 placeholderTextColor={COLORS.textLight}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(t) => { setEmail(t); setError(''); }}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -172,7 +189,7 @@ export function LoginScreen() {
                 placeholder="비밀번호를 입력하세요"
                 placeholderTextColor={COLORS.textLight}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(t) => { setPassword(t); setError(''); }}
                 secureTextEntry={!showPassword}
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -184,10 +201,6 @@ export function LoginScreen() {
               </TouchableOpacity>
             </View>
           </View>
-
-          <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>비밀번호를 잊으셨나요?</Text>
-          </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.loginButton, isLoading && styles.buttonDisabled]}
@@ -203,7 +216,6 @@ export function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Register Link */}
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>계정이 없으신가요? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
@@ -258,6 +270,20 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.md,
     color: COLORS.textSecondary,
   },
+  demoButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.md,
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+    ...SHADOWS.small,
+  },
+  demoButtonText: {
+    color: '#fff',
+    fontSize: FONTS.sizes.md,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -304,6 +330,19 @@ const styles = StyleSheet.create({
     color: COLORS.textLight,
     paddingHorizontal: SPACING.xs,
   },
+  errorBox: {
+    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(220, 53, 69, 0.3)',
+    borderRadius: RADIUS.sm,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  errorText: {
+    color: '#dc3545',
+    fontSize: FONTS.sizes.sm,
+    textAlign: 'center',
+  },
   form: {
     gap: SPACING.lg,
   },
@@ -331,14 +370,6 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.md,
     color: COLORS.text,
     paddingVertical: SPACING.xs,
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-  },
-  forgotPasswordText: {
-    fontSize: FONTS.sizes.sm,
-    color: COLORS.primary,
-    fontWeight: '500',
   },
   loginButton: {
     backgroundColor: COLORS.primary,

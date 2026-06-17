@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,72 +14,111 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { COLORS, RADIUS } from '../../constants/theme';
-import { VideoBackground } from '../../components/VideoBackground';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
+
+const STYLE_ID = '__welcome_bg__';
+
+function useWebBackground() {
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    if (document.getElementById(STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      html, body, #root {
+        background: #0d0a06 !important;
+      }
+      #welcome-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: url('/hero-spa.jpg') center/cover no-repeat #0d0a06;
+      }
+      #root > * {
+        position: relative;
+        z-index: 1;
+      }
+    `;
+    document.head.appendChild(style);
+
+    const bg = document.createElement('div');
+    bg.id = 'welcome-bg';
+    document.body.insertBefore(bg, document.body.firstChild);
+
+    return () => {
+      document.getElementById(STYLE_ID)?.remove();
+      document.getElementById('welcome-bg')?.remove();
+    };
+  }, []);
+}
 
 export function WelcomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
 
-  const content = (
-    <>
-      <VideoBackground />
-      <View style={styles.fill} pointerEvents="none">
-        <LinearGradient
-          colors={['rgba(0,0,0,0.05)', 'rgba(0,0,0,0.40)', 'rgba(0,0,0,0.90)']}
-          style={{ flex: 1 }}
-        />
+  useWebBackground();
+
+  const buttons = (
+    <View style={[styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16 }]}>
+      <View style={styles.logoArea}>
+        <Text style={styles.logoText}>A Beauty</Text>
+        <View style={styles.logoDivider} />
+        <Text style={styles.logoSub}>MED SPA</Text>
       </View>
-      <View style={[styles.fill, styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16, zIndex: 10 }]}>
-        <View style={styles.logoArea}>
-          <Text style={styles.logoText}>A Beauty</Text>
-          <View style={styles.logoDivider} />
-          <Text style={styles.logoSub}>MED SPA</Text>
+
+      <View style={styles.tagRow}>
+        <View style={styles.tagPill}>
+          <Text style={styles.tagText}>✦  Premium Aesthetic Experience</Text>
         </View>
+      </View>
 
-        <View style={styles.tagRow}>
-          <View style={styles.tagPill}>
-            <Text style={styles.tagText}>✦  Premium Aesthetic Experience</Text>
-          </View>
-        </View>
-
-        <View style={styles.headlineArea}>
-          <Text style={styles.headline}>Elevate Your</Text>
-          <Text style={styles.headlineGold}>Natural Beauty</Text>
-          <Text style={styles.description}>
-            Advanced treatments by board-certified{'\n'}
-            specialists. Your transformation starts here.
-          </Text>
-        </View>
-
-        <View style={styles.buttonGroup}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => navigation.navigate('Login')}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.primaryButtonText}>Sign In</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={() => navigation.navigate('Register')}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.secondaryButtonText}>Create Account</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.footerNote}>
-          By continuing, you agree to our Terms & Privacy Policy
+      <View style={styles.headlineArea}>
+        <Text style={styles.headline}>Elevate Your</Text>
+        <Text style={styles.headlineGold}>Natural Beauty</Text>
+        <Text style={styles.description}>
+          Advanced treatments by board-certified{'\n'}
+          specialists. Your transformation starts here.
         </Text>
       </View>
-    </>
+
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate('Login')}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.primaryButtonText}>Sign In</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate('Register')}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.secondaryButtonText}>Create Account</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.footerNote}>
+        By continuing, you agree to our Terms &amp; Privacy Policy
+      </Text>
+    </View>
   );
 
   if (Platform.OS === 'web') {
-    return <View style={[styles.root, { backgroundColor: 'transparent' }]}>{content}</View>;
+    return (
+      <View style={styles.webRoot}>
+        <LinearGradient
+          colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
+          style={styles.webGradient}
+          pointerEvents="none"
+        />
+        {buttons}
+      </View>
+    );
   }
 
   return (
@@ -88,7 +127,12 @@ export function WelcomeScreen() {
       style={styles.root}
       resizeMode="cover"
     >
-      {content}
+      <LinearGradient
+        colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
+        style={styles.fill}
+        pointerEvents="none"
+      />
+      {buttons}
     </ImageBackground>
   );
 }
@@ -97,6 +141,18 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: '#0d0a06',
+  },
+  webRoot: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'flex-end',
+  },
+  webGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   fill: {
     position: 'absolute',
