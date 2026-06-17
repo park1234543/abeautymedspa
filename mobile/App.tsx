@@ -68,13 +68,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#111',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   webFrame: {
     width: 390,
-    height: '100%' as any,
-    maxHeight: 844,
-    overflow: 'hidden' as any,
+    flex: 1,
     alignSelf: 'center',
   },
   loadingContainer: {
