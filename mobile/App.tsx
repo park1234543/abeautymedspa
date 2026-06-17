@@ -22,6 +22,12 @@ export default function App() {
   const { isLoading, loadUser } = useAuthStore();
 
   useEffect(() => {
+    // 웹에서 토큰 없을 때 테스트 계정 자동 설정
+    if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+      const devUser = { id: 'dev_user', email: 'demo@abeauty.com', name: 'Demo User' };
+      localStorage.setItem('token', 'local_token_dev');
+      localStorage.setItem('user', JSON.stringify(devUser));
+    }
     loadUser();
   }, []);
 
