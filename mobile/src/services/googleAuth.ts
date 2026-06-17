@@ -1,6 +1,5 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
-import * as Crypto from 'expo-crypto';
 import { Platform } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -30,11 +29,8 @@ export function useGoogleAuth() {
     {
       clientId: GOOGLE_CLIENT_ID,
       redirectUri,
-      responseType: AuthSession.ResponseType.Token,
+      responseType: 'token',
       scopes: ['openid', 'profile', 'email'],
-      extraParams: {
-        nonce: Crypto.randomUUID(),
-      },
     },
     discovery
   );
