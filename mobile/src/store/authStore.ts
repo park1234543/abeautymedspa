@@ -3,17 +3,24 @@ import { Platform } from 'react-native';
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
 import type { GoogleUser } from '../services/googleAuth';
 
+const getLocalStorage = (): Storage | null => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) return window.localStorage;
+  } catch (_) {}
+  return null;
+};
+
 const storage = {
   getItem: async (key: string): Promise<string | null> => {
     if (Platform.OS === 'web') {
-      return localStorage.getItem(key);
+      return getLocalStorage()?.getItem(key) ?? null;
     }
     const SecureStore = await import('expo-secure-store');
     return SecureStore.getItemAsync(key);
   },
   setItem: async (key: string, value: string): Promise<void> => {
     if (Platform.OS === 'web') {
-      localStorage.setItem(key, value);
+      getLocalStorage()?.setItem(key, value);
       return;
     }
     const SecureStore = await import('expo-secure-store');
@@ -21,7 +28,7 @@ const storage = {
   },
   deleteItem: async (key: string): Promise<void> => {
     if (Platform.OS === 'web') {
-      localStorage.removeItem(key);
+      getLocalStorage()?.removeItem(key);
       return;
     }
     const SecureStore = await import('expo-secure-store');
