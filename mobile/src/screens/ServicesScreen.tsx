@@ -35,13 +35,9 @@ export function ServicesScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <View>
-            <Text style={styles.headerTitle}>{t('services', 'title')}</Text>
-            <Text style={styles.headerSubtitle}>{t('services', 'subtitle')}</Text>
-          </View>
-          <LanguageSelector />
-        </View>
+        <LanguageSelector />
+        <Text style={styles.headerTitle}>{t('services', 'title')}</Text>
+        <Text style={styles.headerSubtitle}>{t('services', 'subtitle')}</Text>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll} contentContainerStyle={styles.categoriesContainer}>
@@ -94,9 +90,8 @@ export function ServicesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  header: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text },
+  header: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.sm, paddingBottom: SPACING.md },
+  headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text, marginTop: SPACING.sm },
   headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: SPACING.xs },
   categoriesScroll: { flexGrow: 0, flexShrink: 0, height: 42 },
   categoriesContainer: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.lg, paddingTop: 4, paddingBottom: 4, gap: SPACING.sm },
