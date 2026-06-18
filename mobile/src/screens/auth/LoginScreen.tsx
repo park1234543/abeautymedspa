@@ -23,7 +23,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
-const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '';
+const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();

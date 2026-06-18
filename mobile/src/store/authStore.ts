@@ -96,19 +96,24 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loginWithGoogle: async (googleUser: any) => {
     try {
-      if (isFirebaseConfigured()) {
+      if (isFirebaseConfigured() && googleUser.accessToken) {
         const { auth } = await import('../services/firebase');
         const { GoogleAuthProvider, signInWithCredential } = await import('firebase/auth');
         const credential = GoogleAuthProvider.credential(null, googleUser.accessToken);
         const cred = await signInWithCredential(auth, credential);
         const fbUser = cred.user;
-        const user: User = { id: fbUser.uid, email: fbUser.email ?? googleUser.email, name: fbUser.displayName ?? googleUser.name };
+        const user: User = {
+          id: fbUser.uid,
+          email: fbUser.email ?? googleUser.email,
+          name: fbUser.displayName ?? googleUser.name,
+        };
         const token = await fbUser.getIdToken();
         await storage.setItem('token', token);
         await storage.setItem('user', JSON.stringify(user));
         set({ user, token, isAuthenticated: true });
         return true;
       }
+      // Fallback: mock login with Google user info
       const mockToken = `google_${googleUser.id}_${Date.now()}`;
       const user: User = { id: googleUser.id, email: googleUser.email, name: googleUser.name };
       await storage.setItem('token', mockToken);

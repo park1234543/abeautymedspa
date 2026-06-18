@@ -3,6 +3,7 @@
     "name": "A Beauty MedSpa",
     "slug": "abeauty-medspa",
     "version": "1.0.0",
+    "scheme": "abeautymedspa",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

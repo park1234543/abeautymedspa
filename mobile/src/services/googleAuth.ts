@@ -1,10 +1,9 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
-import { Platform } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '';
+const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 
 const discovery = {
   authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
@@ -17,6 +16,7 @@ export interface GoogleUser {
   email: string;
   name: string;
   picture?: string;
+  accessToken: string;
 }
 
 export function useGoogleAuth() {
@@ -49,5 +49,6 @@ export async function fetchGoogleUserInfo(accessToken: string): Promise<GoogleUs
     email: data.email,
     name: data.name,
     picture: data.picture,
+    accessToken,
   };
 }

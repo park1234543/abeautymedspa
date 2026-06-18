@@ -20,13 +20,16 @@ import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useGoogleAuth, fetchGoogleUserInfo } from '../../services/googleAuth';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
+
+const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 
 export function RegisterScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { register } = useAuthStore();
+  const { register, loginWithGoogle } = useAuthStore();
   const { t } = useTranslation();
 
   const [name, setName] = useState('');
@@ -36,6 +39,39 @@ export function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const { request, response, promptAsync } = useGoogleAuth();
+
+  React.useEffect(() => {
+    if (response?.type === 'success') {
+      const { access_token } = response.params;
+      handleGoogleSuccess(access_token);
+    } else if (response?.type === 'error' || response?.type === 'dismiss' || response?.type === 'cancel') {
+      setIsGoogleLoading(false);
+    }
+  }, [response]);
+
+  const handleGoogleSuccess = async (accessToken: string) => {
+    try {
+      const googleUser = await fetchGoogleUserInfo(accessToken);
+      const success = await loginWithGoogle(googleUser);
+      if (!success) Alert.alert(t('register', 'failTitle'), t('register', 'errorFailed'));
+    } catch {
+      Alert.alert(t('register', 'failTitle'), t('register', 'errorFailed'));
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleRegister = async () => {
+    if (!GOOGLE_CLIENT_ID) {
+      Alert.alert('Google 로그인', 'Google 로그인이 아직 설정되지 않았습니다.');
+      return;
+    }
+    setIsGoogleLoading(true);
+    await promptAsync();
+  };
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
@@ -70,6 +106,28 @@ export function RegisterScreen() {
           <Text style={styles.logo}>A Beauty</Text>
           <Text style={styles.title}>{t('register', 'title')}</Text>
           <Text style={styles.subtitle}>{t('register', 'subtitle')}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.googleButton, (isGoogleLoading || !request) && styles.buttonDisabled]}
+          onPress={handleGoogleRegister}
+          disabled={isGoogleLoading || !request}
+          activeOpacity={0.8}
+        >
+          {isGoogleLoading ? (
+            <ActivityIndicator color={COLORS.text} size="small" />
+          ) : (
+            <>
+              <View style={styles.googleIconWrap}><Text style={styles.googleIconText}>G</Text></View>
+              <Text style={styles.googleButtonText}>{t('login', 'google')}</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>{t('login', 'orEmail')}</Text>
+          <View style={styles.dividerLine} />
         </View>
 
         <View style={styles.form}>
@@ -145,6 +203,14 @@ const styles = StyleSheet.create({
   label: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.text },
   inputWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.card, borderRadius: RADIUS.md, paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm, borderWidth: 1, borderColor: COLORS.border, gap: SPACING.sm },
   input: { flex: 1, fontSize: FONTS.sizes.md, color: COLORS.text, paddingVertical: SPACING.xs },
+  googleButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, paddingVertical: SPACING.md, gap: SPACING.sm, marginBottom: SPACING.md, ...SHADOWS.small },
+  googleIconWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#4285F4', alignItems: 'center', justifyContent: 'center' },
+  googleIconText: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },
+  googleButtonText: { fontSize: FONTS.sizes.md, fontWeight: '600', color: COLORS.text },
+  divider: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.md, gap: SPACING.sm },
+  dividerLine: { flex: 1, height: 1, backgroundColor: COLORS.border },
+  dividerText: { fontSize: FONTS.sizes.sm, color: COLORS.textLight, paddingHorizontal: SPACING.xs },
+  buttonDisabled: { opacity: 0.7 },
   registerButton: { backgroundColor: COLORS.primary, paddingVertical: SPACING.md, borderRadius: RADIUS.md, alignItems: 'center', marginTop: SPACING.md, ...SHADOWS.small },
   registerButtonDisabled: { opacity: 0.7 },
   registerButtonText: { color: COLORS.textWhite, fontSize: FONTS.sizes.lg, fontWeight: '600' },
