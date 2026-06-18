@@ -42,6 +42,7 @@ interface AuthState {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  demoLogin: () => Promise<void>;
   loginWithGoogle: (googleUser: any) => Promise<boolean>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -55,6 +56,19 @@ export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   isLoading: false,
   isAuthenticated: false,
+
+  demoLogin: async () => {
+    const demoUser: User = {
+      id: 'demo_user',
+      email: 'demo@abeauty.com',
+      name: '데모 고객',
+      phone: '010-1234-5678',
+    };
+    const demoToken = 'demo_token_' + Date.now();
+    await storage.setItem('token', demoToken);
+    await storage.setItem('user', JSON.stringify(demoUser));
+    set({ user: demoUser, token: demoToken, isAuthenticated: true });
+  },
 
   login: async (email: string, password: string) => {
     if (!email || !password) return false;

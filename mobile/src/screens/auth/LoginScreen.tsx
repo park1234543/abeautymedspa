@@ -29,7 +29,7 @@ const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { login, loginWithGoogle } = useAuthStore();
+  const { login, demoLogin, loginWithGoogle } = useAuthStore();
   const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
@@ -97,7 +97,7 @@ export function LoginScreen() {
   const handleDemoLogin = async () => {
     setIsLoading(true);
     setError('');
-    await login('demo@abeauty.com', 'demo1234');
+    await demoLogin();
     setIsLoading(false);
   };
 
