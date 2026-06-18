@@ -1,13 +1,21 @@
 import React from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { ServicesScreen } from '../screens/ServicesScreen';
 import { GalleryScreen } from '../screens/GalleryScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
-import { COLORS, FONTS } from '../constants/theme';
+import { COLORS, SHADOWS } from '../constants/theme';
 
 export type MainTabParamList = {
   Home: undefined;
@@ -18,68 +26,149 @@ export type MainTabParamList = {
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+const TABS = [
+  {
+    name: 'Home' as const,
+    label: '홈',
+    icon: 'home',
+    iconOutline: 'home-outline',
+  },
+  {
+    name: 'Services' as const,
+    label: '서비스',
+    icon: 'sparkles',
+    iconOutline: 'sparkles-outline',
+  },
+  {
+    name: 'Gallery' as const,
+    label: '갤러리',
+    icon: 'images',
+    iconOutline: 'images-outline',
+  },
+  {
+    name: 'Profile' as const,
+    label: '프로필',
+    icon: 'person',
+    iconOutline: 'person-outline',
+  },
+];
+
+function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom }]}>
+      <View style={styles.tabBarContainer}>
+        {state.routes.map((route, index) => {
+          const tab = TABS.find((t) => t.name === route.name);
+          if (!tab) return null;
+
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
+          return (
+            <TouchableOpacity
+              key={route.key}
+              style={styles.tabItem}
+              onPress={onPress}
+              activeOpacity={0.7}
+            >
+              {/* Active indicator dot */}
+              {isFocused && <View style={styles.activeDot} />}
+
+              {/* Icon container */}
+              <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
+                <Ionicons
+                  name={(isFocused ? tab.icon : tab.iconOutline) as any}
+                  size={22}
+                  color={isFocused ? COLORS.primary : '#B0A090'}
+                />
+              </View>
+
+              {/* Label */}
+              <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export function MainTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap;
-
-          switch (route.name) {
-            case 'Home':
-              iconName = focused ? 'home' : 'home-outline';
-              break;
-            case 'Services':
-              iconName = focused ? 'sparkles' : 'sparkles-outline';
-              break;
-            case 'Gallery':
-              iconName = focused ? 'images' : 'images-outline';
-              break;
-            case 'Profile':
-              iconName = focused ? 'person' : 'person-outline';
-              break;
-            default:
-              iconName = 'ellipse';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textLight,
-        tabBarStyle: {
-          backgroundColor: COLORS.card,
-          borderTopColor: COLORS.borderLight,
-          paddingTop: 8,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 12,
-          height: Platform.OS === 'ios' ? 88 : 68,
-        },
-        tabBarLabelStyle: {
-          fontSize: FONTS.sizes.xs,
-          fontWeight: '500',
-        },
-      })}
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{ headerShown: false }}
     >
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen} 
-        options={{ tabBarLabel: '홈' }}
-      />
-      <Tab.Screen 
-        name="Services" 
-        component={ServicesScreen} 
-        options={{ tabBarLabel: '서비스' }}
-      />
-      <Tab.Screen 
-        name="Gallery" 
-        component={GalleryScreen} 
-        options={{ tabBarLabel: '갤러리' }}
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
-        options={{ tabBarLabel: '프로필' }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Services" component={ServicesScreen} />
+      <Tab.Screen name="Gallery" component={GalleryScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarWrapper: {
+    backgroundColor: '#FDFAF7',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(212,165,116,0.15)',
+    ...SHADOWS.medium,
+  },
+  tabBarContainer: {
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? 4 : 10,
+    paddingHorizontal: 8,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingVertical: 4,
+    position: 'relative',
+  },
+  activeDot: {
+    position: 'absolute',
+    top: -10,
+    width: 28,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: '#D4A574',
+  },
+  iconWrap: {
+    width: 44,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  iconWrapActive: {
+    backgroundColor: 'rgba(212,165,116,0.12)',
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#B0A090',
+    letterSpacing: 0.3,
+  },
+  tabLabelActive: {
+    color: '#D4A574',
+    fontWeight: '700',
+  },
+});
