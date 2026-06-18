@@ -106,7 +106,9 @@ export function WelcomeScreen() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.footerNote}>{t('welcome', 'terms')}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('PrivacyPolicy')} activeOpacity={0.7}>
+        <Text style={[styles.footerNote, { textDecorationLine: 'underline' }]}>{t('welcome', 'terms')}</Text>
+      </TouchableOpacity>
     </View>
   );
 

@@ -24,15 +24,11 @@ export interface BookingRecord {
   doctor: Doctor;
   date: string;
   time: string;
-  customerInfo: {
-    name: string;
-    email: string;
-    phone: string;
-    notes: string;
-  };
+  customerInfo: { name: string; email: string; phone: string; notes: string };
   status: BookingStatus;
   totalPrice: number;
   createdAt: string;
+  userId?: string;
 }
 
 interface BookingState {
@@ -40,12 +36,7 @@ interface BookingState {
   selectedDoctor: Doctor | null;
   selectedDate: Date | null;
   selectedTime: string | null;
-  customerInfo: {
-    name: string;
-    email: string;
-    phone: string;
-    notes: string;
-  };
+  customerInfo: { name: string; email: string; phone: string; notes: string };
   currentStep: number;
   bookingHistory: BookingRecord[];
 
@@ -62,12 +53,15 @@ interface BookingState {
 
   addBookingRecord: (record: BookingRecord) => void;
   cancelBooking: (id: string) => void;
-  loadBookingHistory: () => void;
+  loadBookingHistory: (userId?: string) => void;
 }
 
 const STORAGE_KEY = 'booking_history';
 
-const saveHistory = async (history: BookingRecord[]) => {
+const isFirebaseConfigured = () =>
+  !!(process.env.EXPO_PUBLIC_FIREBASE_API_KEY && process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID);
+
+const saveLocalHistory = async (history: BookingRecord[]) => {
   try {
     if (Platform.OS === 'web') {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
@@ -78,7 +72,7 @@ const saveHistory = async (history: BookingRecord[]) => {
   } catch {}
 };
 
-const loadHistory = async (): Promise<BookingRecord[]> => {
+const loadLocalHistory = async (): Promise<BookingRecord[]> => {
   try {
     let raw: string | null = null;
     if (Platform.OS === 'web') {
@@ -87,9 +81,9 @@ const loadHistory = async (): Promise<BookingRecord[]> => {
       const SecureStore = await import('expo-secure-store');
       raw = await SecureStore.getItemAsync(STORAGE_KEY);
     }
-    return raw ? JSON.parse(raw) : MOCK_HISTORY;
+    return raw ? JSON.parse(raw) : [];
   } catch {
-    return MOCK_HISTORY;
+    return [];
   }
 };
 
@@ -98,9 +92,7 @@ const MOCK_HISTORY: BookingRecord[] = [
     id: 'bk001',
     service: { id: 'botox', name: '보톡스', nameEn: 'Botox', duration: 30, price: 200 },
     doctor: { id: 'dr-kim', name: 'Dr. Kim', nameKo: '김 원장', specialty: '피부과 전문의' },
-    date: (() => {
-      const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString();
-    })(),
+    date: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString(); })(),
     time: '14:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
     status: 'upcoming',
@@ -111,9 +103,7 @@ const MOCK_HISTORY: BookingRecord[] = [
     id: 'bk002',
     service: { id: 'filler', name: '필러', nameEn: 'Filler', duration: 45, price: 350 },
     doctor: { id: 'dr-lee', name: 'Dr. Lee', nameKo: '이 원장', specialty: '성형외과 전문의' },
-    date: (() => {
-      const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString();
-    })(),
+    date: (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString(); })(),
     time: '11:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
     status: 'upcoming',
@@ -124,39 +114,11 @@ const MOCK_HISTORY: BookingRecord[] = [
     id: 'bk003',
     service: { id: 'laser', name: '레이저', nameEn: 'Laser', duration: 60, price: 300 },
     doctor: { id: 'dr-park', name: 'Dr. Park', nameKo: '박 원장', specialty: '피부과 전문의' },
-    date: (() => {
-      const d = new Date(); d.setDate(d.getDate() - 14); return d.toISOString();
-    })(),
+    date: (() => { const d = new Date(); d.setDate(d.getDate() - 14); return d.toISOString(); })(),
     time: '10:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
     status: 'completed',
     totalPrice: 300,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'bk004',
-    service: { id: 'skincare', name: '스킨케어', nameEn: 'Skincare', duration: 60, price: 150 },
-    doctor: { id: 'dr-kim', name: 'Dr. Kim', nameKo: '김 원장', specialty: '피부과 전문의' },
-    date: (() => {
-      const d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString();
-    })(),
-    time: '15:00',
-    customerInfo: { name: '', email: '', phone: '', notes: '' },
-    status: 'completed',
-    totalPrice: 150,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'bk005',
-    service: { id: 'botox', name: '보톡스', nameEn: 'Botox', duration: 30, price: 200 },
-    doctor: { id: 'dr-lee', name: 'Dr. Lee', nameKo: '이 원장', specialty: '성형외과 전문의' },
-    date: (() => {
-      const d = new Date(); d.setDate(d.getDate() - 7); return d.toISOString();
-    })(),
-    time: '13:00',
-    customerInfo: { name: '', email: '', phone: '', notes: '' },
-    status: 'cancelled',
-    totalPrice: 200,
     createdAt: new Date().toISOString(),
   },
 ];
@@ -176,38 +138,71 @@ export const useBookingStore = create<BookingState>((set, get) => ({
   setDoctor: (doctor) => set({ selectedDoctor: doctor }),
   setDate: (date) => set({ selectedDate: date }),
   setTime: (time) => set({ selectedTime: time }),
-  setCustomerInfo: (info) => set((state) => ({
-    customerInfo: { ...state.customerInfo, ...info },
-  })),
+  setCustomerInfo: (info) => set((state) => ({ customerInfo: { ...state.customerInfo, ...info } })),
   setStep: (step) => set({ currentStep: step }),
   nextStep: () => set((state) => ({ currentStep: state.currentStep + 1 })),
   prevStep: () => set((state) => ({ currentStep: Math.max(0, state.currentStep - 1) })),
-  resetBooking: () => set({
-    selectedService: null,
-    selectedDoctor: null,
-    selectedDate: null,
-    selectedTime: null,
-    customerInfo: initialCustomerInfo,
-    currentStep: 0,
-  }),
+  resetBooking: () => set({ selectedService: null, selectedDoctor: null, selectedDate: null, selectedTime: null, customerInfo: initialCustomerInfo, currentStep: 0 }),
   getTotalPrice: () => get().selectedService?.price || 0,
 
-  addBookingRecord: (record) => {
+  addBookingRecord: async (record) => {
     const history = [record, ...get().bookingHistory];
     set({ bookingHistory: history });
-    saveHistory(history);
+
+    if (isFirebaseConfigured() && record.userId) {
+      try {
+        const { db } = await import('../services/firebase');
+        const { doc, setDoc } = await import('firebase/firestore');
+        await setDoc(doc(db, 'bookings', record.id), {
+          ...record,
+          createdAt: new Date().toISOString(),
+        });
+        return;
+      } catch (e) {
+        console.error('Firestore save error:', e);
+      }
+    }
+    saveLocalHistory(history);
   },
 
-  cancelBooking: (id) => {
+  cancelBooking: async (id) => {
     const history = get().bookingHistory.map((b) =>
       b.id === id ? { ...b, status: 'cancelled' as BookingStatus } : b
     );
     set({ bookingHistory: history });
-    saveHistory(history);
+
+    if (isFirebaseConfigured()) {
+      try {
+        const { db } = await import('../services/firebase');
+        const { doc, updateDoc } = await import('firebase/firestore');
+        await updateDoc(doc(db, 'bookings', id), { status: 'cancelled' });
+        return;
+      } catch (e) {
+        console.error('Firestore cancel error:', e);
+      }
+    }
+    saveLocalHistory(history);
   },
 
-  loadBookingHistory: async () => {
-    const history = await loadHistory();
-    set({ bookingHistory: history });
+  loadBookingHistory: async (userId?: string) => {
+    if (isFirebaseConfigured() && userId) {
+      try {
+        const { db } = await import('../services/firebase');
+        const { collection, query, where, orderBy, getDocs } = await import('firebase/firestore');
+        const q = query(
+          collection(db, 'bookings'),
+          where('userId', '==', userId),
+          orderBy('createdAt', 'desc')
+        );
+        const snap = await getDocs(q);
+        const history = snap.docs.map((d) => d.data() as BookingRecord);
+        set({ bookingHistory: history.length > 0 ? history : MOCK_HISTORY });
+        return;
+      } catch (e) {
+        console.error('Firestore load error:', e);
+      }
+    }
+    const local = await loadLocalHistory();
+    set({ bookingHistory: local.length > 0 ? local : MOCK_HISTORY });
   },
 }));

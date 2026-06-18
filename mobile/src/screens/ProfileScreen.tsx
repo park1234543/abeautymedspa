@@ -51,8 +51,8 @@ export function ProfileScreen() {
   const SETTINGS_ITEMS = [
     { id: 'notifications', icon: 'notifications-outline' as const, title: t('profile', 'notifications'), onPress: () => {} },
     { id: 'language', icon: 'language-outline' as const, title: t('profile', 'language'), onPress: () => setShowLangModal(true) },
-    { id: 'privacy', icon: 'shield-outline' as const, title: t('profile', 'privacy'), onPress: () => {} },
-    { id: 'terms', icon: 'document-text-outline' as const, title: t('profile', 'terms'), onPress: () => {} },
+    { id: 'privacy', icon: 'shield-outline' as const, title: t('profile', 'privacy'), onPress: () => navigation.navigate('PrivacyPolicy') },
+    { id: 'terms', icon: 'document-text-outline' as const, title: t('profile', 'terms'), onPress: () => navigation.navigate('PrivacyPolicy') },
     { id: 'help', icon: 'help-circle-outline' as const, title: t('profile', 'help'), onPress: () => {} },
   ];
 
