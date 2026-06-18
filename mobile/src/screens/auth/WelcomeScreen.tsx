@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Video, ResizeMode } from 'expo-av';
@@ -71,9 +72,11 @@ export function WelcomeScreen() {
       </View>
 
       <View style={styles.logoArea}>
-        <Text style={styles.logoText}>A Beauty</Text>
-        <View style={styles.logoDivider} />
-        <Text style={styles.logoSub}>MED SPA</Text>
+        <Image
+          source={require('../../../assets/images/logo-transparent.png')}
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
       </View>
 
       <View style={styles.tagRow}>
@@ -166,10 +169,8 @@ const styles = StyleSheet.create({
   langLabel: { fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: 0.5 },
   langLabelActive: { color: '#D4A574' },
 
-  logoArea: { flexDirection: 'row', alignItems: 'center', marginBottom: 32, gap: 12 },
-  logoText: { fontSize: 22, fontWeight: '300', color: COLORS.primary, letterSpacing: 3 },
-  logoDivider: { width: 1, height: 20, backgroundColor: 'rgba(212,165,116,0.45)' },
-  logoSub: { fontSize: 11, fontWeight: '500', color: 'rgba(255,255,255,0.65)', letterSpacing: 6 },
+  logoArea: { alignItems: 'flex-start', marginBottom: 24 },
+  logoImage: { width: 120, height: 120 },
 
   tagRow: { marginBottom: 20 },
   tagPill: {
