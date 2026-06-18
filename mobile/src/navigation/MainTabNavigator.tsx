@@ -16,6 +16,7 @@ import { ServicesScreen } from '../screens/ServicesScreen';
 import { GalleryScreen } from '../screens/GalleryScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { COLORS, SHADOWS } from '../constants/theme';
+import { useTranslation } from '../i18n/useTranslation';
 
 export type MainTabParamList = {
   Home: undefined;
@@ -26,44 +27,26 @@ export type MainTabParamList = {
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-const TABS = [
-  {
-    name: 'Home' as const,
-    label: '홈',
-    icon: 'home',
-    iconOutline: 'home-outline',
-  },
-  {
-    name: 'Services' as const,
-    label: '서비스',
-    icon: 'sparkles',
-    iconOutline: 'sparkles-outline',
-  },
-  {
-    name: 'Gallery' as const,
-    label: '갤러리',
-    icon: 'images',
-    iconOutline: 'images-outline',
-  },
-  {
-    name: 'Profile' as const,
-    label: '프로필',
-    icon: 'person',
-    iconOutline: 'person-outline',
-  },
+const TAB_DEFS = [
+  { name: 'Home' as const, key: 'home', icon: 'home', iconOutline: 'home-outline' },
+  { name: 'Services' as const, key: 'services', icon: 'sparkles', iconOutline: 'sparkles-outline' },
+  { name: 'Gallery' as const, key: 'gallery', icon: 'images', iconOutline: 'images-outline' },
+  { name: 'Profile' as const, key: 'profile', icon: 'person', iconOutline: 'person-outline' },
 ];
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom }]}>
       <View style={styles.tabBarContainer}>
         {state.routes.map((route, index) => {
-          const tab = TABS.find((t) => t.name === route.name);
+          const tab = TAB_DEFS.find((td) => td.name === route.name);
           if (!tab) return null;
 
           const isFocused = state.index === index;
+          const label = t('tabs', tab.key);
 
           const onPress = () => {
             const event = navigation.emit({
@@ -83,10 +66,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               onPress={onPress}
               activeOpacity={0.7}
             >
-              {/* Active indicator dot */}
               {isFocused && <View style={styles.activeDot} />}
 
-              {/* Icon container */}
               <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
                 <Ionicons
                   name={(isFocused ? tab.icon : tab.iconOutline) as any}
@@ -95,9 +76,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 />
               </View>
 
-              {/* Label */}
               <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
-                {tab.label}
+                {label}
               </Text>
             </TouchableOpacity>
           );
