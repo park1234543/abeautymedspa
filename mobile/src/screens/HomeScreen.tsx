@@ -31,8 +31,8 @@ const GOLD_BORDER = 'rgba(212,165,116,0.35)';
 
 const HERO_IMAGES = [
   require('../../assets/images/treatment-1.jpg'),
-  require('../../assets/images/service-skincare.jpg'),
-  require('../../assets/images/service-filler.jpg'),
+  require('../../assets/images/hero-spa-2.jpg'),
+  require('../../assets/images/spa-interior-2.jpg'),
   require('../../assets/images/treatment-2.jpg'),
   require('../../assets/images/service-laser.jpg'),
   require('../../assets/images/spa-interior-1.jpg'),
