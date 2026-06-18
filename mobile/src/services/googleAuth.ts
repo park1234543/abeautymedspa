@@ -12,8 +12,11 @@ export interface GoogleUser {
 }
 
 export function useGoogleAuth() {
+  const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    webClientId,
+    androidClientId: webClientId,
+    iosClientId: webClientId,
     selectAccount: true,
   });
   return { request, response, promptAsync };
