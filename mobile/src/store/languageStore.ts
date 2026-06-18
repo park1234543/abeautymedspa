@@ -1,22 +1,26 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Language } from '../i18n/translations';
+
+const STORAGE_KEY = 'app_language';
 
 interface LanguageState {
   language: Language;
   setLanguage: (lang: Language) => void;
 }
 
-export const useLanguageStore = create<LanguageState>()(
-  persist(
-    (set) => ({
-      language: 'ko',
-      setLanguage: (language) => set({ language }),
-    }),
-    {
-      name: 'language-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+export const useLanguageStore = create<LanguageState>()((set) => ({
+  language: 'ko',
+  setLanguage: (language) => {
+    set({ language });
+    AsyncStorage.setItem(STORAGE_KEY, language).catch(() => {});
+  },
+}));
+
+AsyncStorage.getItem(STORAGE_KEY)
+  .then((lang) => {
+    if (lang && ['ko', 'en', 'es', 'zh'].includes(lang)) {
+      useLanguageStore.setState({ language: lang as Language });
     }
-  )
-);
+  })
+  .catch(() => {});
