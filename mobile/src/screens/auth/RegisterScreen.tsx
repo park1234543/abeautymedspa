@@ -20,7 +20,7 @@ import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
 import { useTranslation } from '../../i18n/useTranslation';
-import { useGoogleAuth, fetchGoogleUserInfo } from '../../services/googleAuth';
+import { useGoogleAuth, fetchGoogleUserInfo, isExpoGo } from '../../services/googleAuth';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
@@ -69,8 +69,12 @@ export function RegisterScreen() {
   };
 
   const handleGoogleRegister = async () => {
-    if (!GOOGLE_CLIENT_ID) {
-      Alert.alert('Google 로그인', 'Google 로그인이 아직 설정되지 않았습니다.');
+    if (isExpoGo) {
+      Alert.alert(
+        'Google 로그인',
+        'Expo Go에서는 Google 로그인이 지원되지 않습니다.\n\n실제 앱 빌드(APK/IPA) 설치 후 사용하거나,\n이메일로 가입해 주세요.',
+        [{ text: '확인' }]
+      );
       return;
     }
     setIsGoogleLoading(true);

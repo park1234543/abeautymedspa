@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -18,7 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
-import { useGoogleAuth, fetchGoogleUserInfo } from '../../services/googleAuth';
+import { useGoogleAuth, fetchGoogleUserInfo, isExpoGo } from '../../services/googleAuth';
 import { useTranslation } from '../../i18n/useTranslation';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -70,6 +71,14 @@ export function LoginScreen() {
   };
 
   const handleGoogleLogin = async () => {
+    if (isExpoGo) {
+      Alert.alert(
+        'Google 로그인',
+        'Expo Go에서는 Google 로그인이 지원되지 않습니다.\n\n실제 앱 빌드(APK/IPA) 설치 후 사용하거나,\n이메일로 로그인해 주세요.',
+        [{ text: '확인' }]
+      );
+      return;
+    }
     if (!request) { setError('Google 로그인 준비 중...'); return; }
     setIsGoogleLoading(true);
     setError('');
