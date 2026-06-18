@@ -45,8 +45,12 @@ export function RegisterScreen() {
 
   React.useEffect(() => {
     if (response?.type === 'success') {
-      const { access_token } = response.params;
-      handleGoogleSuccess(access_token);
+      const accessToken = response.authentication?.accessToken ?? (response as any).params?.access_token;
+      if (accessToken) {
+        handleGoogleSuccess(accessToken);
+      } else {
+        setIsGoogleLoading(false);
+      }
     } else if (response?.type === 'error' || response?.type === 'dismiss' || response?.type === 'cancel') {
       setIsGoogleLoading(false);
     }

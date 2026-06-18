@@ -42,8 +42,13 @@ export function LoginScreen() {
 
   useEffect(() => {
     if (response?.type === 'success') {
-      const { access_token } = response.params;
-      handleGoogleSuccess(access_token);
+      const accessToken = response.authentication?.accessToken ?? (response as any).params?.access_token;
+      if (accessToken) {
+        handleGoogleSuccess(accessToken);
+      } else {
+        setError(t('login', 'errorInvalid'));
+        setIsGoogleLoading(false);
+      }
     } else if (response?.type === 'error') {
       setError('Google ' + t('login', 'title') + ' error: ' + (response.error?.message || t('login', 'errorInvalid')));
       setIsGoogleLoading(false);
@@ -65,7 +70,7 @@ export function LoginScreen() {
   };
 
   const handleGoogleLogin = async () => {
-    if (!GOOGLE_CLIENT_ID) { setError('Google login not configured.'); return; }
+    if (!request) { setError('Google 로그인 준비 중...'); return; }
     setIsGoogleLoading(true);
     setError('');
     await promptAsync();
