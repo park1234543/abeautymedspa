@@ -1,10 +1,12 @@
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 
 WebBrowser.maybeCompleteAuthSession();
 
-export const isExpoGo = Constants.appOwnership === 'expo';
+export const isExpoGo =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient ||
+  Constants.appOwnership === 'expo';
 
 export interface GoogleUser {
   id: string;
@@ -14,12 +16,12 @@ export interface GoogleUser {
   accessToken: string;
 }
 
-const PLACEHOLDER = 'expo-go-placeholder';
+const PLACEHOLDER = 'placeholder.apps.googleusercontent.com';
 
 export function useGoogleAuth() {
-  const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || (isExpoGo ? PLACEHOLDER : undefined);
-  const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || webClientId || (isExpoGo ? PLACEHOLDER : undefined);
-  const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || webClientId || (isExpoGo ? PLACEHOLDER : undefined);
+  const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || PLACEHOLDER;
+  const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || webClientId;
+  const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || webClientId;
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId,
