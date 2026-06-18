@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Video, ResizeMode } from 'expo-av';
@@ -69,14 +68,6 @@ export function WelcomeScreen() {
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
-
-      <View style={styles.logoArea}>
-        <Image
-          source={require('../../../assets/images/logo-transparent.png')}
-          style={styles.logoImage}
-          resizeMode="contain"
-        />
       </View>
 
       <View style={styles.tagRow}>
@@ -168,9 +159,6 @@ const styles = StyleSheet.create({
   langFlag: { fontSize: 13 },
   langLabel: { fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: 0.5 },
   langLabelActive: { color: '#D4A574' },
-
-  logoArea: { alignItems: 'flex-start', marginBottom: 24 },
-  logoImage: { width: 120, height: 120 },
 
   tagRow: { marginBottom: 20 },
   tagPill: {
