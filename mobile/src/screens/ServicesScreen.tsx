@@ -15,6 +15,7 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { SERVICES } from '../constants/api';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -34,8 +35,13 @@ export function ServicesScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('services', 'title')}</Text>
-        <Text style={styles.headerSubtitle}>{t('services', 'subtitle')}</Text>
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={styles.headerTitle}>{t('services', 'title')}</Text>
+            <Text style={styles.headerSubtitle}>{t('services', 'subtitle')}</Text>
+          </View>
+          <LanguageSelector />
+        </View>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContainer}>
@@ -89,6 +95,7 @@ export function ServicesScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   header: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text },
   headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: SPACING.xs },
   categoriesContainer: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.sm, gap: SPACING.sm },

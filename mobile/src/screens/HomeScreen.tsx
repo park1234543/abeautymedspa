@@ -19,6 +19,7 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { SERVICES, DOCTORS } from '../constants/api';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 const { width } = Dimensions.get('window');
 
@@ -56,9 +57,12 @@ export function HomeScreen() {
             <Text style={styles.heroBrandEn}>A Beauty</Text>
             <Text style={styles.heroBrandSub}>M E D  S P A</Text>
           </View>
-          <TouchableOpacity style={styles.heroTopBtn}>
-            <Ionicons name="notifications-outline" size={22} color="rgba(255,255,255,0.8)" />
-          </TouchableOpacity>
+          <View style={styles.heroTopRight}>
+            <LanguageSelector tint="light" />
+            <TouchableOpacity style={styles.heroTopBtn}>
+              <Ionicons name="notifications-outline" size={22} color="rgba(255,255,255,0.8)" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.heroBody}>
@@ -234,7 +238,8 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   hero: { height: 560, justifyContent: 'space-between' },
-  heroTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingHorizontal: 28, paddingTop: 16 },
+  heroTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 28, paddingTop: 16 },
+  heroTopRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   heroBrandEn: { fontSize: 22, fontWeight: '300', color: GOLD, letterSpacing: 4 },
   heroBrandSub: { fontSize: 10, fontWeight: '400', color: 'rgba(255,255,255,0.55)', letterSpacing: 6, marginTop: 2 },
   heroTopBtn: { width: 38, height: 38, borderRadius: 19, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)', justifyContent: 'center', alignItems: 'center' },

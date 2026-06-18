@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 const { width } = Dimensions.get('window');
 const imageSize = (width - SPACING.lg * 2 - SPACING.sm * 2) / 3;
@@ -51,8 +52,13 @@ export function GalleryScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('gallery', 'title')}</Text>
-        <Text style={styles.headerSubtitle}>{t('gallery', 'subtitle')}</Text>
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={styles.headerTitle}>{t('gallery', 'title')}</Text>
+            <Text style={styles.headerSubtitle}>{t('gallery', 'subtitle')}</Text>
+          </View>
+          <LanguageSelector />
+        </View>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContainer}>
@@ -96,6 +102,7 @@ export function GalleryScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   header: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text },
   headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: SPACING.xs },
   categoriesContainer: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.sm, gap: SPACING.sm },

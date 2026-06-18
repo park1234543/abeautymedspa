@@ -20,6 +20,7 @@ import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
 import { useLanguageStore } from '../store/languageStore';
 import { Language, LANGUAGE_FLAGS, LANGUAGE_NAMES } from '../i18n/translations';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -70,6 +71,9 @@ export function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Profile Header */}
+        <View style={styles.profileTopRow}>
+          <LanguageSelector />
+        </View>
         <View style={styles.profileHeader}>
           <View style={styles.avatarWrap}>
             <Text style={styles.avatarText}>{(user?.name || '?').charAt(0).toUpperCase()}</Text>
@@ -200,7 +204,8 @@ export function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  profileHeader: { flexDirection: 'row', alignItems: 'center', padding: SPACING.lg, backgroundColor: COLORS.card, marginHorizontal: SPACING.lg, marginTop: SPACING.md, borderRadius: RADIUS.lg, ...SHADOWS.small },
+  profileTopRow: { flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: SPACING.lg, paddingTop: SPACING.md, paddingBottom: SPACING.xs },
+  profileHeader: { flexDirection: 'row', alignItems: 'center', padding: SPACING.lg, backgroundColor: COLORS.card, marginHorizontal: SPACING.lg, marginTop: SPACING.xs, borderRadius: RADIUS.lg, ...SHADOWS.small },
   avatarWrap: { width: 70, height: 70, borderRadius: 35, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center' },
   avatarText: { fontSize: 28, fontWeight: '700', color: COLORS.textWhite },
   profileInfo: { flex: 1, marginLeft: SPACING.md },
