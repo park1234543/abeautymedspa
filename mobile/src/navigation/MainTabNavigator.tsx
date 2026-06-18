@@ -37,52 +37,51 @@ const TAB_DEFS = [
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const bottomPad = Math.max(insets.bottom, Platform.OS === 'android' ? 8 : 0);
 
   return (
-    <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom }]}>
-      <View style={styles.tabBarContainer}>
-        {state.routes.map((route, index) => {
-          const tab = TAB_DEFS.find((td) => td.name === route.name);
-          if (!tab) return null;
+    <View style={[styles.wrapper, { paddingBottom: bottomPad }]}>
+      {state.routes.map((route, index) => {
+        const tab = TAB_DEFS.find((td) => td.name === route.name);
+        if (!tab) return null;
 
-          const isFocused = state.index === index;
-          const label = t('tabs', tab.key);
+        const isFocused = state.index === index;
+        const label = t('tabs', tab.key);
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              style={styles.tabItem}
-              onPress={onPress}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
-                <Ionicons
-                  name={(isFocused ? tab.icon : tab.iconOutline) as any}
-                  size={22}
-                  color={isFocused ? COLORS.primary : '#B0A090'}
-                />
-              </View>
+        return (
+          <TouchableOpacity
+            key={route.key}
+            style={styles.tabItem}
+            onPress={onPress}
+            activeOpacity={0.7}
+          >
+            {isFocused && <View style={styles.topBar} />}
 
-              <Text numberOfLines={1} style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
-                {label}
-              </Text>
+            <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
+              <Ionicons
+                name={(isFocused ? tab.icon : tab.iconOutline) as any}
+                size={22}
+                color={isFocused ? COLORS.primary : '#B0A090'}
+              />
+            </View>
 
-              {isFocused && <View style={styles.activeDot} />}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+            <Text style={[styles.label, isFocused && styles.labelActive]}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }
@@ -102,52 +101,45 @@ export function MainTabNavigator() {
 }
 
 const styles = StyleSheet.create({
-  tabBarWrapper: {
+  wrapper: {
+    flexDirection: 'row',
     backgroundColor: '#FDFAF7',
     borderTopWidth: 1,
     borderTopColor: 'rgba(212,165,116,0.15)',
     ...SHADOWS.medium,
   },
-  tabBarContainer: {
-    flexDirection: 'row',
-    paddingTop: 6,
-    paddingBottom: Platform.OS === 'ios' ? 4 : 10,
-    paddingHorizontal: 4,
-  },
   tabItem: {
     flex: 1,
+    height: 64,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
   },
-  activeDot: {
-    width: 20,
+  topBar: {
+    position: 'absolute',
+    top: 0,
+    width: 28,
     height: 3,
     borderRadius: 2,
     backgroundColor: '#D4A574',
-    marginTop: 4,
   },
   iconWrap: {
     width: 44,
-    height: 32,
+    height: 30,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
   },
   iconWrapActive: {
     backgroundColor: 'rgba(212,165,116,0.12)',
   },
-  tabLabel: {
+  label: {
     fontSize: 11,
     fontWeight: '500',
     color: '#B0A090',
-    letterSpacing: 0.2,
     textAlign: 'center',
-    includeFontPadding: false,
-    marginTop: 3,
+    marginTop: 2,
   },
-  tabLabelActive: {
+  labelActive: {
     color: '#D4A574',
     fontWeight: '700',
   },
