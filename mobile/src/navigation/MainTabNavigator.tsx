@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -62,21 +62,12 @@ export function MainTabNavigator() {
               color={color}
             />
           ),
-          tabBarLabel: ({ color }) => (
-            <Text
-              allowFontScaling={false}
-              numberOfLines={1}
-              style={{
-                fontSize: 11,
-                lineHeight: 14,
-                color,
-                textAlign: 'center',
-                marginTop: 2,
-              }}
-            >
-              {label}
-            </Text>
-          ),
+          tabBarLabel: label,
+          tabBarLabelStyle: {
+            fontSize: 11,
+            marginTop: 2,
+            includeFontPadding: false,
+          },
         };
       }}
     >
