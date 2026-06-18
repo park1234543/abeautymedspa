@@ -20,7 +20,7 @@ import { ko, enUS, es, zhCN } from 'date-fns/locale';
 
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookingStore } from '../store/bookingStore';
-import { SERVICES, DOCTORS } from '../constants/api';
+import { SERVICES, DOCTORS, getServiceName, getDoctorName, getDoctorSpecialty, LangKey } from '../constants/api';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
 import { useLanguageStore } from '../store/languageStore';
@@ -86,8 +86,7 @@ export function BookingScreen() {
           >
             <Image source={service.image} style={styles.selectionImage} />
             <View style={styles.selectionContent}>
-              <Text style={styles.selectionTitle}>{service.name}</Text>
-              <Text style={styles.selectionSubtitle}>{service.nameEn}</Text>
+              <Text style={styles.selectionTitle}>{getServiceName(service, language as LangKey)}</Text>
               <Text style={styles.selectionPrice}>${service.price}</Text>
             </View>
             {selectedService?.id === service.id && <Ionicons name="checkmark-circle" size={24} color={COLORS.primary} />}
@@ -109,8 +108,8 @@ export function BookingScreen() {
           >
             <Image source={doctor.image} style={styles.doctorImage} />
             <View style={styles.doctorInfo}>
-              <Text style={styles.doctorName}>{doctor.nameKo}</Text>
-              <Text style={styles.doctorSpecialty}>{doctor.specialty}</Text>
+              <Text style={styles.doctorName}>{getDoctorName(doctor, language as LangKey)}</Text>
+              <Text style={styles.doctorSpecialty}>{getDoctorSpecialty(doctor, language as LangKey)}</Text>
               <Text style={styles.doctorExperience}>{doctor.experience} {t('booking', 'career')}</Text>
             </View>
             {selectedDoctor?.id === doctor.id && <Ionicons name="checkmark-circle" size={24} color={COLORS.primary} />}
@@ -198,8 +197,8 @@ export function BookingScreen() {
       <Text style={styles.stepTitle}>{t('booking', 'confirmBooking')}</Text>
       <View style={styles.summaryContainer}>
         {[
-          [t('booking', 'service'), selectedService?.name],
-          [t('booking', 'doctor'), selectedDoctor?.nameKo],
+          [t('booking', 'service'), selectedService ? getServiceName(selectedService, language as LangKey) : ''],
+          [t('booking', 'doctor'), selectedDoctor ? getDoctorName(selectedDoctor, language as LangKey) : ''],
           [t('booking', 'date'), selectedDate ? format(selectedDate, 'yyyy-MM-dd (EEE)', { locale: dateLocale }) : ''],
           [t('booking', 'time'), selectedTime],
           [t('booking', 'customer'), customerInfo.name],

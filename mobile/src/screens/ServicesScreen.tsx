@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RootStackParamList } from '../navigation/RootNavigator';
-import { SERVICES } from '../constants/api';
+import { SERVICES, getServiceName, getServiceDesc, LangKey } from '../constants/api';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
 import { LanguageSelector } from '../components/LanguageSelector';
@@ -23,7 +23,7 @@ export function ServicesScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const CATEGORIES = [
     { id: 'all', name: t('services', 'all') },
@@ -66,12 +66,11 @@ export function ServicesScreen() {
             <View style={styles.serviceContent}>
               <View style={styles.serviceHeader}>
                 <View>
-                  <Text style={styles.serviceName}>{service.name}</Text>
-                  <Text style={styles.serviceNameEn}>{service.nameEn}</Text>
+                  <Text style={styles.serviceName}>{getServiceName(service, language as LangKey)}</Text>
                 </View>
                 <Text style={styles.servicePrice}>${service.price}</Text>
               </View>
-              <Text style={styles.serviceDescription} numberOfLines={2}>{service.description}</Text>
+              <Text style={styles.serviceDescription} numberOfLines={2}>{getServiceDesc(service, language as LangKey)}</Text>
               <View style={styles.serviceFooter}>
                 <View style={styles.serviceDuration}>
                   <Text style={styles.serviceDurationText}>{service.duration}{t('services', 'min')}</Text>

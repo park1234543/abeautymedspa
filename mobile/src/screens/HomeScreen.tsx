@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../navigation/RootNavigator';
-import { SERVICES, DOCTORS } from '../constants/api';
+import { SERVICES, DOCTORS, getServiceName, getDoctorName, getDoctorSpecialty, LangKey } from '../constants/api';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
 import { useTranslation } from '../i18n/useTranslation';
 import { LanguageSelector } from '../components/LanguageSelector';
@@ -32,7 +32,7 @@ const GOLD_BORDER = 'rgba(212,165,116,0.35)';
 export function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   return (
     <ScrollView
@@ -153,8 +153,7 @@ export function HomeScreen() {
               <Image source={svc.image} style={styles.svcImage} />
               <LinearGradient colors={['transparent', 'rgba(0,0,0,0.72)']} style={styles.svcOverlay} />
               <View style={styles.svcContent}>
-                <Text style={styles.svcNameEn}>{svc.nameEn.toUpperCase()}</Text>
-                <Text style={styles.svcName}>{svc.name}</Text>
+                <Text style={styles.svcName}>{getServiceName(svc, language as LangKey)}</Text>
                 <View style={styles.svcFooter}>
                   <Text style={styles.svcDuration}>{svc.duration}min</Text>
                   <Text style={styles.svcPrice}>${svc.price}</Text>
@@ -181,8 +180,8 @@ export function HomeScreen() {
                 <Image source={doc.image} style={styles.docImage} />
                 <View style={styles.docBadge}><Text style={styles.docBadgeText}>MD</Text></View>
               </View>
-              <Text style={styles.docName}>{doc.nameKo}</Text>
-              <Text style={styles.docSpecialty}>{doc.specialty}</Text>
+              <Text style={styles.docName}>{getDoctorName(doc, language as LangKey)}</Text>
+              <Text style={styles.docSpecialty}>{getDoctorSpecialty(doc, language as LangKey)}</Text>
               <View style={styles.docExpRow}>
                 <Ionicons name="ribbon-outline" size={12} color={GOLD} />
                 <Text style={styles.docExp}>{doc.experience} {t('home', 'career')}</Text>

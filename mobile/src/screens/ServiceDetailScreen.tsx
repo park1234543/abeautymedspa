@@ -14,8 +14,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../navigation/RootNavigator';
-import { SERVICES } from '../constants/api';
+import { SERVICES, getServiceName, getServiceDesc, LangKey } from '../constants/api';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
+import { useTranslation } from '../i18n/useTranslation';
 
 const { width } = Dimensions.get('window');
 
@@ -27,12 +28,13 @@ export function ServiceDetailScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
 
+  const { t, language } = useTranslation();
   const service = SERVICES.find((s) => s.id === route.params.serviceId);
 
   if (!service) {
     return (
       <View style={styles.container}>
-        <Text>서비스를 찾을 수 없습니다.</Text>
+        <Text>{t('services', 'title')}</Text>
       </View>
     );
   }
@@ -50,93 +52,60 @@ export function ServiceDetailScreen() {
         <View style={styles.content}>
           <View style={styles.header}>
             <View>
-              <Text style={styles.name}>{service.name}</Text>
-              <Text style={styles.nameEn}>{service.nameEn}</Text>
+              <Text style={styles.name}>{getServiceName(service, language as LangKey)}</Text>
             </View>
             <Text style={styles.price}>${service.price}</Text>
           </View>
 
-          <Text style={styles.description}>{service.description}</Text>
+          <Text style={styles.description}>{getServiceDesc(service, language as LangKey)}</Text>
 
           {/* Info Cards */}
           <View style={styles.infoCards}>
             <View style={styles.infoCard}>
               <Ionicons name="time-outline" size={24} color={COLORS.primary} />
-              <Text style={styles.infoLabel}>시술 시간</Text>
-              <Text style={styles.infoValue}>{service.duration}분</Text>
+              <Text style={styles.infoLabel}>{t('serviceDetail', 'duration')}</Text>
+              <Text style={styles.infoValue}>{service.duration}{t('services', 'min')}</Text>
             </View>
             <View style={styles.infoCard}>
               <Ionicons name="refresh-outline" size={24} color={COLORS.primary} />
-              <Text style={styles.infoLabel}>회복 기간</Text>
-              <Text style={styles.infoValue}>1-3일</Text>
+              <Text style={styles.infoLabel}>{t('serviceDetail', 'recovery')}</Text>
+              <Text style={styles.infoValue}>{t('serviceDetail', 'recoveryVal')}</Text>
             </View>
             <View style={styles.infoCard}>
               <Ionicons name="calendar-outline" size={24} color={COLORS.primary} />
-              <Text style={styles.infoLabel}>유지 기간</Text>
-              <Text style={styles.infoValue}>3-6개월</Text>
+              <Text style={styles.infoLabel}>{t('serviceDetail', 'lasting')}</Text>
+              <Text style={styles.infoValue}>{t('serviceDetail', 'lastingVal')}</Text>
             </View>
           </View>
 
           {/* Benefits */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>시술 효과</Text>
+            <Text style={styles.sectionTitle}>{t('serviceDetail', 'benefits')}</Text>
             <View style={styles.benefitsList}>
-              <View style={styles.benefitItem}>
-                <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
-                <Text style={styles.benefitText}>즉각적인 효과 확인 가능</Text>
-              </View>
-              <View style={styles.benefitItem}>
-                <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
-                <Text style={styles.benefitText}>최소 다운타임</Text>
-              </View>
-              <View style={styles.benefitItem}>
-                <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
-                <Text style={styles.benefitText}>자연스러운 결과</Text>
-              </View>
-              <View style={styles.benefitItem}>
-                <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
-                <Text style={styles.benefitText}>FDA 승인 제품 사용</Text>
-              </View>
+              {(['benefit1','benefit2','benefit3','benefit4'] as const).map((k) => (
+                <View key={k} style={styles.benefitItem}>
+                  <Ionicons name="checkmark-circle" size={20} color={COLORS.success} />
+                  <Text style={styles.benefitText}>{t('serviceDetail', k)}</Text>
+                </View>
+              ))}
             </View>
           </View>
 
           {/* Process */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>시술 과정</Text>
+            <Text style={styles.sectionTitle}>{t('serviceDetail', 'process')}</Text>
             <View style={styles.processList}>
-              <View style={styles.processItem}>
-                <View style={styles.processNumber}>
-                  <Text style={styles.processNumberText}>1</Text>
+              {[1,2,3].map((n) => (
+                <View key={n} style={styles.processItem}>
+                  <View style={styles.processNumber}>
+                    <Text style={styles.processNumberText}>{n}</Text>
+                  </View>
+                  <View style={styles.processContent}>
+                    <Text style={styles.processTitle}>{t('serviceDetail', `step${n}Title` as any)}</Text>
+                    <Text style={styles.processDescription}>{t('serviceDetail', `step${n}Desc` as any)}</Text>
+                  </View>
                 </View>
-                <View style={styles.processContent}>
-                  <Text style={styles.processTitle}>상담</Text>
-                  <Text style={styles.processDescription}>
-                    전문 상담원과 함께 피부 상태를 분석하고 맞춤 시술 계획을 수립합니다.
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.processItem}>
-                <View style={styles.processNumber}>
-                  <Text style={styles.processNumberText}>2</Text>
-                </View>
-                <View style={styles.processContent}>
-                  <Text style={styles.processTitle}>시술</Text>
-                  <Text style={styles.processDescription}>
-                    전문 의료진이 안전하고 정확하게 시술을 진행합니다.
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.processItem}>
-                <View style={styles.processNumber}>
-                  <Text style={styles.processNumberText}>3</Text>
-                </View>
-                <View style={styles.processContent}>
-                  <Text style={styles.processTitle}>사후 관리</Text>
-                  <Text style={styles.processDescription}>
-                    시술 후 관리 방법을 안내하고 필요시 후속 관리를 제공합니다.
-                  </Text>
-                </View>
-              </View>
+              ))}
             </View>
           </View>
         </View>
@@ -145,7 +114,7 @@ export function ServiceDetailScreen() {
       {/* Bottom CTA */}
       <View style={[styles.bottomCta, { paddingBottom: insets.bottom + 16 }]}>
         <View style={styles.priceContainer}>
-          <Text style={styles.priceLabel}>가격</Text>
+          <Text style={styles.priceLabel}>{t('serviceDetail', 'price')}</Text>
           <Text style={styles.priceValue}>${service.price}</Text>
         </View>
         <TouchableOpacity
@@ -153,7 +122,7 @@ export function ServiceDetailScreen() {
           onPress={() => navigation.navigate('Booking')}
           activeOpacity={0.8}
         >
-          <Text style={styles.bookButtonText}>예약하기</Text>
+          <Text style={styles.bookButtonText}>{t('serviceDetail', 'bookNow')}</Text>
         </TouchableOpacity>
       </View>
     </View>

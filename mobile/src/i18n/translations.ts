@@ -244,6 +244,8 @@ const translations = {
     filler: { ko: '필러', en: 'Filler', es: 'Relleno', zh: '填充剂' },
     laser: { ko: '레이저', en: 'Laser', es: 'Láser', zh: '激光' },
     skincare: { ko: '스킨케어', en: 'Skincare', es: 'Cuidado de la piel', zh: '护肤' },
+    detailTitle: { ko: '보톡스 시술', en: 'Botox Treatment', es: 'Tratamiento de Bótox', zh: '肉毒素治疗' },
+    detailDesc: { ko: '전문 의료진의 정교한 시술로 자연스러운 결과를 보여드립니다.', en: 'Natural-looking results through precise treatment by our expert medical team.', es: 'Resultados naturales a través de un tratamiento preciso de nuestro equipo médico experto.', zh: '由专业医疗团队精准治疗，呈现自然效果。' },
   },
 
   /* ─── PROFILE ─── */
@@ -275,6 +277,7 @@ const translations = {
     cancel: { ko: '취소', en: 'Cancel', es: 'Cancelar', zh: '取消' },
     version: { ko: '버전', en: 'Version', es: 'Versión', zh: '版本' },
     selectLanguage: { ko: '언어 선택', en: 'Select Language', es: 'Seleccionar Idioma', zh: '选择语言' },
+    defaultName: { ko: '사용자', en: 'User', es: 'Usuario', zh: '用户' },
   },
 
   /* ─── BOOKING ─── */
@@ -312,6 +315,64 @@ const translations = {
     alertTitle: { ko: '알림', en: 'Notice', es: 'Aviso', zh: '提示' },
     alertMsg: { ko: '모든 필수 정보를 입력해주세요.', en: 'Please fill all required fields.', es: 'Por favor completa todos los campos requeridos.', zh: '请填写所有必填项。' },
     career: { ko: '경력', en: 'exp.', es: 'exp.', zh: '经验' },
+  },
+
+  /* ─── BOOKING CONFIRMATION ─── */
+  bookingConfirm: {
+    title:    { ko: '예약이 완료되었습니다', en: 'Booking Confirmed!', es: '¡Reserva Confirmada!', zh: '预约已确认！' },
+    subtitle: { ko: '예약 확인 이메일이 발송되었습니다.\n궁금한 점이 있으시면 언제든 연락주세요.', en: 'A confirmation email has been sent.\nFeel free to contact us anytime.', es: 'Se ha enviado un correo de confirmación.\nNo dude en contactarnos en cualquier momento.', zh: '确认邮件已发送。\n如有疑问，请随时联系我们。' },
+    notice:   { ko: '예약 변경 또는 취소는 최소 24시간 전에 연락해 주세요.', en: 'Please contact us at least 24 hours in advance for changes or cancellations.', es: 'Contáctenos con al menos 24 horas de anticipación para cambios o cancelaciones.', zh: '更改或取消预约请提前至少24小时联系我们。' },
+    goHome:   { ko: '홈으로', en: 'Go Home', es: 'Ir al Inicio', zh: '返回主页' },
+    myBookings: { ko: '내 예약 확인', en: 'My Bookings', es: 'Mis Reservas', zh: '我的预约' },
+  },
+
+  /* ─── MY BOOKINGS ─── */
+  myBookings: {
+    title:        { ko: '내 예약', en: 'My Bookings', es: 'Mis Reservas', zh: '我的预约' },
+    tabUpcoming:  { ko: '예정', en: 'Upcoming', es: 'Próximas', zh: '即将到来' },
+    tabCompleted: { ko: '완료', en: 'Completed', es: 'Completadas', zh: '已完成' },
+    tabCancelled: { ko: '취소', en: 'Cancelled', es: 'Canceladas', zh: '已取消' },
+    statusUpcoming:  { ko: '예정', en: 'Upcoming', es: 'Próxima', zh: '即将' },
+    statusCompleted: { ko: '완료', en: 'Completed', es: 'Completada', zh: '已完成' },
+    statusCancelled: { ko: '취소', en: 'Cancelled', es: 'Cancelada', zh: '已取消' },
+    emptyUpcoming:   { ko: '예정된 예약이 없어요', en: 'No upcoming bookings', es: 'Sin reservas próximas', zh: '暂无即将到来的预约' },
+    emptyCompleted:  { ko: '완료된 시술 내역이 없어요', en: 'No completed treatments', es: 'Sin tratamientos completados', zh: '暂无已完成的治疗' },
+    emptyCancelled:  { ko: '취소된 예약이 없어요', en: 'No cancelled bookings', es: 'Sin reservas canceladas', zh: '暂无已取消的预约' },
+    cancelBtn:    { ko: '예약 취소', en: 'Cancel', es: 'Cancelar', zh: '取消预约' },
+    changeBtn:    { ko: '일정 변경', en: 'Reschedule', es: 'Reprogramar', zh: '更改日程' },
+    rebookBtn:    { ko: '재예약', en: 'Rebook', es: 'Reservar de nuevo', zh: '再次预约' },
+    alertTitle:   { ko: '예약 취소', en: 'Cancel Booking', es: 'Cancelar Reserva', zh: '取消预约' },
+    alertMsg:     { ko: '정말 예약을 취소하시겠습니까?\n취소 후 복구가 어렵습니다.', en: 'Are you sure you want to cancel?\nThis action cannot be undone.', es: '¿Está seguro de que desea cancelar?\nEsta acción no se puede deshacer.', zh: '确定要取消预约吗？\n此操作无法撤销。' },
+    alertBack:    { ko: '돌아가기', en: 'Go Back', es: 'Volver', zh: '返回' },
+    alertConfirm: { ko: '취소하기', en: 'Yes, Cancel', es: 'Sí, Cancelar', zh: '确认取消' },
+    cancelDone:   { ko: '예약이 취소되었습니다.', en: 'Booking cancelled.', es: 'Reserva cancelada.', zh: '预约已取消。' },
+    ok:           { ko: '완료', en: 'OK', es: 'OK', zh: '好的' },
+    min:          { ko: '분', en: 'min', es: 'min', zh: '分钟' },
+    totalLabel:   { ko: '누적 금액', en: 'Total Spent', es: 'Total Gastado', zh: '累计消费' },
+    newBooking:   { ko: '새 예약', en: 'New Booking', es: 'Nueva Reserva', zh: '新预约' },
+  },
+
+  /* ─── SERVICE DETAIL ─── */
+  serviceDetail: {
+    duration:    { ko: '시술 시간',  en: 'Duration',   es: 'Duración',     zh: '治疗时间' },
+    recovery:    { ko: '회복 기간',  en: 'Recovery',   es: 'Recuperación', zh: '恢复期' },
+    recoveryVal: { ko: '1-3일',      en: '1-3 days',   es: '1-3 días',     zh: '1-3天' },
+    lasting:     { ko: '유지 기간',  en: 'Lasting',    es: 'Duración',     zh: '持续时间' },
+    lastingVal:  { ko: '3-6개월',    en: '3-6 months', es: '3-6 meses',    zh: '3-6个月' },
+    benefits:    { ko: '시술 효과',  en: 'Benefits',   es: 'Beneficios',   zh: '治疗效果' },
+    benefit1:    { ko: '즉각적인 효과 확인 가능', en: 'Immediate visible results', es: 'Resultados visibles inmediatos', zh: '立即可见效果' },
+    benefit2:    { ko: '최소 다운타임',           en: 'Minimal downtime',          es: 'Tiempo de inactividad mínimo', zh: '极短恢复期' },
+    benefit3:    { ko: '자연스러운 결과',         en: 'Natural-looking results',   es: 'Resultados naturales',         zh: '自然效果' },
+    benefit4:    { ko: 'FDA 승인 제품 사용',      en: 'FDA-approved products',     es: 'Productos aprobados por FDA',  zh: '使用FDA批准产品' },
+    process:     { ko: '시술 과정',  en: 'Process',    es: 'Proceso',      zh: '治疗流程' },
+    step1Title:  { ko: '상담',       en: 'Consultation', es: 'Consulta',   zh: '咨询' },
+    step1Desc:   { ko: '전문 상담원과 함께 피부 상태를 분석하고 맞춤 시술 계획을 수립합니다.', en: 'Analyze your skin with our specialist and create a personalized treatment plan.', es: 'Analice su piel con nuestro especialista y cree un plan de tratamiento personalizado.', zh: '与专家分析皮肤状况，制定个性化治疗方案。' },
+    step2Title:  { ko: '시술',       en: 'Treatment',  es: 'Tratamiento',  zh: '治疗' },
+    step2Desc:   { ko: '전문 의료진이 안전하고 정확하게 시술을 진행합니다.', en: 'Our specialists perform the procedure safely and precisely.', es: 'Nuestros especialistas realizan el procedimiento de forma segura y precisa.', zh: '专业医师安全精准地进行治疗。' },
+    step3Title:  { ko: '사후 관리',  en: 'Aftercare',  es: 'Cuidado posterior', zh: '术后护理' },
+    step3Desc:   { ko: '시술 후 관리 방법을 안내하고 필요시 후속 관리를 제공합니다.', en: 'We guide you through aftercare and provide follow-up support as needed.', es: 'Le guiamos en el cuidado posterior y brindamos soporte de seguimiento según sea necesario.', zh: '指导您进行术后护理，并根据需要提供后续支持。' },
+    price:       { ko: '가격',       en: 'Price',      es: 'Precio',       zh: '价格' },
+    bookNow:     { ko: '예약하기',   en: 'Book Now',   es: 'Reservar',     zh: '立即预约' },
   },
 } as const;
 

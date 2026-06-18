@@ -9,11 +9,13 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { COLORS, FONTS, SPACING } from '../constants/theme';
+import { useTranslation } from '../i18n/useTranslation';
 
 const { width } = Dimensions.get('window');
 
 export function GalleryDetailScreen() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
@@ -23,10 +25,8 @@ export function GalleryDetailScreen() {
         resizeMode="contain"
       />
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>보톡스 시술</Text>
-        <Text style={styles.description}>
-          전문 의료진의 정교한 시술로 자연스러운 결과를 보여드립니다.
-        </Text>
+        <Text style={styles.title}>{t('gallery', 'detailTitle')}</Text>
+        <Text style={styles.description}>{t('gallery', 'detailDesc')}</Text>
       </View>
     </View>
   );

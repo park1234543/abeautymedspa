@@ -79,7 +79,7 @@ export function ProfileScreen() {
             <Text style={styles.avatarText}>{(user?.name || '?').charAt(0).toUpperCase()}</Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{user?.name || '사용자'}</Text>
+            <Text style={styles.profileName}>{user?.name || t('profile', 'defaultName')}</Text>
             <Text style={styles.profileEmail}>{user?.email || 'user@example.com'}</Text>
           </View>
           <TouchableOpacity style={styles.editButton}>

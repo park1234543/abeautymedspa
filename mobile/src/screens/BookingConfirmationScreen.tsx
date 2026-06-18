@@ -10,20 +10,27 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { format } from 'date-fns';
+import { ko, enUS, es, zhCN } from 'date-fns/locale';
+
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookingStore, BookingRecord } from '../store/bookingStore';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
+import { useTranslation } from '../i18n/useTranslation';
+import { getServiceName, getDoctorName, LangKey } from '../constants/api';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-const days = ['일', '월', '화', '수', '목', '금', '토'];
-function formatDate(d: Date) {
-  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+const LOCALE_MAP: Record<string, Locale> = { ko, en: enUS, es, zh: zhCN };
+function formatDate(d: Date, lang: string) {
+  const locale = LOCALE_MAP[lang] || enUS;
+  return format(d, 'PPP (EEE)', { locale });
 }
 
 export function BookingConfirmationScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
+  const { t, language } = useTranslation();
   const {
     selectedService,
     selectedDoctor,
@@ -51,9 +58,9 @@ export function BookingConfirmationScreen() {
     }
   }, []);
 
-  const dateLabel = selectedDate ? formatDate(selectedDate) : '날짜 미정';
-  const serviceLabel = selectedService ? `${selectedService.name}` : '서비스 미정';
-  const doctorLabel = selectedDoctor ? selectedDoctor.nameKo : '의사 미정';
+  const dateLabel = selectedDate ? formatDate(selectedDate, language) : '-';
+  const serviceLabel = selectedService ? getServiceName(selectedService, language as LangKey) : '-';
+  const doctorLabel = selectedDoctor ? getDoctorName(selectedDoctor, language as LangKey) : '-';
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom + 24 }]}>
@@ -65,11 +72,8 @@ export function BookingConfirmationScreen() {
           </View>
         </View>
 
-        <Text style={styles.title}>예약이 완료되었습니다</Text>
-        <Text style={styles.subtitle}>
-          예약 확인 이메일이 발송되었습니다.{'\n'}
-          궁금한 점이 있으시면 언제든 연락주세요.
-        </Text>
+        <Text style={styles.title}>{t('bookingConfirm', 'title')}</Text>
+        <Text style={styles.subtitle}>{t('bookingConfirm', 'subtitle')}</Text>
 
         {/* Booking Info Card */}
         <View style={styles.infoCard}>
@@ -96,9 +100,7 @@ export function BookingConfirmationScreen() {
         {/* Notice */}
         <View style={styles.noticeCard}>
           <Ionicons name="information-circle-outline" size={20} color={COLORS.primary} />
-          <Text style={styles.noticeText}>
-            예약 변경 또는 취소는 최소 24시간 전에 연락해 주세요.
-          </Text>
+          <Text style={styles.noticeText}>{t('bookingConfirm', 'notice')}</Text>
         </View>
       </View>
 
@@ -112,7 +114,7 @@ export function BookingConfirmationScreen() {
           }}
           activeOpacity={0.8}
         >
-          <Text style={styles.secondaryButtonText}>홈으로</Text>
+          <Text style={styles.secondaryButtonText}>{t('bookingConfirm', 'goHome')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.primaryButton}
@@ -122,7 +124,7 @@ export function BookingConfirmationScreen() {
           }}
           activeOpacity={0.8}
         >
-          <Text style={styles.primaryButtonText}>내 예약 확인</Text>
+          <Text style={styles.primaryButtonText}>{t('bookingConfirm', 'myBookings')}</Text>
         </TouchableOpacity>
       </View>
     </View>

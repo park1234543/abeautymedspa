@@ -12,29 +12,29 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { format } from 'date-fns';
+import { ko, enUS, es, zhCN } from 'date-fns/locale';
+
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useBookingStore, BookingRecord, BookingStatus } from '../store/bookingStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../constants/theme';
+import { useTranslation } from '../i18n/useTranslation';
+import { getServiceName, getDoctorName, getDoctorSpecialty, LangKey } from '../constants/api';
+
+const LOCALE_MAP: Record<string, Locale> = { ko, en: enUS, es, zh: zhCN };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type TabType = 'upcoming' | 'completed' | 'cancelled';
 
-const TABS: { key: TabType; label: string }[] = [
-  { key: 'upcoming', label: '예정' },
-  { key: 'completed', label: '완료' },
-  { key: 'cancelled', label: '취소' },
-];
-
-const STATUS_CONFIG: Record<BookingStatus, { label: string; color: string; bg: string }> = {
-  upcoming: { label: '예정', color: '#2E7D32', bg: '#E8F5E9' },
-  completed: { label: '완료', color: COLORS.accent, bg: COLORS.primaryLight + '40' },
-  cancelled: { label: '취소', color: COLORS.error, bg: '#FFEBEE' },
+const STATUS_COLORS: Record<BookingStatus, { color: string; bg: string }> = {
+  upcoming:  { color: '#2E7D32', bg: '#E8F5E9' },
+  completed: { color: COLORS.accent, bg: COLORS.primaryLight + '40' },
+  cancelled: { color: COLORS.error, bg: '#FFEBEE' },
 };
 
-function formatDate(isoString: string) {
-  const d = new Date(isoString);
-  const days = ['일', '월', '화', '수', '목', '금', '토'];
-  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+function formatDate(isoString: string, lang: string) {
+  const locale = LOCALE_MAP[lang] || enUS;
+  return format(new Date(isoString), 'PPP (EEE)', { locale });
 }
 
 function getDday(isoString: string) {
@@ -53,7 +53,9 @@ interface BookingCardProps {
 }
 
 function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
-  const status = STATUS_CONFIG[booking.status];
+  const { t, language } = useTranslation();
+  const statusColors = STATUS_COLORS[booking.status];
+  const statusLabel = t('myBookings', `status${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}` as any);
   const isUpcoming = booking.status === 'upcoming';
   const isCompleted = booking.status === 'completed';
 
@@ -61,8 +63,8 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
     <View style={styles.card}>
       {/* Card Header */}
       <View style={styles.cardHeader}>
-        <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
-          <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+        <View style={[styles.statusBadge, { backgroundColor: statusColors.bg }]}>
+          <Text style={[styles.statusText, { color: statusColors.color }]}>{statusLabel}</Text>
         </View>
         {isUpcoming && (
           <Text style={styles.ddayText}>{getDday(booking.date)}</Text>
@@ -75,8 +77,8 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
           <Ionicons name="sparkles-outline" size={20} color={COLORS.primary} />
         </View>
         <View style={styles.serviceInfo}>
-          <Text style={styles.serviceName}>{booking.service.name}</Text>
-          <Text style={styles.doctorName}>{booking.doctor.nameKo} · {booking.doctor.specialty}</Text>
+          <Text style={styles.serviceName}>{getServiceName(booking.service, language as LangKey)}</Text>
+          <Text style={styles.doctorName}>{getDoctorName(booking.doctor, language as LangKey)} · {getDoctorSpecialty(booking.doctor, language as LangKey)}</Text>
         </View>
         <Text style={styles.price}>${booking.totalPrice}</Text>
       </View>
@@ -88,7 +90,7 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
       <View style={styles.detailsRow}>
         <View style={styles.detailItem}>
           <Ionicons name="calendar-outline" size={15} color={COLORS.textLight} />
-          <Text style={styles.detailText}>{formatDate(booking.date)}</Text>
+          <Text style={styles.detailText}>{formatDate(booking.date, language)}</Text>
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="time-outline" size={15} color={COLORS.textLight} />
@@ -96,7 +98,7 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
         </View>
         <View style={styles.detailItem}>
           <Ionicons name="hourglass-outline" size={15} color={COLORS.textLight} />
-          <Text style={styles.detailText}>{booking.service.duration}분</Text>
+          <Text style={styles.detailText}>{booking.service.duration}{t('myBookings', 'min')}</Text>
         </View>
       </View>
 
@@ -110,10 +112,10 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
                 onPress={() => onCancel?.(booking.id)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.cancelButtonText}>예약 취소</Text>
+                <Text style={styles.cancelButtonText}>{t('myBookings', 'cancelBtn')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.changeButton} activeOpacity={0.7}>
-                <Text style={styles.changeButtonText}>일정 변경</Text>
+                <Text style={styles.changeButtonText}>{t('myBookings', 'changeBtn')}</Text>
               </TouchableOpacity>
             </>
           )}
@@ -124,7 +126,7 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
               activeOpacity={0.7}
             >
               <Ionicons name="refresh-outline" size={16} color={COLORS.textWhite} />
-              <Text style={styles.rebookButtonText}>재예약</Text>
+              <Text style={styles.rebookButtonText}>{t('myBookings', 'rebookBtn')}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -134,16 +136,21 @@ function BookingCard({ booking, onCancel, onRebook }: BookingCardProps) {
 }
 
 function EmptyState({ tab }: { tab: TabType }) {
-  const config = {
-    upcoming: { icon: 'calendar-outline' as const, text: '예정된 예약이 없어요' },
-    completed: { icon: 'checkmark-circle-outline' as const, text: '완료된 시술 내역이 없어요' },
-    cancelled: { icon: 'close-circle-outline' as const, text: '취소된 예약이 없어요' },
+  const { t } = useTranslation();
+  const icons: Record<TabType, any> = {
+    upcoming: 'calendar-outline',
+    completed: 'checkmark-circle-outline',
+    cancelled: 'close-circle-outline',
   };
-  const { icon, text } = config[tab];
+  const textKey: Record<TabType, any> = {
+    upcoming: 'emptyUpcoming',
+    completed: 'emptyCompleted',
+    cancelled: 'emptyCancelled',
+  };
   return (
     <View style={styles.emptyContainer}>
-      <Ionicons name={icon} size={56} color={COLORS.border} />
-      <Text style={styles.emptyText}>{text}</Text>
+      <Ionicons name={icons[tab]} size={56} color={COLORS.border} />
+      <Text style={styles.emptyText}>{t('myBookings', textKey[tab])}</Text>
     </View>
   );
 }
@@ -151,6 +158,7 @@ function EmptyState({ tab }: { tab: TabType }) {
 export function MyBookingsScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>('upcoming');
   const { bookingHistory, cancelBooking, loadBookingHistory } = useBookingStore();
 
@@ -162,16 +170,16 @@ export function MyBookingsScreen() {
 
   const handleCancel = (id: string) => {
     Alert.alert(
-      '예약 취소',
-      '정말 예약을 취소하시겠습니까?\n취소 후 복구가 어렵습니다.',
+      t('myBookings', 'alertTitle'),
+      t('myBookings', 'alertMsg'),
       [
-        { text: '돌아가기', style: 'cancel' },
+        { text: t('myBookings', 'alertBack'), style: 'cancel' },
         {
-          text: '취소하기',
+          text: t('myBookings', 'alertConfirm'),
           style: 'destructive',
           onPress: () => {
             cancelBooking(id);
-            Alert.alert('완료', '예약이 취소되었습니다.');
+            Alert.alert(t('myBookings', 'ok'), t('myBookings', 'cancelDone'));
           },
         },
       ]
@@ -192,7 +200,7 @@ export function MyBookingsScreen() {
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>내 예약</Text>
+        <Text style={styles.headerTitle}>{t('myBookings', 'title')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -200,12 +208,12 @@ export function MyBookingsScreen() {
       <View style={styles.summaryRow}>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryNum}>{upcomingCount}</Text>
-          <Text style={styles.summaryLabel}>예정</Text>
+          <Text style={styles.summaryLabel}>{t('myBookings', 'tabUpcoming')}</Text>
         </View>
         <View style={styles.summaryDivider} />
         <View style={styles.summaryItem}>
           <Text style={styles.summaryNum}>{completedCount}</Text>
-          <Text style={styles.summaryLabel}>완료</Text>
+          <Text style={styles.summaryLabel}>{t('myBookings', 'tabCompleted')}</Text>
         </View>
         <View style={styles.summaryDivider} />
         <View style={styles.summaryItem}>
@@ -214,27 +222,28 @@ export function MyBookingsScreen() {
               .filter((b) => b.status === 'completed')
               .reduce((sum, b) => sum + b.totalPrice, 0)}
           </Text>
-          <Text style={styles.summaryLabel}>누적 금액</Text>
+          <Text style={styles.summaryLabel}>{t('myBookings', 'totalLabel')}</Text>
         </View>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabBar}>
-        {TABS.map((tab) => {
-          const count = bookingHistory.filter((b) => b.status === tab.key).length;
+        {(['upcoming', 'completed', 'cancelled'] as TabType[]).map((key) => {
+          const count = bookingHistory.filter((b) => b.status === key).length;
+          const label = t('myBookings', key === 'upcoming' ? 'tabUpcoming' : key === 'completed' ? 'tabCompleted' : 'tabCancelled');
           return (
             <TouchableOpacity
-              key={tab.key}
-              style={[styles.tab, activeTab === tab.key && styles.tabActive]}
-              onPress={() => setActiveTab(tab.key)}
+              key={key}
+              style={[styles.tab, activeTab === key && styles.tabActive]}
+              onPress={() => setActiveTab(key)}
               activeOpacity={0.7}
             >
-              <Text style={[styles.tabText, activeTab === tab.key && styles.tabTextActive]}>
-                {tab.label}
+              <Text style={[styles.tabText, activeTab === key && styles.tabTextActive]}>
+                {label}
               </Text>
               {count > 0 && (
-                <View style={[styles.tabBadge, activeTab === tab.key && styles.tabBadgeActive]}>
-                  <Text style={[styles.tabBadgeText, activeTab === tab.key && styles.tabBadgeTextActive]}>
+                <View style={[styles.tabBadge, activeTab === key && styles.tabBadgeActive]}>
+                  <Text style={[styles.tabBadgeText, activeTab === key && styles.tabBadgeTextActive]}>
                     {count}
                   </Text>
                 </View>
@@ -275,7 +284,7 @@ export function MyBookingsScreen() {
           activeOpacity={0.85}
         >
           <Ionicons name="add" size={24} color={COLORS.textWhite} />
-          <Text style={styles.fabText}>새 예약</Text>
+          <Text style={styles.fabText}>{t('myBookings', 'newBooking')}</Text>
         </TouchableOpacity>
       )}
     </View>
