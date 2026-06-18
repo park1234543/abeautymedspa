@@ -176,15 +176,21 @@ export function HomeScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
           {DOCTORS.map((doc) => (
             <View key={doc.id} style={styles.docCard}>
-              <View style={styles.docImgWrap}>
-                <Image source={doc.image} style={styles.docImage} />
-                <View style={styles.docBadge}><Text style={styles.docBadgeText}>MD</Text></View>
+              <Image source={doc.image} style={styles.docCardImage} />
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.78)']}
+                style={StyleSheet.absoluteFillObject}
+              />
+              <View style={styles.docBadge}>
+                <Text style={styles.docBadgeText}>MD</Text>
               </View>
-              <Text style={styles.docName}>{getDoctorName(doc, language as LangKey)}</Text>
-              <Text style={styles.docSpecialty}>{getDoctorSpecialty(doc, language as LangKey)}</Text>
-              <View style={styles.docExpRow}>
-                <Ionicons name="ribbon-outline" size={12} color={GOLD} />
-                <Text style={styles.docExp}>{doc.experience} {t('home', 'career')}</Text>
+              <View style={styles.docContent}>
+                <Text style={styles.docName}>{getDoctorName(doc, language as LangKey)}</Text>
+                <Text style={styles.docSpecialty}>{getDoctorSpecialty(doc, language as LangKey)}</Text>
+                <View style={styles.docExpRow}>
+                  <Ionicons name="ribbon-outline" size={11} color={GOLD} />
+                  <Text style={styles.docExp}>{doc.experience} {t('home', 'career')}</Text>
+                </View>
               </View>
             </View>
           ))}
@@ -277,15 +283,15 @@ const styles = StyleSheet.create({
   svcFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   svcDuration: { fontSize: 11, color: 'rgba(255,255,255,0.6)' },
   svcPrice: { fontSize: 15, fontWeight: '700', color: GOLD },
-  docCard: { width: 170, height: 230, backgroundColor: '#fff', borderRadius: RADIUS.lg, padding: 18, alignItems: 'center', justifyContent: 'center', ...SHADOWS.medium, borderWidth: 1, borderColor: COLORS.borderLight },
-  docImgWrap: { position: 'relative', marginBottom: 14 },
-  docImage: { width: 96, height: 96, borderRadius: 48, borderWidth: 2.5, borderColor: GOLD_BORDER },
-  docBadge: { position: 'absolute', bottom: 2, right: 0, backgroundColor: GOLD, borderRadius: 8, paddingHorizontal: 6, paddingVertical: 2 },
+  docCard: { width: 170, height: 230, borderRadius: RADIUS.lg, overflow: 'hidden', ...SHADOWS.medium },
+  docCardImage: { width: '100%', height: '100%', position: 'absolute' },
+  docBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: GOLD, borderRadius: 8, paddingHorizontal: 7, paddingVertical: 3 },
   docBadgeText: { fontSize: 9, fontWeight: '700', color: '#fff', letterSpacing: 0.5 },
-  docName: { fontSize: 15, fontWeight: '700', color: COLORS.text, textAlign: 'center' },
-  docSpecialty: { fontSize: 11, color: COLORS.textSecondary, textAlign: 'center', marginTop: 4, lineHeight: 15 },
-  docExpRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 10 },
-  docExp: { fontSize: 11, color: GOLD, fontWeight: '600' },
+  docContent: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 14 },
+  docName: { fontSize: 15, fontWeight: '700', color: '#fff' },
+  docSpecialty: { fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 3, lineHeight: 14 },
+  docExpRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 7 },
+  docExp: { fontSize: 10, color: GOLD, fontWeight: '600' },
   aboutWrap: { marginHorizontal: SPACING.lg, marginTop: 36 },
   aboutCard: { borderRadius: RADIUS.xl, padding: 28, overflow: 'hidden' },
   aboutTopLine: { width: 32, height: 2, backgroundColor: GOLD, marginBottom: 16 },
