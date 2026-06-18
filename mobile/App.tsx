@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
 import { COLORS } from './src/constants/theme';
+
+SplashScreen.preventAutoHideAsync();
 
 const navTheme = {
   ...DefaultTheme,
@@ -18,15 +21,26 @@ const navTheme = {
 };
 
 export default function App() {
-  const { isLoading, loadUser } = useAuthStore();
+  const { loadUser } = useAuthStore();
+  const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-    if (Platform.OS !== 'web') {
-      loadUser();
+    async function prepare() {
+      try {
+        if (Platform.OS !== 'web') {
+          await loadUser();
+        }
+      } catch (e) {
+        console.warn('loadUser error:', e);
+      } finally {
+        setAppReady(true);
+        await SplashScreen.hideAsync();
+      }
     }
+    prepare();
   }, []);
 
-  if (isLoading) {
+  if (!appReady) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />

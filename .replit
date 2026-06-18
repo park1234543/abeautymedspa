@@ -38,7 +38,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd mobile && npx expo start --port 5000 --clear --tunnel"
+args = "cd mobile && npm install && npx expo start --port 5000 --clear --tunnel"
 waitForPort = 5000
 
 [userenv]

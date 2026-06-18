@@ -6,6 +6,9 @@ const config = getDefaultConfig(__dirname);
 
 config.resolver.assetExts.push('mp4', 'mov', 'webm');
 
+config.resolver.unstable_enablePackageExports = true;
+config.resolver.unstable_conditionNames = ['browser', 'require', 'default'];
+
 const VIDEOS = {
   '/spa-background.mp4':                  path.join(__dirname, 'assets/videos/spa-background.mp4'),
   '/spa-background-web.mp4':              path.join(__dirname, 'assets/videos/spa-background-web.mp4'),
