@@ -34,7 +34,7 @@ export const SERVICES = [
     description: '주름 개선 및 얼굴 윤곽 시술',
     duration: 30,
     price: 200,
-    image: require('../../assets/images/service-filler.jpg'),
+    image: require('../../assets/images/treatment-1.jpg'),
   },
   {
     id: 'filler',

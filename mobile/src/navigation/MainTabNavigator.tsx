@@ -133,11 +133,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,165,116,0.12)',
   },
   label: {
-    fontSize: 11,
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '400',
     color: '#B0A090',
     textAlign: 'center',
     marginTop: 2,
+    includeFontPadding: false,
   },
   labelActive: {
     color: '#D4A574',
