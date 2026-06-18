@@ -17,7 +17,9 @@ import { useTranslation } from '../i18n/useTranslation';
 import { LanguageSelector } from '../components/LanguageSelector';
 
 const { width } = Dimensions.get('window');
-const imageSize = (width - SPACING.lg * 2 - SPACING.sm * 2) / 3;
+const GAP = 8;
+const COL = 3;
+const imageSize = (width - SPACING.lg * 2 - GAP * (COL - 1)) / COL;
 
 const GALLERY_IMAGES = [
   { id: '1', category: 'botox', image: require('../../assets/images/treatment-1.jpg') },
@@ -51,6 +53,7 @@ export function GalleryScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <View>
@@ -61,38 +64,52 @@ export function GalleryScreen() {
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContainer}>
-        {CATEGORIES.map((category) => (
+      {/* Category Pills */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoriesContainer}
+      >
+        {CATEGORIES.map((cat) => (
           <TouchableOpacity
-            key={category.id}
-            style={[styles.categoryButton, selectedCategory === category.id && styles.categoryButtonActive]}
-            onPress={() => setSelectedCategory(category.id)}
+            key={cat.id}
+            style={[styles.categoryButton, selectedCategory === cat.id && styles.categoryButtonActive]}
+            onPress={() => setSelectedCategory(cat.id)}
           >
-            <Text style={[styles.categoryText, selectedCategory === category.id && styles.categoryTextActive]}>
-              {category.name}
+            <Text style={[styles.categoryText, selectedCategory === cat.id && styles.categoryTextActive]}>
+              {cat.name}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
+      {/* 3-Column Grid */}
       <ScrollView
         style={styles.galleryContainer}
         contentContainerStyle={[styles.galleryGrid, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
         {filteredImages.map((item) => (
-          <TouchableOpacity key={item.id} style={styles.galleryItem} onPress={() => setSelectedImage(item)} activeOpacity={0.8}>
+          <TouchableOpacity
+            key={item.id}
+            style={styles.galleryItem}
+            onPress={() => setSelectedImage(item)}
+            activeOpacity={0.85}
+          >
             <Image source={item.image} style={styles.galleryImage} />
           </TouchableOpacity>
         ))}
       </ScrollView>
 
+      {/* Fullscreen Modal */}
       <Modal visible={!!selectedImage} transparent animationType="fade" onRequestClose={() => setSelectedImage(null)}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedImage(null)}>
-            <Ionicons name="close" size={28} color={COLORS.textWhite} />
+            <Ionicons name="close" size={28} color="#fff" />
           </TouchableOpacity>
-          {selectedImage && <Image source={selectedImage.image} style={styles.fullImage} resizeMode="contain" />}
+          {selectedImage && (
+            <Image source={selectedImage.image} style={styles.fullImage} resizeMode="contain" />
+          )}
         </View>
       </Modal>
     </View>
@@ -101,20 +118,62 @@ export function GalleryScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  header: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
+
+  header: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.md, paddingBottom: SPACING.sm },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text },
-  headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: SPACING.xs },
-  categoriesContainer: { paddingHorizontal: SPACING.lg, paddingVertical: SPACING.sm, gap: SPACING.sm },
-  categoryButton: { paddingVertical: SPACING.sm, paddingHorizontal: SPACING.lg, borderRadius: RADIUS.full, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border },
+  headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: 2 },
+
+  categoriesContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm,
+    gap: SPACING.sm,
+  },
+  categoryButton: {
+    paddingVertical: 7,
+    paddingHorizontal: SPACING.md,
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
   categoryButtonActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   categoryText: { fontSize: FONTS.sizes.sm, fontWeight: '500', color: COLORS.textSecondary },
-  categoryTextActive: { color: COLORS.textWhite },
+  categoryTextActive: { color: '#fff' },
+
   galleryContainer: { flex: 1, paddingHorizontal: SPACING.lg },
-  galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm, paddingTop: SPACING.md },
-  galleryItem: { width: imageSize, height: imageSize, borderRadius: RADIUS.sm, overflow: 'hidden' },
+  galleryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: GAP,
+    paddingTop: SPACING.md,
+  },
+  galleryItem: {
+    width: imageSize,
+    height: imageSize,
+    borderRadius: RADIUS.sm,
+    overflow: 'hidden',
+  },
   galleryImage: { width: '100%', height: '100%' },
-  modalContainer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
-  closeButton: { position: 'absolute', top: 60, right: 20, zIndex: 10, width: 44, height: 44, justifyContent: 'center', alignItems: 'center' },
-  fullImage: { width: width, height: width },
+
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    zIndex: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullImage: { width: width, height: width * 1.2 },
 });
