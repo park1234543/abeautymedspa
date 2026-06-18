@@ -44,7 +44,7 @@ export function ServicesScreen() {
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContainer}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll} contentContainerStyle={styles.categoriesContainer}>
         {CATEGORIES.map((category) => (
           <TouchableOpacity
             key={category.id}
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text },
   headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: SPACING.xs },
+  categoriesScroll: { flexGrow: 0, flexShrink: 0, height: 42 },
   categoriesContainer: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.lg, paddingTop: 4, paddingBottom: 4, gap: SPACING.sm },
   categoryButton: { alignSelf: 'flex-start', paddingVertical: 5, paddingHorizontal: SPACING.md, borderRadius: RADIUS.full, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border },
   categoryButtonActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
