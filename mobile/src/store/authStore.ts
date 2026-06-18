@@ -57,9 +57,7 @@ interface AuthState {
   setUser: (user: User | null) => void;
 }
 
-const WEB_DEMO = Platform.OS === 'web'
-  ? { user: { id: 'demo_user', email: 'demo@abeauty.com', name: 'Demo User' }, token: 'demo_web_token', isAuthenticated: true, isLoading: false }
-  : { user: null, token: null, isAuthenticated: false, isLoading: true };
+const WEB_DEMO = { user: null, token: null, isAuthenticated: false, isLoading: false };
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   ...WEB_DEMO,
