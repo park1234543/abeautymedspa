@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  ImageBackground,
   Dimensions,
   Image,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -29,10 +29,38 @@ const GOLD = '#D4A574';
 const GOLD_LIGHT = 'rgba(212,165,116,0.15)';
 const GOLD_BORDER = 'rgba(212,165,116,0.35)';
 
+const HERO_IMAGES = [
+  require('../../assets/images/hero-spa.jpg'),
+  require('../../assets/images/hero-spa-2.jpg'),
+  require('../../assets/images/hero-spa-3.jpg'),
+  require('../../assets/images/hero-spa-4.jpg'),
+];
+
 export function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
   const { t, language } = useTranslation();
+
+  const [slideIdx, setSlideIdx] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 700,
+        useNativeDriver: true,
+      }).start(() => {
+        setSlideIdx(i => (i + 1) % HERO_IMAGES.length);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [fadeAnim]);
 
   return (
     <ScrollView
@@ -41,11 +69,12 @@ export function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       {/* ── HERO ── */}
-      <ImageBackground
-        source={require('../../assets/images/hero-spa.jpg')}
-        style={[styles.hero, { paddingTop: insets.top }]}
-        resizeMode="cover"
-      >
+      <View style={[styles.hero, { paddingTop: insets.top }]}>
+        <Animated.Image
+          source={HERO_IMAGES[slideIdx]}
+          style={[StyleSheet.absoluteFillObject, { opacity: fadeAnim }]}
+          resizeMode="cover"
+        />
         <LinearGradient
           colors={['rgba(0,0,0,0.18)', 'rgba(0,0,0,0.55)', 'rgba(0,0,0,0.82)']}
           locations={[0, 0.5, 1]}
@@ -103,7 +132,14 @@ export function HomeScreen() {
             ))}
           </View>
         </View>
-      </ImageBackground>
+
+        {/* 슬라이드 도트 */}
+        <View style={styles.heroDots}>
+          {HERO_IMAGES.map((_, i) => (
+            <View key={i} style={[styles.heroDot, i === slideIdx && styles.heroDotActive]} />
+          ))}
+        </View>
+      </View>
 
       {/* ── QUICK ACTIONS ── */}
       <View style={styles.quickWrap}>
@@ -242,7 +278,10 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  hero: { height: 560, justifyContent: 'space-between' },
+  hero: { height: 560, justifyContent: 'space-between', overflow: 'hidden' },
+  heroDots: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6, paddingBottom: 14 },
+  heroDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.35)' },
+  heroDotActive: { width: 18, backgroundColor: GOLD },
   heroTopBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 28, paddingTop: 16 },
   heroTopRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   heroBrandEn: { fontSize: 22, fontWeight: '300', color: GOLD, letterSpacing: 4 },
