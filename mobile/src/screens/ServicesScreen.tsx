@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text },
   headerSubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: SPACING.xs },
   categoriesContainer: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.lg, paddingTop: 4, paddingBottom: 4, gap: SPACING.sm },
-  categoryButton: { alignSelf: 'flex-start', paddingVertical: SPACING.sm, paddingHorizontal: SPACING.lg, borderRadius: RADIUS.full, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border },
+  categoryButton: { alignSelf: 'flex-start', paddingVertical: 5, paddingHorizontal: SPACING.md, borderRadius: RADIUS.full, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.border },
   categoryButtonActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   categoryText: { fontSize: FONTS.sizes.sm, fontWeight: '500', color: COLORS.textSecondary },
   categoryTextActive: { color: COLORS.textWhite },
