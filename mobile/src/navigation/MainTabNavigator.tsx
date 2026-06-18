@@ -66,8 +66,6 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               onPress={onPress}
               activeOpacity={0.7}
             >
-              {isFocused && <View style={styles.activeDot} />}
-
               <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
                 <Ionicons
                   name={(isFocused ? tab.icon : tab.iconOutline) as any}
@@ -76,9 +74,11 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 />
               </View>
 
-              <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+              <Text numberOfLines={1} style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
                 {label}
               </Text>
+
+              {isFocused && <View style={styles.activeDot} />}
             </TouchableOpacity>
           );
         })}
@@ -110,25 +110,22 @@ const styles = StyleSheet.create({
   },
   tabBarContainer: {
     flexDirection: 'row',
-    paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? 4 : 12,
+    paddingTop: 6,
+    paddingBottom: Platform.OS === 'ios' ? 4 : 10,
     paddingHorizontal: 4,
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
-    paddingVertical: 4,
-    position: 'relative',
+    paddingVertical: 6,
   },
   activeDot: {
-    position: 'absolute',
-    top: -10,
-    width: 24,
+    width: 20,
     height: 3,
     borderRadius: 2,
     backgroundColor: '#D4A574',
+    marginTop: 4,
   },
   iconWrap: {
     width: 44,
@@ -148,7 +145,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textAlign: 'center',
     includeFontPadding: false,
-    lineHeight: 14,
+    marginTop: 3,
   },
   tabLabelActive: {
     color: '#D4A574',
