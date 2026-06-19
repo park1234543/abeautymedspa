@@ -107,6 +107,22 @@ export function HomeScreen() {
 
   const [slideIdx, setSlideIdx] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const galleryAnim = useRef(new Animated.Value(0)).current;
+
+  const CARD_WIDTH = 160 + 14; // width + gap
+  const LOOP_WIDTH = CARD_WIDTH * GALLERY_ITEMS.length;
+
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.timing(galleryAnim, {
+        toValue: -LOOP_WIDTH,
+        duration: LOOP_WIDTH * 18,
+        useNativeDriver: true,
+      })
+    );
+    anim.start();
+    return () => anim.stop();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -340,22 +356,26 @@ export function HomeScreen() {
             <Ionicons name="chevron-forward" size={14} color={GOLD} />
           </TouchableOpacity>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
-          {GALLERY_ITEMS.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.galleryCard}
-              activeOpacity={0.85}
-              onPress={() => navigation.navigate('Gallery')}
-            >
-              <Image source={item.image} style={styles.galleryCardImage} />
-              <LinearGradient colors={['transparent', 'rgba(0,0,0,0.65)']} style={styles.galleryOverlay} />
-              <View style={styles.galleryLabel}>
-                <Text style={styles.galleryLabelText}>{item.label}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <View style={styles.galleryStrip}>
+          <Animated.View
+            style={[styles.galleryRow, { transform: [{ translateX: galleryAnim }] }]}
+          >
+            {[...GALLERY_ITEMS, ...GALLERY_ITEMS, ...GALLERY_ITEMS].map((item, idx) => (
+              <TouchableOpacity
+                key={`${item.id}-${idx}`}
+                style={styles.galleryCard}
+                activeOpacity={0.85}
+                onPress={() => navigation.navigate('Gallery')}
+              >
+                <Image source={item.image} style={styles.galleryCardImage} />
+                <LinearGradient colors={['transparent', 'rgba(0,0,0,0.65)']} style={styles.galleryOverlay} />
+                <View style={styles.galleryLabel}>
+                  <Text style={styles.galleryLabelText}>{item.label}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </Animated.View>
+        </View>
       </View>
 
       {/* ── REVIEWS ── */}
@@ -472,6 +492,8 @@ const styles = StyleSheet.create({
   aboutStatItem: { alignItems: 'center', flex: 1 },
   aboutStatNum: { fontSize: 22, fontWeight: '700', color: GOLD, letterSpacing: 0.5 },
   aboutStatLabel: { fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 4, letterSpacing: 0.5 },
+  galleryStrip: { overflow: 'hidden', paddingLeft: SPACING.lg },
+  galleryRow: { flexDirection: 'row', gap: 14 },
   galleryCard: { width: 160, height: 220, borderRadius: RADIUS.lg, overflow: 'hidden', ...SHADOWS.medium },
   galleryCardImage: { width: '100%', height: '100%', position: 'absolute' },
   galleryOverlay: { ...StyleSheet.absoluteFillObject },
