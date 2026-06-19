@@ -46,6 +46,10 @@
         "projectId": "7b651974-9130-4001-bc89-cfccfbad35b0"
       }
     },
-    "owner": "parkyoungsun"
+    "owner": "parkyoungsun",
+    "plugins": [
+      "expo-secure-store",
+      "expo-web-browser"
+    ]
   }
 }
