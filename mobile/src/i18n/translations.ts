@@ -81,6 +81,12 @@ const translations = {
       es: '⚡ Inicio Demo (Probar Ahora)',
       zh: '⚡ 体验账号（立即试用）',
     },
+    apple: {
+      ko: 'Apple로 계속하기',
+      en: 'Continue with Apple',
+      es: 'Continuar con Apple',
+      zh: '使用 Apple 登录',
+    },
     google: {
       ko: 'Google로 계속하기',
       en: 'Continue with Google',
@@ -282,6 +288,11 @@ const translations = {
     version: { ko: '버전', en: 'Version', es: 'Versión', zh: '版本' },
     selectLanguage: { ko: '언어 선택', en: 'Select Language', es: 'Seleccionar Idioma', zh: '选择语言' },
     defaultName: { ko: '사용자', en: 'User', es: 'Usuario', zh: '用户' },
+    deleteAccount: { ko: '계정 삭제', en: 'Delete Account', es: 'Eliminar Cuenta', zh: '删除账户' },
+    deleteAccountTitle: { ko: '계정을 삭제하시겠습니까?', en: 'Delete your account?', es: '¿Eliminar tu cuenta?', zh: '确认删除账户？' },
+    deleteAccountMsg: { ko: '계정을 삭제하면 모든 예약 기록과 개인정보가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.', en: 'Deleting your account will permanently remove all your booking history and personal data. This action cannot be undone.', es: 'Eliminar tu cuenta eliminará permanentemente todo tu historial de reservas y datos personales. Esta acción no se puede deshacer.', zh: '删除账户将永久删除您所有的预约记录和个人数据，此操作无法撤销。' },
+    deleteAccountConfirm: { ko: '삭제', en: 'Delete', es: 'Eliminar', zh: '删除' },
+    deleteAccountSuccess: { ko: '계정이 삭제되었습니다', en: 'Account deleted', es: 'Cuenta eliminada', zh: '账户已删除' },
   },
 
   /* ─── BOOKING ─── */

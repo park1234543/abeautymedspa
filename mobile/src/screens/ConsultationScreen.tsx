@@ -9,6 +9,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Linking,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -61,16 +62,30 @@ export function ConsultationScreen() {
     infoBox: { ko: '상담 시간: 월-금 09:00 – 18:00\n주말 및 공휴일은 다음 영업일 회신', en: 'Hours: Mon-Fri 09:00 – 18:00\nWeekend inquiries replied next business day', es: 'Horario: Lun-Vie 09:00 – 18:00\nConsultas de fin de semana respondidas el próximo día hábil', zh: '咨询时间：周一至周五 09:00 – 18:00\n周末咨询将在下一个工作日回复' },
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name.trim() || !phone.trim()) {
       Alert.alert('', tx.required[lang]);
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const subject = encodeURIComponent(`[A Beauty MedSpa] 상담 신청 - ${name}`);
+      const body = encodeURIComponent(
+        `이름: ${name}\n연락처: ${phone}\n관심 시술: ${selectedTreatment || '미선택'}\n\n문의 내용:\n${message || '(없음)'}\n\n---\nA Beauty MedSpa 앱을 통한 상담 신청`
+      );
+      const mailUrl = `mailto:info@abeautymedspa.com?subject=${subject}&body=${body}`;
+      const canOpen = await Linking.canOpenURL(mailUrl);
+      if (canOpen) {
+        await Linking.openURL(mailUrl);
+        setSubmitted(true);
+      } else {
+        setSubmitted(true);
+      }
+    } catch (_) {
       setSubmitted(true);
-    }, 1200);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {

@@ -29,7 +29,7 @@ const LANGUAGES: Language[] = ['ko', 'en', 'es', 'zh'];
 export function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
-  const { user, logout } = useAuthStore();
+  const { user, logout, deleteAccount } = useAuthStore();
   const { bookingHistory, loadBookingHistory } = useBookingStore();
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguageStore();
@@ -61,6 +61,23 @@ export function ProfileScreen() {
       { text: t('profile', 'cancel'), style: 'cancel' },
       { text: t('profile', 'logout'), style: 'destructive', onPress: logout },
     ]);
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      t('profile', 'deleteAccountTitle'),
+      t('profile', 'deleteAccountMsg'),
+      [
+        { text: t('profile', 'cancel'), style: 'cancel' },
+        {
+          text: t('profile', 'deleteAccountConfirm'),
+          style: 'destructive',
+          onPress: async () => {
+            await deleteAccount();
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -172,6 +189,12 @@ export function ProfileScreen() {
           <Text style={styles.logoutText}>{t('profile', 'logout')}</Text>
         </TouchableOpacity>
 
+        {/* Delete Account */}
+        <TouchableOpacity style={styles.deleteAccountButton} onPress={handleDeleteAccount} activeOpacity={0.8}>
+          <Ionicons name="trash-outline" size={18} color="#999" />
+          <Text style={styles.deleteAccountText}>{t('profile', 'deleteAccount')}</Text>
+        </TouchableOpacity>
+
         <Text style={styles.versionText}>{t('profile', 'version')} 1.0.0</Text>
       </ScrollView>
 
@@ -236,7 +259,9 @@ const styles = StyleSheet.create({
   langBadge: { fontSize: 12, color: COLORS.primary, fontWeight: '600', marginRight: 8 },
   logoutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: SPACING.lg, marginTop: SPACING.xl, padding: SPACING.md, borderRadius: RADIUS.md, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.error + '30', gap: SPACING.sm },
   logoutText: { fontSize: FONTS.sizes.md, fontWeight: '600', color: COLORS.error },
-  versionText: { textAlign: 'center', fontSize: FONTS.sizes.xs, color: COLORS.textLight, marginTop: SPACING.lg },
+  deleteAccountButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginHorizontal: SPACING.lg, marginTop: SPACING.sm, padding: SPACING.sm, gap: 6 },
+  deleteAccountText: { fontSize: FONTS.sizes.sm, color: '#999', textDecorationLine: 'underline' },
+  versionText: { textAlign: 'center', fontSize: FONTS.sizes.xs, color: COLORS.textLight, marginTop: SPACING.md },
 
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalSheet: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },

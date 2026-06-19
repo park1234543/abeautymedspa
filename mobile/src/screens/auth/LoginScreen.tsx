@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as AppleAuthentication from 'expo-apple-authentication';
 
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
@@ -29,7 +30,7 @@ const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { login, demoLogin, loginWithGoogle } = useAuthStore();
+  const { login, demoLogin, loginWithGoogle, loginWithApple } = useAuthStore();
   const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
@@ -101,6 +102,27 @@ export function LoginScreen() {
     setIsLoading(false);
   };
 
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      const success = await loginWithApple({
+        id: credential.user,
+        email: credential.email,
+        fullName: credential.fullName,
+      });
+      if (!success) setError(t('login', 'errorInvalid'));
+    } catch (e: any) {
+      if (e.code !== 'ERR_REQUEST_CANCELED') {
+        setError(t('login', 'errorInvalid'));
+      }
+    }
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
@@ -120,6 +142,16 @@ export function LoginScreen() {
         <TouchableOpacity style={styles.demoButton} onPress={handleDemoLogin} activeOpacity={0.8}>
           <Text style={styles.demoButtonText}>{t('login', 'demo')}</Text>
         </TouchableOpacity>
+
+        {Platform.OS === 'ios' && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={RADIUS.md}
+            style={styles.appleButton}
+            onPress={handleAppleLogin}
+          />
+        )}
 
         <TouchableOpacity
           style={[styles.googleButton, (isGoogleLoading || !request) && styles.buttonDisabled]}
@@ -222,6 +254,7 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: FONTS.sizes.md, color: COLORS.textSecondary },
   demoButton: { backgroundColor: COLORS.primary, borderRadius: RADIUS.md, paddingVertical: SPACING.md, alignItems: 'center', marginBottom: SPACING.sm, ...SHADOWS.small },
   demoButtonText: { color: '#fff', fontSize: FONTS.sizes.md, fontWeight: '700', letterSpacing: 0.5 },
+  appleButton: { height: 50, marginBottom: SPACING.sm },
   googleButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, paddingVertical: SPACING.md, gap: SPACING.sm, ...SHADOWS.small },
   googleIconWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#4285F4', alignItems: 'center', justifyContent: 'center' },
   googleIconText: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },

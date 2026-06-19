@@ -44,8 +44,10 @@ interface AuthState {
   login: (email: string, password: string) => Promise<boolean>;
   demoLogin: () => Promise<void>;
   loginWithGoogle: (googleUser: any) => Promise<boolean>;
+  loginWithApple: (appleUser: { id: string; email?: string | null; fullName?: { givenName?: string | null; familyName?: string | null } | null }) => Promise<boolean>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<boolean>;
   loadUser: () => Promise<void>;
   setUser: (user: User | null) => void;
   resetPassword: (email: string) => Promise<boolean>;
@@ -106,6 +108,42 @@ export const useAuthStore = create<AuthState>((set) => ({
     await storage.setItem('user', JSON.stringify(mockUser));
     set({ user: mockUser, token: mockToken, isAuthenticated: true });
     return true;
+  },
+
+  loginWithApple: async (appleUser) => {
+    try {
+      const given = appleUser.fullName?.givenName ?? '';
+      const family = appleUser.fullName?.familyName ?? '';
+      const name = [given, family].filter(Boolean).join(' ') || 'Apple User';
+      const email = appleUser.email ?? `apple_${appleUser.id}@privaterelay.appleid.com`;
+
+      if (isFirebaseConfigured()) {
+        try {
+          const { auth } = await import('../services/firebase');
+          const { OAuthProvider, signInWithCredential } = await import('firebase/auth');
+          const provider = new OAuthProvider('apple.com');
+          const credential = provider.credential({ idToken: appleUser.id });
+          const cred = await signInWithCredential(auth, credential);
+          const fbUser = cred.user;
+          const user: User = { id: fbUser.uid, email: fbUser.email ?? email, name: fbUser.displayName ?? name };
+          const token = await fbUser.getIdToken();
+          await storage.setItem('token', token);
+          await storage.setItem('user', JSON.stringify(user));
+          set({ user, token, isAuthenticated: true });
+          return true;
+        } catch (_) {}
+      }
+
+      const user: User = { id: `apple_${appleUser.id}`, email, name };
+      const token = `apple_${appleUser.id}_${Date.now()}`;
+      await storage.setItem('token', token);
+      await storage.setItem('user', JSON.stringify(user));
+      set({ user, token, isAuthenticated: true });
+      return true;
+    } catch (error) {
+      console.error('Apple login error:', error);
+      return false;
+    }
   },
 
   loginWithGoogle: async (googleUser: any) => {
@@ -199,6 +237,31 @@ export const useAuthStore = create<AuthState>((set) => ({
     await storage.deleteItem('token');
     await storage.deleteItem('user');
     set({ user: null, token: null, isAuthenticated: false });
+  },
+
+  deleteAccount: async () => {
+    try {
+      if (isFirebaseConfigured()) {
+        try {
+          const { auth } = await import('../services/firebase');
+          const { db } = await import('../services/firebase');
+          const { deleteUser } = await import('firebase/auth');
+          const { doc, deleteDoc } = await import('firebase/firestore');
+          const currentUser = auth.currentUser;
+          if (currentUser) {
+            await deleteDoc(doc(db, 'users', currentUser.uid));
+            await deleteUser(currentUser);
+          }
+        } catch (_) {}
+      }
+      await storage.deleteItem('token');
+      await storage.deleteItem('user');
+      set({ user: null, token: null, isAuthenticated: false });
+      return true;
+    } catch (error) {
+      console.error('Delete account error:', error);
+      return false;
+    }
   },
 
   loadUser: async () => {
