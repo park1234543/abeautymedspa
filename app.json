@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "c4622dc1-8e93-460a-b8f0-683ceca45c5c"
+      }
+    },
+    "android": {
+      "package": "com.parkyoungsun.restexpress"
+    }
+  }
+}
