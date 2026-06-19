@@ -1,0 +1,30 @@
+remote: Enumerating objects: 23, done.
+remote: Counting objects: 100% (23/23), done.
+remote: Compressing objects: 100% (17/17), done.
+remote: Total 23 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (23/23), 7.04 KiB | 136.00 KiB/s, done.
+From https://github.com/park1234543/abeautymedspa
+ * branch            main       -> FETCH_HEAD
+ * [new branch]      main       -> origin/main
+Auto-merging .github/workflows/eas-build.yml
+CONFLICT (content): Merge conflict in .github/workflows/eas-build.yml
+error: could not apply d507fb1... Update build process to use npm and a newer Node.js version
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Could not apply d507fb1... # Update build process to use npm and a newer Node.js version
+~/workspace$ git pull https://park1234543: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@github.com/park1234543/abeautymedspa.git main --rebase && git push https://park1234543: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@github.com/park1234543/abeautymedspa.git main
+From https://github.com/park1234543/abeautymedspa
+ * branch            main       -> FETCH_HEAD
+Auto-merging .github/workflows/eas-build.yml
+CONFLICT (content): Merge conflict in .github/workflows/eas-build.yml
+error: could not apply d507fb1... Update build process to use npm and a newer Node.js version
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Could not apply d507fb1... # Update build process to use npm and a newer Node.js version
+~/workspace$ 
