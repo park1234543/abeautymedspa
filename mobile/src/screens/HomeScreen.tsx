@@ -29,6 +29,68 @@ const GOLD = '#D4A574';
 const GOLD_LIGHT = 'rgba(212,165,116,0.15)';
 const GOLD_BORDER = 'rgba(212,165,116,0.35)';
 
+const GALLERY_ITEMS = [
+  { id: '1', image: require('../../assets/images/treatment-1.jpg'),    label: 'Botox' },
+  { id: '2', image: require('../../assets/images/service-skincare.jpg'), label: 'Skincare' },
+  { id: '3', image: require('../../assets/images/service-filler.jpg'),  label: 'Filler' },
+  { id: '4', image: require('../../assets/images/service-laser.jpg'),   label: 'Laser' },
+  { id: '5', image: require('../../assets/images/spa-interior-1.jpg'),  label: 'Clinic' },
+  { id: '6', image: require('../../assets/images/treatment-2.jpg'),     label: 'IV Therapy' },
+];
+
+const REVIEWS = [
+  {
+    id: '1', name: '김지현', rating: 5, date: '2025.05',
+    service: 'Botox',
+    text: {
+      ko: '시술 후 정말 자연스러워요! 전문 의료진 분들이 꼼꼼하게 설명해주셔서 너무 좋았습니다.',
+      en: 'So natural after the treatment! The specialists explained everything thoroughly.',
+      es: '¡Muy natural tras el tratamiento! Los especialistas explicaron todo detalladamente.',
+      zh: '治疗后非常自然！专家们解释得非常详细。',
+    },
+  },
+  {
+    id: '2', name: 'Sarah M.', rating: 5, date: '2025.04',
+    service: 'Filler',
+    text: {
+      ko: '필러 시술이 기대 이상이었어요. 부작용 없이 볼륨감이 살아났습니다.',
+      en: 'The filler exceeded my expectations. Great volume with no side effects.',
+      es: 'El relleno superó mis expectativas. Gran volumen sin efectos secundarios.',
+      zh: '填充效果超出预期，自然丰盈无副作用。',
+    },
+  },
+  {
+    id: '3', name: '이수진', rating: 5, date: '2025.04',
+    service: 'Laser',
+    text: {
+      ko: '레이저 시술 받고 피부가 완전히 달라졌어요. 직원분들도 너무 친절합니다.',
+      en: 'My skin changed completely after laser. The staff is incredibly kind.',
+      es: 'Mi piel cambió completamente tras el láser. El personal es muy amable.',
+      zh: '激光治疗后皮肤焕然一新，工作人员非常亲切。',
+    },
+  },
+  {
+    id: '4', name: 'Michael K.', rating: 4, date: '2025.03',
+    service: 'Skincare',
+    text: {
+      ko: '스킨케어 패키지가 가성비 최고예요. 다음 달에 또 방문할 예정입니다.',
+      en: 'Best value skincare package. Planning to visit again next month!',
+      es: 'El mejor paquete de skincare calidad-precio. ¡Planeo volver el mes que viene!',
+      zh: '护肤套餐性价比超高，下个月还会再来！',
+    },
+  },
+  {
+    id: '5', name: '박민서', rating: 5, date: '2025.03',
+    service: 'IV Therapy',
+    text: {
+      ko: 'IV 영양 요법 후 피로가 싹 풀렸어요. 확실히 효과가 있습니다!',
+      en: 'Fatigue completely gone after IV therapy. It definitely works!',
+      es: 'La fatiga desapareció tras la terapia IV. ¡Definitivamente funciona!',
+      zh: 'IV营养疗法后疲劳感全消，效果非常明显！',
+    },
+  },
+];
+
 const HERO_IMAGES = [
   require('../../assets/images/treatment-1.jpg'),
   require('../../assets/images/service-skincare.jpg'),
@@ -266,6 +328,72 @@ export function HomeScreen() {
         </LinearGradient>
       </View>
 
+      {/* ── GALLERY ── */}
+      <View style={styles.section}>
+        <View style={styles.sectionHead}>
+          <View>
+            <Text style={styles.sectionEyebrow}>{t('home', 'ourGallery')}</Text>
+            <Text style={styles.sectionTitle}>{t('home', 'galleryTitle')}</Text>
+          </View>
+          <TouchableOpacity style={styles.sectionMore} onPress={() => navigation.navigate('Gallery')}>
+            <Text style={styles.sectionMoreText}>{t('home', 'viewAll')}</Text>
+            <Ionicons name="chevron-forward" size={14} color={GOLD} />
+          </TouchableOpacity>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
+          {GALLERY_ITEMS.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.galleryCard}
+              activeOpacity={0.85}
+              onPress={() => navigation.navigate('Gallery')}
+            >
+              <Image source={item.image} style={styles.galleryCardImage} />
+              <LinearGradient colors={['transparent', 'rgba(0,0,0,0.65)']} style={styles.galleryOverlay} />
+              <View style={styles.galleryLabel}>
+                <Text style={styles.galleryLabelText}>{item.label}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* ── REVIEWS ── */}
+      <View style={styles.section}>
+        <View style={styles.sectionHead}>
+          <View>
+            <Text style={styles.sectionEyebrow}>{t('home', 'ourReviews')}</Text>
+            <Text style={styles.sectionTitle}>{t('home', 'reviewsTitle')}</Text>
+          </View>
+          <View style={styles.ratingBadge}>
+            <Ionicons name="star" size={13} color={GOLD} />
+            <Text style={styles.ratingBadgeText}>4.9</Text>
+          </View>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
+          {REVIEWS.map((review) => (
+            <View key={review.id} style={styles.reviewCard}>
+              <View style={styles.reviewHeader}>
+                <View style={styles.reviewAvatar}>
+                  <Text style={styles.reviewAvatarText}>{review.name[0]}</Text>
+                </View>
+                <View style={styles.reviewHeaderInfo}>
+                  <Text style={styles.reviewName}>{review.name}</Text>
+                  <Text style={styles.reviewService}>{review.service}</Text>
+                </View>
+              </View>
+              <View style={styles.reviewStars}>
+                {[1,2,3,4,5].map(i => (
+                  <Ionicons key={i} name="star" size={12} color={i <= review.rating ? GOLD : '#ddd'} />
+                ))}
+              </View>
+              <Text style={styles.reviewText}>{review.text[language as 'ko'|'en'|'es'|'zh'] ?? review.text.ko}</Text>
+              <Text style={styles.reviewDate}>{review.date}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
       {/* ── CTA ── */}
       <View style={styles.ctaWrap}>
         <TouchableOpacity style={styles.ctaBtn} onPress={() => navigation.navigate('Booking')} activeOpacity={0.85}>
@@ -344,7 +472,27 @@ const styles = StyleSheet.create({
   aboutStatItem: { alignItems: 'center', flex: 1 },
   aboutStatNum: { fontSize: 22, fontWeight: '700', color: GOLD, letterSpacing: 0.5 },
   aboutStatLabel: { fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 4, letterSpacing: 0.5 },
-  ctaWrap: { marginHorizontal: SPACING.lg, marginTop: 24, alignItems: 'center' },
+  galleryCard: { width: 160, height: 220, borderRadius: RADIUS.lg, overflow: 'hidden', ...SHADOWS.medium },
+  galleryCardImage: { width: '100%', height: '100%', position: 'absolute' },
+  galleryOverlay: { ...StyleSheet.absoluteFillObject },
+  galleryLabel: { position: 'absolute', bottom: 12, left: 12 },
+  galleryLabelText: { fontSize: 13, fontWeight: '700', color: '#fff', letterSpacing: 0.5 },
+
+  ratingBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: GOLD_LIGHT, borderWidth: 1, borderColor: GOLD_BORDER, borderRadius: RADIUS.full, paddingHorizontal: 10, paddingVertical: 4 },
+  ratingBadgeText: { fontSize: 13, fontWeight: '700', color: GOLD },
+
+  reviewCard: { width: 240, backgroundColor: '#fff', borderRadius: RADIUS.lg, padding: 18, ...SHADOWS.medium, borderWidth: 1, borderColor: 'rgba(212,165,116,0.15)', gap: 8 },
+  reviewHeader: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  reviewAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: GOLD, justifyContent: 'center', alignItems: 'center' },
+  reviewAvatarText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  reviewHeaderInfo: { flex: 1 },
+  reviewName: { fontSize: 14, fontWeight: '700', color: COLORS.text },
+  reviewService: { fontSize: 11, color: COLORS.textLight, marginTop: 1 },
+  reviewStars: { flexDirection: 'row', gap: 2 },
+  reviewText: { fontSize: 13, color: COLORS.textSecondary, lineHeight: 20, flex: 1 },
+  reviewDate: { fontSize: 11, color: COLORS.textLight, alignSelf: 'flex-end' },
+
+  ctaWrap: { marginHorizontal: SPACING.lg, marginTop: 36, marginBottom: 8, alignItems: 'center' },
   ctaBtn: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: GOLD, paddingVertical: 17, borderRadius: RADIUS.full, ...SHADOWS.medium, marginBottom: 10 },
   ctaBtnText: { color: '#fff', fontSize: 15, fontWeight: '700', letterSpacing: 0.5 },
   ctaSub: { fontSize: 12, color: COLORS.textLight, letterSpacing: 0.3 },
