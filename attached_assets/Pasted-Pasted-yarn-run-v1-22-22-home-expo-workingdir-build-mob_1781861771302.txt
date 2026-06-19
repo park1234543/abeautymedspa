@@ -1,0 +1,42 @@
+Pasted-yarn-run-v1-22-22-home-expo-workingdir-build-mobile-nod_1781861642920.txt
+yarn run v1.22.22
+$ /home/expo/workingdir/build/mobile/node_modules/.bin/expo export:embed --eager --platform android --dev false
+Starting Metro Bundler
+Android Bundling failed 231ms node_modules/expo/AppEntry.js (1 module)
+SyntaxError: node_modules/expo/AppEntry.js: [BABEL]: Cannot find module 'react-native-worklets/plugin'
+Require stack:
+- /home/expo/workingdir/build/mobile/node_modules/react-native-reanimated/plugin/index.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/config/files/module-types.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/config/files/configuration.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/config/files/index.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/index.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro-config/build/transform-worker/metro-transform-worker.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro-config/build/transform-worker/transform-worker.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro/node_modules/metro/src/DeltaBundler/Worker.flow.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro/node_modules/metro/src/DeltaBundler/Worker.js
+- /home/expo/workingdir/build/mobile/node_modules/jest-worker/build/workers/processChild.js (While processing: /home/expo/workingdir/build/mobile/node_modules/react-native-reanimated/plugin/index.js)
+Error: [BABEL]: Cannot find module 'react-native-worklets/plugin'
+Require stack:
+- /home/expo/workingdir/build/mobile/node_modules/react-native-reanimated/plugin/index.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/config/files/module-types.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/config/files/configuration.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/config/files/index.js
+- /home/expo/workingdir/build/mobile/node_modules/@babel/core/lib/index.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro-config/build/transform-worker/metro-transform-worker.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro-config/build/transform-worker/transform-worker.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro/node_modules/metro/src/DeltaBundler/Worker.flow.js
+- /home/expo/workingdir/build/mobile/node_modules/@expo/metro/node_modules/metro/src/DeltaBundler/Worker.js
+- /home/expo/workingdir/build/mobile/node_modules/jest-worker/build/workers/processChild.js (While processing: /home/expo/workingdir/build/mobile/node_modules/react-native-reanimated/plugin/index.js)
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (/home/expo/workingdir/build/mobile/node_modules/react-native-reanimated/plugin/index.js:2:16)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at Module.require (node:internal/modules/cjs/loader:1298:19)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+yarn expo export:embed --eager --platform android --dev false exited with non-zero code: 1
