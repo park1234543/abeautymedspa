@@ -10,6 +10,7 @@ import { ServiceDetailScreen } from '../screens/ServiceDetailScreen';
 import { GalleryDetailScreen } from '../screens/GalleryDetailScreen';
 import { MyBookingsScreen } from '../screens/MyBookingsScreen';
 import { PrivacyPolicyScreen } from '../screens/PrivacyPolicyScreen';
+import { ConsultationScreen } from '../screens/ConsultationScreen';
 import { COLORS } from '../constants/theme';
 
 export type RootStackParamList = {
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   GalleryDetail: { imageId: string };
   MyBookings: undefined;
   PrivacyPolicy: undefined;
+  Consultation: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -96,6 +98,11 @@ export function RootNavigator() {
           <Stack.Screen
             name="PrivacyPolicy"
             component={PrivacyPolicyScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Consultation"
+            component={ConsultationScreen}
             options={{ headerShown: false }}
           />
         </>

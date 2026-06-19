@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
   Animated,
+  Linking,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -224,17 +225,33 @@ export function HomeScreen() {
       {/* ── QUICK ACTIONS ── */}
       <View style={styles.quickWrap}>
         <View style={styles.quickCard}>
-          {[
-            { icon: 'calendar-outline', label: t('home', 'quickBook') },
-            { icon: 'call-outline', label: t('home', 'quickCall') },
-            { icon: 'location-outline', label: t('home', 'quickLocation') },
-            { icon: 'chatbubble-outline', label: t('home', 'quickConsult') },
-          ].map((item) => (
+          {([
+            {
+              icon: 'calendar-outline',
+              label: t('home', 'quickBook'),
+              onPress: () => navigation.navigate('Booking'),
+            },
+            {
+              icon: 'call-outline',
+              label: t('home', 'quickCall'),
+              onPress: () => Linking.openURL('tel:5516552426'),
+            },
+            {
+              icon: 'location-outline',
+              label: t('home', 'quickLocation'),
+              onPress: () => Linking.openURL('https://maps.google.com/?q=16321+Main+St,+Chino,+CA+91708'),
+            },
+            {
+              icon: 'chatbubble-outline',
+              label: t('home', 'quickConsult'),
+              onPress: () => navigation.navigate('Consultation'),
+            },
+          ] as const).map((item) => (
             <TouchableOpacity
               key={item.label}
               style={styles.quickItem}
               activeOpacity={0.7}
-              onPress={item.label === t('home', 'quickBook') ? () => navigation.navigate('Booking') : undefined}
+              onPress={item.onPress}
             >
               <View style={styles.quickIconBg}>
                 <Ionicons name={item.icon as any} size={22} color={GOLD} />
@@ -414,13 +431,50 @@ export function HomeScreen() {
         </ScrollView>
       </View>
 
-      {/* ── CTA ── */}
+      {/* ── CTA / CONSULTATION BANNER ── */}
       <View style={styles.ctaWrap}>
-        <TouchableOpacity style={styles.ctaBtn} onPress={() => navigation.navigate('Booking')} activeOpacity={0.85}>
-          <Text style={styles.ctaBtnText}>{t('home', 'ctaBtn')}</Text>
-          <Ionicons name="arrow-forward-circle" size={22} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.ctaSub}>{t('home', 'ctaSub')}</Text>
+        <LinearGradient
+          colors={['#1A1209', '#2C1F0A', '#1A1209']}
+          style={styles.ctaBanner}
+        >
+          <View style={styles.ctaBannerDeco}>
+            <Ionicons name="sparkles" size={48} color="rgba(201,169,110,0.12)" />
+          </View>
+          <Text style={styles.ctaBannerEyebrow}>FREE CONSULTATION</Text>
+          <Text style={styles.ctaBannerTitle}>{t('home', 'ctaBtn')}</Text>
+          <Text style={styles.ctaBannerSub}>{t('home', 'ctaSub')}</Text>
+
+          <View style={styles.ctaBannerBtns}>
+            <TouchableOpacity
+              style={styles.ctaPrimary}
+              onPress={() => navigation.navigate('Consultation')}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
+              <Text style={styles.ctaPrimaryText}>{t('home', 'quickConsult')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.ctaSecondary}
+              onPress={() => navigation.navigate('Booking')}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="calendar-outline" size={18} color={GOLD} />
+              <Text style={styles.ctaSecondaryText}>{t('home', 'quickBook')}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.ctaContactRow}>
+            <TouchableOpacity style={styles.ctaContact} onPress={() => Linking.openURL('tel:5516552426')} activeOpacity={0.7}>
+              <Ionicons name="call-outline" size={14} color="rgba(201,169,110,0.7)" />
+              <Text style={styles.ctaContactText}>(551) 655-2426</Text>
+            </TouchableOpacity>
+            <View style={styles.ctaContactDot} />
+            <TouchableOpacity style={styles.ctaContact} onPress={() => Linking.openURL('https://maps.google.com/?q=16321+Main+St,+Chino,+CA+91708')} activeOpacity={0.7}>
+              <Ionicons name="location-outline" size={14} color="rgba(201,169,110,0.7)" />
+              <Text style={styles.ctaContactText}>Chino, CA 91708</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </View>
     </ScrollView>
   );
@@ -514,8 +568,19 @@ const styles = StyleSheet.create({
   reviewText: { fontSize: 13, color: COLORS.textSecondary, lineHeight: 20, flex: 1 },
   reviewDate: { fontSize: 11, color: COLORS.textLight, alignSelf: 'flex-end' },
 
-  ctaWrap: { marginHorizontal: SPACING.lg, marginTop: 36, marginBottom: 8, alignItems: 'center' },
-  ctaBtn: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: GOLD, paddingVertical: 17, borderRadius: RADIUS.full, ...SHADOWS.medium, marginBottom: 10 },
-  ctaBtnText: { color: '#fff', fontSize: 15, fontWeight: '700', letterSpacing: 0.5 },
-  ctaSub: { fontSize: 12, color: COLORS.textLight, letterSpacing: 0.3 },
+  ctaWrap: { marginHorizontal: SPACING.lg, marginTop: 36, marginBottom: 8 },
+  ctaBanner: { borderRadius: RADIUS.xl, padding: 28, overflow: 'hidden', gap: 0 },
+  ctaBannerDeco: { position: 'absolute', right: 20, top: 20 },
+  ctaBannerEyebrow: { fontSize: 9, letterSpacing: 4, color: GOLD, fontWeight: '600', marginBottom: 8 },
+  ctaBannerTitle: { fontSize: 22, fontWeight: '700', color: '#fff', letterSpacing: 0.3, marginBottom: 8 },
+  ctaBannerSub: { fontSize: 12, color: 'rgba(255,255,255,0.5)', letterSpacing: 0.5, marginBottom: 24 },
+  ctaBannerBtns: { flexDirection: 'row', gap: 12, marginBottom: 20 },
+  ctaPrimary: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: GOLD, paddingVertical: 14, borderRadius: RADIUS.full },
+  ctaPrimaryText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  ctaSecondary: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderWidth: 1.5, borderColor: GOLD_BORDER, paddingVertical: 14, borderRadius: RADIUS.full },
+  ctaSecondaryText: { color: GOLD, fontSize: 14, fontWeight: '700' },
+  ctaContactRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
+  ctaContact: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  ctaContactText: { fontSize: 12, color: 'rgba(201,169,110,0.7)', fontWeight: '500' },
+  ctaContactDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: 'rgba(201,169,110,0.3)' },
 });
