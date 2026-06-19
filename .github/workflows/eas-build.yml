@@ -27,3 +27,4 @@ jobs:
         working-directory: mobile
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_BUILD_SKIP_LOCKFILE_CHECK: "1"
