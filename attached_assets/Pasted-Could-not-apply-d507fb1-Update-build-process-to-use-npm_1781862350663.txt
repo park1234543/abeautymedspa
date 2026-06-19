@@ -1,0 +1,41 @@
+Could not apply d507fb1... # Update build process to use npm and a newer Node.js version
+~/workspace$ git rebase --abort && git push -f https://park1234543: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@github.com/park1234543/abeautymedspa.git main
+fatal: no rebase in progress
+~/workspace$ git push -f https://park1234543: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@github.com/park1234543/abeautymedspa.git main
+warning: current Git remote contains credentials
+Enumerating objects: 57, done.
+Counting objects: 100% (57/57), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (44/44), done.
+Writing objects: 100% (48/48), 132.34 KiB | 13.23 MiB/s, done.
+Total 48 (delta 38), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (38/38), completed with 7 local objects.
+remote: error: GH013: Repository rule violations found for refs/heads/main.
+remote: 
+remote: - GITHUB PUSH PROTECTION
+remote:   —————————————————————————————————————————
+remote:     Resolve the following violations before pushing again
+remote: 
+remote:     - Push cannot contain secrets
+remote: 
+remote:     
+remote:      (?) Learn how to resolve a blocked push
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push
+remote:     
+remote:     
+remote:       —— GitHub Personal Access Token ——————————————————————
+remote:        locations:
+remote:          - commit: 29519523b536d1c57463886abf8a98808a8d7a6a
+remote:            path: attached_assets/Pasted-remote-Enumerating-objects-23-done-remote-Counting-obje_1781862257785.txt:18
+remote:          - commit: 29519523b536d1c57463886abf8a98808a8d7a6a
+remote:            path: attached_assets/Pasted-remote-Enumerating-objects-23-done-remote-Counting-obje_1781862257785.txt:18
+remote:     
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.
+remote:        https://github.com/park1234543/abeautymedspa/security/secret-scanning/unblock-secret/3FLlfjgdWmZ5euMyE347BmOiZbm
+remote:     
+remote: 
+remote: 
+To https://github.com/park1234543/abeautymedspa.git
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/park1234543/abeautymedspa.git'
+~/workspace$ 
