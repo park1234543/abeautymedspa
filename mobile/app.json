@@ -40,11 +40,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "abeauty-medspa"
-      }
     }
   }
 }
