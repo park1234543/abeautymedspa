@@ -73,7 +73,7 @@ export function ConsultationScreen() {
       const body = encodeURIComponent(
         `이름: ${name}\n연락처: ${phone}\n관심 시술: ${selectedTreatment || '미선택'}\n\n문의 내용:\n${message || '(없음)'}\n\n---\nA Beauty MedSpa 앱을 통한 상담 신청`
       );
-      const mailUrl = `mailto:info@abeautymedspa.com?subject=${subject}&body=${body}`;
+      const mailUrl = `mailto:ys523333@naver.com?subject=${subject}&body=${body}`;
       const canOpen = await Linking.canOpenURL(mailUrl);
       if (canOpen) {
         await Linking.openURL(mailUrl);
