@@ -40,6 +40,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7b651974-9130-4001-bc89-cfccfbad35b0"
+      }
+    },
+    "owner": "parkyoungsun"
   }
 }
