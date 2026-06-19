@@ -4,13 +4,10 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
 
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
 import { COLORS } from './src/constants/theme';
-
-SplashScreen.preventAutoHideAsync();
 
 const navTheme = {
   ...DefaultTheme,
@@ -34,7 +31,6 @@ export default function App() {
         console.warn('loadUser error:', e);
       } finally {
         setAppReady(true);
-        await SplashScreen.hideAsync();
       }
     }
     prepare();
