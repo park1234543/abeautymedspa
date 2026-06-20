@@ -12,10 +12,14 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
+const isConfigured = !!(firebaseConfig.apiKey && firebaseConfig.projectId);
 const isNew = getApps().length === 0;
-const app = isNew ? initializeApp(firebaseConfig) : getApp();
+const app = isConfigured
+  ? (isNew ? initializeApp(firebaseConfig) : getApp())
+  : null as any;
 
 function createAuth() {
+  if (!isConfigured || !app) return null as any;
   if (!isNew) return getAuth(app);
   if (Platform.OS !== 'web') {
     try {
@@ -31,5 +35,5 @@ function createAuth() {
 }
 
 export const auth = createAuth();
-export const db = getFirestore(app);
+export const db = isConfigured && app ? getFirestore(app) : null as any;
 export default app;
