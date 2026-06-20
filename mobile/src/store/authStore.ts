@@ -74,7 +74,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (email: string, password: string) => {
     if (!email || !password) return false;
-
     if (isFirebaseConfigured()) {
       try {
         const { auth } = await import('../services/firebase');
@@ -96,8 +95,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         return false;
       }
     }
-
-    // 개발용 fallback (Firebase 미설정 시)
     const mockUser: User = {
       id: 'local_' + email.split('@')[0],
       email,
@@ -116,7 +113,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       const family = appleUser.fullName?.familyName ?? '';
       const name = [given, family].filter(Boolean).join(' ') || 'Apple User';
       const email = appleUser.email ?? `apple_${appleUser.id}@privaterelay.appleid.com`;
-
       if (isFirebaseConfigured()) {
         try {
           const { auth } = await import('../services/firebase');
@@ -133,7 +129,6 @@ export const useAuthStore = create<AuthState>((set) => ({
           return true;
         } catch (_) {}
       }
-
       const user: User = { id: `apple_${appleUser.id}`, email, name };
       const token = `apple_${appleUser.id}_${Date.now()}`;
       await storage.setItem('token', token);
@@ -165,7 +160,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ user, token, isAuthenticated: true });
         return true;
       }
-      // Fallback: mock login with Google user info
       const mockToken = `google_${googleUser.id}_${Date.now()}`;
       const user: User = { id: googleUser.id, email: googleUser.email, name: googleUser.name };
       await storage.setItem('token', mockToken);
@@ -180,7 +174,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   register: async (name: string, email: string, password: string, phone?: string) => {
     if (!name || !email || !password) return false;
-
     if (isFirebaseConfigured()) {
       try {
         const { auth, db } = await import('../services/firebase');
@@ -200,8 +193,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         return false;
       }
     }
-
-    // 개발용 fallback
     const mockUser: User = { id: 'local_' + email.split('@')[0], email, name, phone };
     const mockToken = 'local_token_' + Date.now();
     await storage.setItem('token', mockToken);
@@ -268,28 +259,32 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       if (isFirebaseConfigured()) {
         const { auth } = await import('../services/firebase');
-        await new Promise<void>((resolve) => {
-          const { onAuthStateChanged } = require('firebase/auth');
-          const unsub = onAuthStateChanged(auth, async (fbUser: any) => {
-            unsub();
-            if (fbUser) {
-              const raw = await storage.getItem('user');
-              const user = raw ? JSON.parse(raw) : {
-                id: fbUser.uid,
-                email: fbUser.email,
-                name: fbUser.displayName ?? fbUser.email?.split('@')[0],
-              };
-              const token = await fbUser.getIdToken();
-              set({ user, token, isAuthenticated: true, isLoading: false });
-            } else {
-              set({ isLoading: false });
-            }
-            resolve();
-          });
-        });
-        return;
+        if (auth) {
+          await Promise.race([
+            new Promise<void>((resolve) => {
+              const { onAuthStateChanged } = require('firebase/auth');
+              const unsub = onAuthStateChanged(auth, async (fbUser: any) => {
+                unsub();
+                if (fbUser) {
+                  const raw = await storage.getItem('user');
+                  const user = raw ? JSON.parse(raw) : {
+                    id: fbUser.uid,
+                    email: fbUser.email,
+                    name: fbUser.displayName ?? fbUser.email?.split('@')[0],
+                  };
+                  const token = await fbUser.getIdToken();
+                  set({ user, token, isAuthenticated: true, isLoading: false });
+                } else {
+                  set({ isLoading: false });
+                }
+                resolve();
+              });
+            }),
+            new Promise<void>((resolve) => setTimeout(resolve, 3000)),
+          ]);
+          return;
+        }
       }
-
       const token = await storage.getItem('token');
       if (!token) { set({ isLoading: false }); return; }
       const raw = await storage.getItem('user');
