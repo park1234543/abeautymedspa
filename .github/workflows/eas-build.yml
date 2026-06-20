@@ -1,4 +1,4 @@
-name: EAS Android Build
+name: EAS Build (Android + iOS)
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-android-apk:
+    name: Build Android APK
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,12 +20,15 @@ jobs:
         run: npm install -g eas-cli
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm install
         working-directory: mobile
 
-      - name: Build Android AAB
+      - name: Fix dependency versions
+        run: npx expo install --fix
+        working-directory: mobile
+
+      - name: Build Android APK
         run: eas build --platform android --profile preview --non-interactive
         working-directory: mobile
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          EAS_BUILD_SKIP_LOCKFILE_CHECK: "1"
