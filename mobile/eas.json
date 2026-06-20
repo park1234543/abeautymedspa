@@ -1,22 +1,48 @@
 {
   "cli": {
-    "version": ">= 16.0.0"
+    "version": ">= 5.4.0",
+    "promptToConfigurePushNotifications": false
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
     "preview": {
-      "distribution": "internal"
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "NODE_ENV": "production",
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyD28WYHpXGn7mPiFuTNrFDeHPvBuVNDHNg",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "abeautymedspa-81b08.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "abeautymedspa-81b08",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "abeautymedspa-81b08.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "156399389228",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:156399389228:web:6661e16299ddfaae58df89",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "156399389228-goq2924vu1i8iktib7bl8647v1pr8nl1.apps.googleusercontent.com"
+      }
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
+      },
+      "ios": {
+        "simulator": false
+      },
+      "env": {
+        "NODE_ENV": "production",
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyD28WYHpXGn7mPiFuTNrFDeHPvBuVNDHNg",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "abeautymedspa-81b08.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "abeautymedspa-81b08",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "abeautymedspa-81b08.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "156399389228",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:156399389228:web:6661e16299ddfaae58df89",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "156399389228-goq2924vu1i8iktib7bl8647v1pr8nl1.apps.googleusercontent.com"
       }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "track": "internal"
+      }
+    }
   }
 }
