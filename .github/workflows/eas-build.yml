@@ -23,7 +23,7 @@ jobs:
         working-directory: mobile
 
       - name: Build Android AAB
-        run: eas build --platform android --profile production --non-interactive
+        run: eas build --platform android --profile preview --non-interactive
         working-directory: mobile
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
