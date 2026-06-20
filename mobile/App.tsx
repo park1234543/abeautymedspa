@@ -3,7 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, ActivityIndicator, StyleSheet, Platform, PermissionsAndroid } from 'react-native'
+import { View, ActivityIndicator, StyleSheet, Platform, PermissionsAndroid } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
@@ -24,6 +27,13 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
+        if (Platform.OS === 'android') {
+          try {
+            await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+            );
+          } catch (_) {}
+        }
         if (Platform.OS !== 'web') {
           await loadUser();
         }
@@ -31,6 +41,7 @@ export default function App() {
         console.warn('loadUser error:', e);
       } finally {
         setAppReady(true);
+        await SplashScreen.hideAsync().catch(() => {});
       }
     }
     prepare();
