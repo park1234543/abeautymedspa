@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "A Beauty MedSpa",
+    "name": "A Beauty Spa",
     "slug": "abeauty-medspa",
     "version": "1.0.0",
     "scheme": "abeautymedspa",
@@ -16,14 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.abeautymedspa.app",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "프로필 사진을 업로드하기 위해 사진에 접근합니다.",
         "NSCameraUsageDescription": "프로필 사진을 촬영하기 위해 카메라에 접근합니다.",
-        "NSLocationWhenInUseUsageDescription": "가장 가까운 클리닉을 찾기 위해 위치에 접근합니다."
+        "NSLocationWhenInUseUsageDescription": "가장 가까운 클리닉을 찾기 위해 위치에 접근합니다.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -36,7 +37,9 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE"
       ]
     },
     "web": {
