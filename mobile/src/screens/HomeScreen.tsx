@@ -165,7 +165,7 @@ export function HomeScreen() {
         <View style={styles.heroTopBar}>
           <View>
             <Text style={styles.heroBrandEn}>A Beauty</Text>
-            <Text style={styles.heroBrandSub}>M E D  S P A</Text>
+            <Text style={styles.heroBrandSub}>P R E M I U M  S P A</Text>
           </View>
           <View style={styles.heroTopRight}>
             <LanguageSelector tint="light" />
