@@ -16,7 +16,9 @@
         "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "abeautymedspa-81b08.firebasestorage.app",
         "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "156399389228",
         "EXPO_PUBLIC_FIREBASE_APP_ID": "1:156399389228:web:6661e16299ddfaae58df89",
-        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "156399389228-goq2924vu1i8iktib7bl8647v1pr8nl1.apps.googleusercontent.com"
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "156399389228-goq2924vu1i8iktib7bl8647v1pr8nl1.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "156399389228-l6hec23a1l283cr1iccc44gtcob2bd1k.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "156399389228-qgorapjjsu15src00p8evil7vfe0hcld.apps.googleusercontent.com"
       }
     },
     "production": {
@@ -34,7 +36,9 @@
         "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "abeautymedspa-81b08.firebasestorage.app",
         "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "156399389228",
         "EXPO_PUBLIC_FIREBASE_APP_ID": "1:156399389228:web:6661e16299ddfaae58df89",
-        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "156399389228-goq2924vu1i8iktib7bl8647v1pr8nl1.apps.googleusercontent.com"
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "156399389228-goq2924vu1i8iktib7bl8647v1pr8nl1.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "156399389228-l6hec23a1l283cr1iccc44gtcob2bd1k.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "156399389228-qgorapjjsu15src00p8evil7vfe0hcld.apps.googleusercontent.com"
       }
     }
   },
