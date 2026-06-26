@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -20,12 +20,10 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
-import { useGoogleAuth, fetchGoogleUserInfo, isExpoGo } from '../../services/googleAuth';
+import { signInWithGoogle, isExpoGo } from '../../services/googleAuth';
 import { useTranslation } from '../../i18n/useTranslation';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
-
-const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -40,37 +38,6 @@ export function LoginScreen() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { request, response, promptAsync } = useGoogleAuth();
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const accessToken = response.authentication?.accessToken ?? (response as any).params?.access_token;
-      if (accessToken) {
-        handleGoogleSuccess(accessToken);
-      } else {
-        setError(t('login', 'errorInvalid'));
-        setIsGoogleLoading(false);
-      }
-    } else if (response?.type === 'error') {
-      setError('Google ' + t('login', 'title') + ' error: ' + (response.error?.message || t('login', 'errorInvalid')));
-      setIsGoogleLoading(false);
-    } else if (response?.type === 'dismiss' || response?.type === 'cancel') {
-      setIsGoogleLoading(false);
-    }
-  }, [response]);
-
-  const handleGoogleSuccess = async (accessToken: string) => {
-    try {
-      const googleUser = await fetchGoogleUserInfo(accessToken);
-      const success = await loginWithGoogle(googleUser);
-      if (!success) setError(t('login', 'errorInvalid'));
-    } catch (e) {
-      setError(t('login', 'errorInvalid'));
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
   const handleGoogleLogin = async () => {
     if (isExpoGo) {
       Alert.alert(
@@ -80,10 +47,19 @@ export function LoginScreen() {
       );
       return;
     }
-    if (!request) { setError('Google 로그인 준비 중...'); return; }
     setIsGoogleLoading(true);
     setError('');
-    await promptAsync();
+    try {
+      const googleUser = await signInWithGoogle();
+      const success = await loginWithGoogle(googleUser);
+      if (!success) setError(t('login', 'errorInvalid'));
+    } catch (e: any) {
+      if (e.code !== 'SIGN_IN_CANCELLED') {
+        setError(t('login', 'errorInvalid'));
+      }
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   const handleLogin = async () => {
@@ -143,9 +119,9 @@ export function LoginScreen() {
         )}
 
         <TouchableOpacity
-          style={[styles.googleButton, (isGoogleLoading || !request) && styles.buttonDisabled]}
+          style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
-          disabled={isGoogleLoading || !request}
+          disabled={isGoogleLoading}
           activeOpacity={0.8}
         >
           {isGoogleLoading ? (
