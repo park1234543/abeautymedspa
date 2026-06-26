@@ -1,4 +1,4 @@
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 
 export const isExpoGo =
@@ -13,21 +13,25 @@ export interface GoogleUser {
   accessToken: string;
 }
 
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-  offlineAccess: true,
-});
+export function configureGoogleSignin() {
+  GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    offlineAccess: true,
+  });
+}
 
 export async function signInWithGoogle(): Promise<GoogleUser> {
+  configureGoogleSignin();
   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-  const userInfo = await GoogleSignin.signIn();
+  const response = await GoogleSignin.signIn();
   const tokens = await GoogleSignin.getTokens();
+  const user = (response as any)?.data?.user ?? (response as any)?.user ?? {};
   return {
-    id: userInfo.data?.user.id || '',
-    email: userInfo.data?.user.email || '',
-    name: userInfo.data?.user.name || '',
-    picture: userInfo.data?.user.photo || undefined,
+    id: user.id || '',
+    email: user.email || '',
+    name: user.name || '',
+    picture: user.photo || undefined,
     accessToken: tokens.accessToken,
   };
 }
