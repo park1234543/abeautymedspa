@@ -30,7 +30,7 @@ const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { login, demoLogin, loginWithGoogle, loginWithApple } = useAuthStore();
+  const { login, loginWithGoogle, loginWithApple } = useAuthStore();
   const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
@@ -95,13 +95,6 @@ export function LoginScreen() {
     if (!success) setError(t('login', 'errorInvalid'));
   };
 
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    setError('');
-    await demoLogin();
-    setIsLoading(false);
-  };
-
   const handleAppleLogin = async () => {
     try {
       const credential = await AppleAuthentication.signInAsync({
@@ -138,10 +131,6 @@ export function LoginScreen() {
           <Text style={styles.title}>{t('login', 'title')}</Text>
           <Text style={styles.subtitle}>{t('login', 'subtitle')}</Text>
         </View>
-
-        <TouchableOpacity style={styles.demoButton} onPress={handleDemoLogin} activeOpacity={0.8}>
-          <Text style={styles.demoButtonText}>{t('login', 'demo')}</Text>
-        </TouchableOpacity>
 
         {Platform.OS === 'ios' && (
           <AppleAuthentication.AppleAuthenticationButton
@@ -252,8 +241,6 @@ const styles = StyleSheet.create({
   logo: { fontSize: 32, fontWeight: '300', color: COLORS.primary, letterSpacing: 2, marginBottom: SPACING.lg },
   title: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text, marginBottom: SPACING.sm },
   subtitle: { fontSize: FONTS.sizes.md, color: COLORS.textSecondary },
-  demoButton: { backgroundColor: COLORS.primary, borderRadius: RADIUS.md, paddingVertical: SPACING.md, alignItems: 'center', marginBottom: SPACING.sm, ...SHADOWS.small },
-  demoButtonText: { color: '#fff', fontSize: FONTS.sizes.md, fontWeight: '700', letterSpacing: 0.5 },
   appleButton: { height: 50, marginBottom: SPACING.sm },
   googleButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, paddingVertical: SPACING.md, gap: SPACING.sm, ...SHADOWS.small },
   googleIconWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#4285F4', alignItems: 'center', justifyContent: 'center' },
