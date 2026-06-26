@@ -16,17 +16,15 @@ export interface GoogleUser {
   accessToken: string;
 }
 
-const PLACEHOLDER = 'placeholder.apps.googleusercontent.com';
-
 export function useGoogleAuth() {
-  const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || PLACEHOLDER;
-  const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || webClientId;
-  const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || webClientId;
+  const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID;
+  const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+  const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId,
     androidClientId,
     iosClientId,
+    webClientId,
     selectAccount: true,
   });
 
