@@ -22,10 +22,11 @@ const GOLD_LIGHT = 'rgba(201,169,110,0.1)';
 const GOLD_BORDER = 'rgba(201,169,110,0.3)';
 
 const TREATMENTS = [
-  { ko: '보톡스 / 필러', en: 'Botox / Filler', es: 'Botox / Relleno', zh: '肉毒素 / 填充' },
-  { ko: '피부 레이저', en: 'Skin Laser', es: 'Láser de Piel', zh: '皮肤激光' },
+  { ko: '페이셜', en: 'Facial', es: 'Facial', zh: '面部护理' },
+  { ko: '마사지', en: 'Massage', es: 'Masaje', zh: '按摩' },
   { ko: '스킨케어', en: 'Skincare', es: 'Cuidado de Piel', zh: '护肤' },
-  { ko: '체형 관리', en: 'Body Contouring', es: 'Contorno Corporal', zh: '身体塑形' },
+  { ko: '네일 케어', en: 'Nail Care', es: 'Cuidado de Uñas', zh: '美甲护理' },
+  { ko: '바디 케어', en: 'Body Care', es: 'Cuidado Corporal', zh: '身体护理' },
   { ko: '기타 / 모르겠음', en: 'Other / Not Sure', es: 'Otro / No Sé', zh: '其他 / 不确定' },
 ];
 
@@ -69,9 +70,9 @@ export function ConsultationScreen() {
     }
     setLoading(true);
     try {
-      const subject = encodeURIComponent(`[A Beauty MedSpa] 상담 신청 - ${name}`);
+      const subject = encodeURIComponent(`[A Beauty Spa] 상담 신청 - ${name}`);
       const body = encodeURIComponent(
-        `이름: ${name}\n연락처: ${phone}\n관심 시술: ${selectedTreatment || '미선택'}\n\n문의 내용:\n${message || '(없음)'}\n\n---\nA Beauty MedSpa 앱을 통한 상담 신청`
+        `이름: ${name}\n연락처: ${phone}\n관심 시술: ${selectedTreatment || '미선택'}\n\n문의 내용:\n${message || '(없음)'}\n\n---\nA Beauty Spa 앱을 통한 상담 신청`
       );
       const mailUrl = `mailto:ys523333@naver.com?subject=${subject}&body=${body}`;
       const canOpen = await Linking.canOpenURL(mailUrl);
