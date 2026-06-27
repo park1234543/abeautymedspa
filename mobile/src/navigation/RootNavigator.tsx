@@ -28,7 +28,7 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, isGuest } = useAuthStore();
 
   return (
     <Stack.Navigator
@@ -37,7 +37,7 @@ export function RootNavigator() {
         contentStyle: { backgroundColor: COLORS.background },
       }}
     >
-      {!isAuthenticated ? (
+      {!isAuthenticated && !isGuest ? (
         <Stack.Screen
           name="Auth"
           component={AuthNavigator}
