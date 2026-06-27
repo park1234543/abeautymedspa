@@ -20,15 +20,15 @@ const { width } = Dimensions.get('window');
 const imageSize = (width - SPACING.lg * 2 - SPACING.sm * 2) / 3;
 
 const GALLERY_IMAGES = [
-  { id: '1', category: 'botox', image: require('../../assets/images/treatment-1.jpg') },
-  { id: '2', category: 'filler', image: require('../../assets/images/treatment-2.jpg') },
-  { id: '3', category: 'laser', image: require('../../assets/images/service-laser.jpg') },
+  { id: '1', category: 'facial', image: require('../../assets/images/treatment-1.jpg') },
+  { id: '2', category: 'massage', image: require('../../assets/images/treatment-2.jpg') },
+  { id: '3', category: 'nail', image: require('../../assets/images/service-laser.jpg') },
   { id: '4', category: 'skincare', image: require('../../assets/images/service-skincare.jpg') },
-  { id: '5', category: 'botox', image: require('../../assets/images/spa-interior-1.jpg') },
-  { id: '6', category: 'filler', image: require('../../assets/images/spa-interior-2.jpg') },
-  { id: '7', category: 'laser', image: require('../../assets/images/hero-spa-2.jpg') },
+  { id: '5', category: 'facial', image: require('../../assets/images/spa-interior-1.jpg') },
+  { id: '6', category: 'massage', image: require('../../assets/images/spa-interior-2.jpg') },
+  { id: '7', category: 'nail', image: require('../../assets/images/hero-spa-2.jpg') },
   { id: '8', category: 'skincare', image: require('../../assets/images/hero-spa-3.jpg') },
-  { id: '9', category: 'botox', image: require('../../assets/images/hero-spa-4.jpg') },
+  { id: '9', category: 'facial', image: require('../../assets/images/hero-spa-4.jpg') },
 ];
 
 export function GalleryScreen() {
@@ -39,9 +39,9 @@ export function GalleryScreen() {
 
   const CATEGORIES = [
     { id: 'all', name: t('gallery', 'all') },
-    { id: 'botox', name: t('gallery', 'botox') },
-    { id: 'filler', name: t('gallery', 'filler') },
-    { id: 'laser', name: t('gallery', 'laser') },
+    { id: 'facial', name: t('gallery', 'facial') },
+    { id: 'massage', name: t('gallery', 'massage') },
+    { id: 'nail', name: t('gallery', 'nail') },
     { id: 'skincare', name: t('gallery', 'skincare') },
   ];
 
