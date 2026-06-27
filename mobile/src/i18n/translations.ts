@@ -254,14 +254,14 @@ const translations = {
   /* ─── GALLERY ─── */
   gallery: {
     title: { ko: '갤러리', en: 'Gallery', es: 'Galería', zh: '图库' },
-    subtitle: { ko: '시술 전후 사진과 클리닉 사진', en: 'Before & after photos and clinic images', es: 'Fotos de antes y después e imágenes de la clínica', zh: '治疗前后对比及诊所照片' },
+    subtitle: { ko: '스파 서비스 & 공간 사진', en: 'Spa services & interior photos', es: 'Fotos de servicios e interior del spa', zh: '水疗服务与空间照片' },
     all: { ko: '전체', en: 'All', es: 'Todo', zh: '全部' },
-    botox: { ko: '보톡스', en: 'Botox', es: 'Bótox', zh: '肉毒素' },
-    filler: { ko: '필러', en: 'Filler', es: 'Relleno', zh: '填充剂' },
-    laser: { ko: '레이저', en: 'Laser', es: 'Láser', zh: '激光' },
+    facial: { ko: '페이셜', en: 'Facial', es: 'Facial', zh: '面部护理' },
+    massage: { ko: '마사지', en: 'Massage', es: 'Masaje', zh: '按摩' },
+    nail: { ko: '네일', en: 'Nail', es: 'Uñas', zh: '美甲' },
     skincare: { ko: '스킨케어', en: 'Skincare', es: 'Cuidado de la piel', zh: '护肤' },
-    detailTitle: { ko: '보톡스 시술', en: 'Botox Treatment', es: 'Tratamiento de Bótox', zh: '肉毒素治疗' },
-    detailDesc: { ko: '전문 의료진의 정교한 시술로 자연스러운 결과를 보여드립니다.', en: 'Natural-looking results through precise treatment by our expert medical team.', es: 'Resultados naturales a través de un tratamiento preciso de nuestro equipo médico experto.', zh: '由专业医疗团队精准治疗，呈现自然效果。' },
+    detailTitle: { ko: '스파 서비스', en: 'Spa Service', es: 'Servicio de Spa', zh: '水疗服务' },
+    detailDesc: { ko: '전문 뷰티 스태프의 섬세한 케어로 최상의 결과를 경험하세요.', en: 'Experience the best results with care from our expert beauty specialists.', es: 'Experimenta los mejores resultados con el cuidado de nuestros especialistas en belleza.', zh: '由专业美容师精心护理，体验最佳效果。' },
   },
 
   /* ─── PROFILE ─── */
