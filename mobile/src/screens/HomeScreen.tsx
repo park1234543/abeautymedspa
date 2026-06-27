@@ -31,43 +31,43 @@ const GOLD_LIGHT = 'rgba(212,165,116,0.15)';
 const GOLD_BORDER = 'rgba(212,165,116,0.35)';
 
 const GALLERY_ITEMS = [
-  { id: '1', image: require('../../assets/images/treatment-1.jpg'),    label: 'Botox' },
+  { id: '1', image: require('../../assets/images/treatment-1.jpg'),    label: 'Facial' },
   { id: '2', image: require('../../assets/images/service-skincare.jpg'), label: 'Skincare' },
-  { id: '3', image: require('../../assets/images/service-filler.jpg'),  label: 'Filler' },
-  { id: '4', image: require('../../assets/images/service-laser.jpg'),   label: 'Laser' },
-  { id: '5', image: require('../../assets/images/spa-interior-1.jpg'),  label: 'Clinic' },
-  { id: '6', image: require('../../assets/images/treatment-2.jpg'),     label: 'IV Therapy' },
+  { id: '3', image: require('../../assets/images/service-filler.jpg'),  label: 'Massage' },
+  { id: '4', image: require('../../assets/images/service-laser.jpg'),   label: 'Nail Care' },
+  { id: '5', image: require('../../assets/images/spa-interior-1.jpg'),  label: 'Spa' },
+  { id: '6', image: require('../../assets/images/treatment-2.jpg'),     label: 'Body Care' },
 ];
 
 const REVIEWS = [
   {
     id: '1', name: '김지현', rating: 5, date: '2025.05',
-    service: 'Botox',
+    service: 'Facial',
     text: {
-      ko: '시술 후 정말 자연스러워요! 전문 의료진 분들이 꼼꼼하게 설명해주셔서 너무 좋았습니다.',
-      en: 'So natural after the treatment! The specialists explained everything thoroughly.',
-      es: '¡Muy natural tras el tratamiento! Los especialistas explicaron todo detalladamente.',
-      zh: '治疗后非常自然！专家们解释得非常详细。',
+      ko: '페이셜 후 피부가 정말 환해졌어요! 전문 스태프 분들이 꼼꼼하게 설명해주셔서 너무 좋았습니다.',
+      en: 'My skin glowed after the facial! The specialists explained everything thoroughly.',
+      es: '¡Mi piel brilló tras el facial! Los especialistas explicaron todo detalladamente.',
+      zh: '护理后皮肤真的亮了！专家们解释得非常详细。',
     },
   },
   {
     id: '2', name: 'Sarah M.', rating: 5, date: '2025.04',
-    service: 'Filler',
+    service: 'Massage',
     text: {
-      ko: '필러 시술이 기대 이상이었어요. 부작용 없이 볼륨감이 살아났습니다.',
-      en: 'The filler exceeded my expectations. Great volume with no side effects.',
-      es: 'El relleno superó mis expectativas. Gran volumen sin efectos secundarios.',
-      zh: '填充效果超出预期，自然丰盈无副作用。',
+      ko: '마사지가 기대 이상이었어요. 완전히 릴렉스가 됐습니다.',
+      en: 'The massage exceeded my expectations. I was completely relaxed.',
+      es: 'El masaje superó mis expectativas. Me relajé completamente.',
+      zh: '按摩效果超出预期，整个人完全放松了。',
     },
   },
   {
     id: '3', name: '이수진', rating: 5, date: '2025.04',
-    service: 'Laser',
+    service: 'Skincare',
     text: {
-      ko: '레이저 시술 받고 피부가 완전히 달라졌어요. 직원분들도 너무 친절합니다.',
-      en: 'My skin changed completely after laser. The staff is incredibly kind.',
-      es: 'Mi piel cambió completamente tras el láser. El personal es muy amable.',
-      zh: '激光治疗后皮肤焕然一新，工作人员非常亲切。',
+      ko: '스킨케어 받고 피부가 완전히 달라졌어요. 직원분들도 너무 친절합니다.',
+      en: 'My skin changed completely after skincare. The staff is incredibly kind.',
+      es: 'Mi piel cambió completamente tras el skincare. El personal es muy amable.',
+      zh: '护肤后皮肤焕然一新，工作人员非常亲切。',
     },
   },
   {
@@ -82,12 +82,12 @@ const REVIEWS = [
   },
   {
     id: '5', name: '박민서', rating: 5, date: '2025.03',
-    service: 'IV Therapy',
+    service: 'Body Care',
     text: {
-      ko: 'IV 영양 요법 후 피로가 싹 풀렸어요. 확실히 효과가 있습니다!',
-      en: 'Fatigue completely gone after IV therapy. It definitely works!',
-      es: 'La fatiga desapareció tras la terapia IV. ¡Definitivamente funciona!',
-      zh: 'IV营养疗法后疲劳感全消，效果非常明显！',
+      ko: '바디 케어 후 몸이 정말 가벼워졌어요. 확실히 효과가 있습니다!',
+      en: 'My body felt so light after body care. It definitely works!',
+      es: 'Mi cuerpo se sintió muy ligero después del cuidado corporal. ¡Definitivamente funciona!',
+      zh: '身体护理后感觉轻盈多了，效果非常明显！',
     },
   },
 ];
