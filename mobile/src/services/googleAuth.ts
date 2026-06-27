@@ -1,5 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
+import { Platform } from 'react-native';
 
 export const isExpoGo =
   Constants.executionEnvironment === ExecutionEnvironment.StoreClient ||
@@ -23,7 +24,9 @@ export function configureGoogleSignin() {
 
 export async function signInWithGoogle(): Promise<GoogleUser> {
   configureGoogleSignin();
-  await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  if (Platform.OS === 'android') {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  }
   const response = await GoogleSignin.signIn();
   const tokens = await GoogleSignin.getTokens();
   const user = (response as any)?.data?.user ?? (response as any)?.user ?? {};
