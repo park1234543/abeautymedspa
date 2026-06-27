@@ -20,11 +20,9 @@ import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
 import { useTranslation } from '../../i18n/useTranslation';
-import { useGoogleAuth, fetchGoogleUserInfo, isExpoGo } from '../../services/googleAuth';
+import { signInWithGoogle, isExpoGo } from '../../services/googleAuth';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
-
-const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
 
 export function RegisterScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -41,33 +39,6 @@ export function RegisterScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const { request, response, promptAsync } = useGoogleAuth();
-
-  React.useEffect(() => {
-    if (response?.type === 'success') {
-      const accessToken = response.authentication?.accessToken ?? (response as any).params?.access_token;
-      if (accessToken) {
-        handleGoogleSuccess(accessToken);
-      } else {
-        setIsGoogleLoading(false);
-      }
-    } else if (response?.type === 'error' || response?.type === 'dismiss' || response?.type === 'cancel') {
-      setIsGoogleLoading(false);
-    }
-  }, [response]);
-
-  const handleGoogleSuccess = async (accessToken: string) => {
-    try {
-      const googleUser = await fetchGoogleUserInfo(accessToken);
-      const success = await loginWithGoogle(googleUser);
-      if (!success) Alert.alert(t('register', 'failTitle'), t('register', 'errorFailed'));
-    } catch {
-      Alert.alert(t('register', 'failTitle'), t('register', 'errorFailed'));
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
   const handleGoogleRegister = async () => {
     if (isExpoGo) {
       Alert.alert(
@@ -78,7 +49,17 @@ export function RegisterScreen() {
       return;
     }
     setIsGoogleLoading(true);
-    await promptAsync();
+    try {
+      const googleUser = await signInWithGoogle();
+      const success = await loginWithGoogle(googleUser);
+      if (!success) Alert.alert(t('register', 'failTitle'), t('register', 'errorFailed'));
+    } catch (e: any) {
+      if (e.code !== 'SIGN_IN_CANCELLED') {
+        Alert.alert(t('register', 'failTitle'), t('register', 'errorFailed'));
+      }
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   const handleRegister = async () => {
@@ -117,9 +98,9 @@ export function RegisterScreen() {
         </View>
 
         <TouchableOpacity
-          style={[styles.googleButton, (isGoogleLoading || !request) && styles.buttonDisabled]}
+          style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
           onPress={handleGoogleRegister}
-          disabled={isGoogleLoading || !request}
+          disabled={isGoogleLoading}
           activeOpacity={0.8}
         >
           {isGoogleLoading ? (
