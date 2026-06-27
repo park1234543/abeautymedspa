@@ -17,6 +17,7 @@ import { COLORS, RADIUS } from '../../constants/theme';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useLanguageStore } from '../../store/languageStore';
 import { Language, LANGUAGE_FLAGS } from '../../i18n/translations';
+import { useAuthStore } from '../../store/authStore';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
@@ -42,17 +43,12 @@ export function WelcomeScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguageStore();
+  const { loginAsGuest } = useAuthStore();
 
-  const overlay = (
-    <LinearGradient
-      colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
-      style={styles.fill}
-      pointerEvents="none"
-    />
-  );
+  const bottomPad = Math.max(insets.bottom, 32) + 16;
 
-  const buttons = (
-    <View style={[styles.content, { paddingBottom: Math.max(insets.bottom, 32) + 16 }]}>
+  const inner = (
+    <View style={[styles.bottom, { paddingBottom: bottomPad }]}>
       <View style={styles.langRow}>
         {LANGUAGES.map((lang) => (
           <TouchableOpacity
@@ -99,6 +95,10 @@ export function WelcomeScreen() {
         </TouchableOpacity>
       </View>
 
+      <TouchableOpacity onPress={loginAsGuest} activeOpacity={0.7} style={styles.guestButton}>
+        <Text style={styles.guestButtonText}>{t('welcome', 'browseAsGuest') || '로그인 없이 둘러보기'}</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('PrivacyPolicy')} activeOpacity={0.7}>
         <Text style={[styles.footerNote, { textDecorationLine: 'underline' }]}>{t('welcome', 'terms')}</Text>
       </TouchableOpacity>
@@ -109,8 +109,14 @@ export function WelcomeScreen() {
     return (
       <View style={styles.root}>
         <WebVideoBackground />
-        {overlay}
-        {buttons}
+        <LinearGradient
+          colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
+          style={[styles.overlay, { zIndex: 1 }]}
+          pointerEvents="none"
+        />
+        <View style={{ flex: 1, justifyContent: 'flex-end', zIndex: 2 }}>
+          {inner}
+        </View>
       </View>
     );
   }
@@ -121,16 +127,21 @@ export function WelcomeScreen() {
       style={styles.root}
       resizeMode="cover"
     >
-      {overlay}
-      {buttons}
+      <LinearGradient
+        colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.45)', 'rgba(0,0,0,0.92)']}
+        style={styles.overlay}
+        pointerEvents="none"
+      />
+      {inner}
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#0d0a06', justifyContent: 'flex-end' },
-  fill: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  content: { paddingHorizontal: 28, paddingTop: 24 },
+  overlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  bottom: { paddingHorizontal: 28, paddingTop: 24 },
+
   langRow: { flexDirection: 'row', gap: 6, marginBottom: 24, flexWrap: 'wrap' },
   langBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
@@ -142,6 +153,7 @@ const styles = StyleSheet.create({
   langFlag: { fontSize: 13 },
   langLabel: { fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: 0.5 },
   langLabelActive: { color: '#D4A574' },
+
   tagRow: { marginBottom: 20 },
   tagPill: {
     alignSelf: 'flex-start', backgroundColor: 'rgba(212,165,116,0.15)',
@@ -149,10 +161,12 @@ const styles = StyleSheet.create({
     borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6,
   },
   tagText: { color: COLORS.primary, fontSize: 11, fontWeight: '500', letterSpacing: 0.8 },
+
   headlineArea: { marginBottom: 40 },
   headline: { fontSize: 44, fontWeight: '200', color: '#fff', letterSpacing: 0.5, lineHeight: 52 },
   headlineGold: { fontSize: 44, fontWeight: '600', color: COLORS.primary, letterSpacing: 0.5, lineHeight: 54, marginBottom: 18 },
   description: { fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 22, letterSpacing: 0.2 },
+
   buttonGroup: { gap: 12, marginBottom: 20 },
   primaryButton: { backgroundColor: COLORS.primary, paddingVertical: 17, borderRadius: RADIUS.md, alignItems: 'center' },
   primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: '600', letterSpacing: 2 },
@@ -161,5 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)', alignItems: 'center',
   },
   secondaryButtonText: { color: 'rgba(255,255,255,0.85)', fontSize: 16, fontWeight: '300', letterSpacing: 1.5 },
+  guestButton: { alignItems: 'center', paddingVertical: 12, marginBottom: 8 },
+  guestButtonText: { color: 'rgba(255,255,255,0.45)', fontSize: 13, letterSpacing: 0.3, textDecorationLine: 'underline' },
   footerNote: { textAlign: 'center', color: 'rgba(255,255,255,0.28)', fontSize: 11, letterSpacing: 0.2 },
 });
