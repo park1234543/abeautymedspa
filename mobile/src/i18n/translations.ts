@@ -53,6 +53,12 @@ const translations = {
       es: 'Crear Cuenta',
       zh: '注册账号',
     },
+    browseAsGuest: {
+      ko: '로그인 없이 둘러보기',
+      en: 'Browse without signing in',
+      es: 'Explorar sin iniciar sesión',
+      zh: '不登录浏览',
+    },
     terms: {
       ko: '계속하면 이용약관 및 개인정보처리방침에 동의하는 것으로 간주됩니다',
       en: 'By continuing, you agree to our Terms & Privacy Policy',
@@ -217,11 +223,11 @@ const translations = {
     ourDoctors: { ko: '전문 의료진', en: 'Our Specialists', es: 'Nuestros Especialistas', zh: '专业医师' },
     career: { ko: '경력', en: 'exp.', es: 'exp.', zh: '经验' },
     aboutUs: { ko: 'ABOUT US', en: 'ABOUT US', es: 'SOBRE NOSOTROS', zh: '关于我们' },
-    aboutTitle: { ko: 'A Beauty MedSpa', en: 'A Beauty MedSpa', es: 'A Beauty MedSpa', zh: 'A Beauty MedSpa' },
+    aboutTitle: { ko: 'A Beauty Spa', en: 'A Beauty Spa', es: 'A Beauty Spa', zh: 'A Beauty Spa' },
     aboutDesc: {
-      ko: '최첨단 의료 장비와 풍부한 경험의 전문 의료진이 함께하는\n프리미엄 메디스파입니다.',
-      en: 'A premium med spa combining state-of-the-art\nequipment with experienced specialists.',
-      es: 'Un med spa premium que combina equipos de vanguardia\ncon especialistas experimentados.',
+      ko: '최첨단 의료 장비와 풍부한 경험의 전문 의료진이 함께하는\n프리미엄 스파입니다.',
+      en: 'A premium spa combining state-of-the-art\nequipment with experienced specialists.',
+      es: 'Un spa premium que combina equipos de vanguardia\ncon especialistas experimentados.',
       zh: '汇聚尖端医疗设备与经验丰富专家团队\n的顶级医疗美容中心。',
     },
     yearsExp: { ko: '년 경력', en: 'Years', es: 'Años', zh: '年经验' },
@@ -236,7 +242,7 @@ const translations = {
   /* ─── SERVICES ─── */
   services: {
     title: { ko: '서비스', en: 'Services', es: 'Servicios', zh: '服务' },
-    subtitle: { ko: '프리미엄 메디스파 서비스를 경험하세요', en: 'Experience our premium med spa services', es: 'Experimenta nuestros servicios premium de med spa', zh: '体验我们的顶级医疗美容服务' },
+    subtitle: { ko: '프리미엄 스파 서비스를 경험하세요', en: 'Experience our premium spa services', es: 'Experimenta nuestros servicios premium de spa', zh: '体验我们的顶级医疗美容服务' },
     all: { ko: '전체', en: 'All', es: 'Todo', zh: '全部' },
     face: { ko: '얼굴', en: 'Face', es: 'Cara', zh: '面部' },
     body: { ko: '바디', en: 'Body', es: 'Cuerpo', zh: '身体' },
