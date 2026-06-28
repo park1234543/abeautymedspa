@@ -121,7 +121,7 @@ export function LoginScreen() {
           </View>
         )}
 
-        <TouchableOpacity
+        {!Platform.isPad && <TouchableOpacity
           style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
           disabled={isGoogleLoading}
@@ -135,7 +135,7 @@ export function LoginScreen() {
               <Text style={styles.googleButtonText}>{t('login', 'google')}</Text>
             </>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity>}
 
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
