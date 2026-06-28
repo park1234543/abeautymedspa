@@ -235,8 +235,8 @@ const translations = {
     galleryTitle: { ko: '시술 갤러리', en: 'Treatment Gallery', es: 'Galería de Tratamientos', zh: '治疗图库' },
     ourReviews: { ko: 'CUSTOMER REVIEWS', en: 'CUSTOMER REVIEWS', es: 'RESEÑAS DE CLIENTES', zh: '客户评价' },
     reviewsTitle: { ko: '고객 후기', en: 'Real Reviews', es: 'Reseñas Reales', zh: '真实评价' },
-    ctaBtn: { ko: '무료 상담 예약하기', en: 'Book Free Consultation', es: 'Reservar Consulta Gratuita', zh: '免费预约咨询' },
-    ctaSub: { ko: '전문 상담원이 친절히 안내해 드립니다', en: 'Our specialists are ready to guide you', es: 'Nuestros especialistas están listos para guiarte', zh: '我们的专家随时为您提供专业指导' },
+    ctaBtn: { ko: '무료 예약 문의하기', en: 'Book Free Appointment', es: 'Reservar Cita Gratis', zh: '免费预约' },
+    ctaSub: { ko: '전담 스태프가 친절히 안내해 드립니다', en: 'Our beauty specialists are ready to help you', es: 'Nuestros especialistas en belleza están listos para ayudarte', zh: '我们的美容专家随时为您提供专业指导' },
   },
 
   /* ─── SERVICES ─── */
