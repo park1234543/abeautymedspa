@@ -109,13 +109,16 @@ export function LoginScreen() {
         </View>
 
         {Platform.OS === 'ios' && (
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-            cornerRadius={RADIUS.md}
-            style={styles.appleButton}
-            onPress={handleAppleLogin}
-          />
+          <View style={styles.appleSection}>
+            <Text style={styles.appleLabel}>Sign in with Apple</Text>
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              cornerRadius={RADIUS.md}
+              style={styles.appleButton}
+              onPress={handleAppleLogin}
+            />
+          </View>
         )}
 
         <TouchableOpacity
@@ -217,7 +220,9 @@ const styles = StyleSheet.create({
   logo: { fontSize: 32, fontWeight: '300', color: COLORS.primary, letterSpacing: 2, marginBottom: SPACING.lg },
   title: { fontSize: FONTS.sizes.xxxl, fontWeight: '700', color: COLORS.text, marginBottom: SPACING.sm },
   subtitle: { fontSize: FONTS.sizes.md, color: COLORS.textSecondary },
-  appleButton: { height: 50, marginBottom: SPACING.sm },
+  appleSection: { marginBottom: SPACING.sm },
+  appleLabel: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.textSecondary, marginBottom: SPACING.xs },
+  appleButton: { height: 50 },
   googleButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, paddingVertical: SPACING.md, gap: SPACING.sm, ...SHADOWS.small },
   googleIconWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#4285F4', alignItems: 'center', justifyContent: 'center' },
   googleIconText: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },
