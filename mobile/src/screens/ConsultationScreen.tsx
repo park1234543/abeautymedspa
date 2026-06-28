@@ -46,21 +46,21 @@ export function ConsultationScreen() {
   const [loading, setLoading] = useState(false);
 
   const tx = {
-    title: { ko: '상담하기', en: 'Consultation', es: 'Consulta', zh: '咨询' },
-    subtitle: { ko: '전문 상담원이 빠르게 연락드립니다', en: 'Our specialists will contact you shortly', es: 'Nuestros especialistas se pondrán en contacto', zh: '我们的专家将尽快与您联系' },
+    title: { ko: '예약 문의', en: 'Booking Inquiry', es: 'Consulta de Reserva', zh: '预约咨询' },
+    subtitle: { ko: '담당자가 빠르게 연락드립니다', en: 'Our team will contact you shortly', es: 'Nuestro equipo se pondrá en contacto', zh: '我们的团队将尽快与您联系' },
     nameLabel: { ko: '이름', en: 'Name', es: 'Nombre', zh: '姓名' },
     namePlaceholder: { ko: '성함을 입력해 주세요', en: 'Enter your name', es: 'Ingresa tu nombre', zh: '请输入您的姓名' },
     phoneLabel: { ko: '연락처', en: 'Phone', es: 'Teléfono', zh: '电话' },
     phonePlaceholder: { ko: '전화번호를 입력해 주세요', en: 'Enter your phone number', es: 'Ingresa tu teléfono', zh: '请输入您的电话号码' },
-    treatmentLabel: { ko: '관심 시술', en: 'Treatment Interest', es: 'Tratamiento de Interés', zh: '感兴趣的项目' },
+    treatmentLabel: { ko: '관심 서비스', en: 'Service Interest', es: 'Servicio de Interés', zh: '感兴趣的服务' },
     messageLabel: { ko: '문의 내용', en: 'Message', es: 'Mensaje', zh: '咨询内容' },
     messagePlaceholder: { ko: '궁금하신 내용을 자유롭게 작성해 주세요', en: 'Tell us what you\'d like to know', es: 'Cuéntanos lo que quieres saber', zh: '请告诉我们您想了解的内容' },
-    submit: { ko: '상담 신청하기', en: 'Request Consultation', es: 'Solicitar Consulta', zh: '申请咨询' },
-    successTitle: { ko: '상담 신청 완료!', en: 'Request Submitted!', es: '¡Solicitud Enviada!', zh: '申请已提交！' },
+    submit: { ko: '문의 신청하기', en: 'Submit Inquiry', es: 'Enviar Consulta', zh: '提交咨询' },
+    successTitle: { ko: '문의 신청 완료!', en: 'Inquiry Submitted!', es: '¡Consulta Enviada!', zh: '咨询已提交！' },
     successMsg: { ko: '빠른 시일 내에 연락드리겠습니다.\n감사합니다 😊', en: 'We\'ll reach out to you soon.\nThank you 😊', es: 'Nos pondremos en contacto pronto.\n¡Gracias 😊', zh: '我们将尽快与您联系。\n感谢您 😊' },
     backHome: { ko: '홈으로 돌아가기', en: 'Back to Home', es: 'Volver al Inicio', zh: '返回首页' },
     required: { ko: '이름과 연락처를 입력해 주세요', en: 'Please enter your name and phone', es: 'Por favor ingresa tu nombre y teléfono', zh: '请输入姓名和电话' },
-    infoBox: { ko: '상담 시간: 월-금 09:00 – 18:00\n주말 및 공휴일은 다음 영업일 회신', en: 'Hours: Mon-Fri 09:00 – 18:00\nWeekend inquiries replied next business day', es: 'Horario: Lun-Vie 09:00 – 18:00\nConsultas de fin de semana respondidas el próximo día hábil', zh: '咨询时间：周一至周五 09:00 – 18:00\n周末咨询将在下一个工作日回复' },
+    infoBox: { ko: '문의 시간: 월-금 09:00 – 18:00\n주말 및 공휴일은 다음 영업일 회신', en: 'Hours: Mon-Fri 09:00 – 18:00\nWeekend inquiries replied next business day', es: 'Horario: Lun-Vie 09:00 – 18:00\nConsultas de fin de semana respondidas el próximo día hábil', zh: '咨询时间：周一至周五 09:00 – 18:00\n周末咨询将在下一个工作日回复' },
   };
 
   const handleSubmit = async () => {
