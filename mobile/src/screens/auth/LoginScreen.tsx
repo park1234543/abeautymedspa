@@ -121,7 +121,7 @@ export function LoginScreen() {
           </View>
         )}
 
-        {!Platform.isPad && <TouchableOpacity
+        {Platform.OS !== 'ios' && <TouchableOpacity
           style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
           disabled={isGoogleLoading}
