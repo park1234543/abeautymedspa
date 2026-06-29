@@ -90,8 +90,8 @@ const loadLocalHistory = async (): Promise<BookingRecord[]> => {
 const MOCK_HISTORY: BookingRecord[] = [
   {
     id: 'bk001',
-    service: { id: 'botox', name: '보톡스', nameEn: 'Botox', duration: 30, price: 200 },
-    doctor: { id: 'dr-kim', name: 'Dr. Kim', nameKo: '김 원장', specialty: '피부과 전문의' },
+    service: { id: 'facial', name: '페이셜', nameEn: 'Facial', duration: 30, price: 200 },
+    doctor: { id: 'sp-kim', name: 'Kim', nameKo: '김 스태프', specialty: '뷰티 전문가' },
     date: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString(); })(),
     time: '14:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
@@ -101,8 +101,8 @@ const MOCK_HISTORY: BookingRecord[] = [
   },
   {
     id: 'bk002',
-    service: { id: 'filler', name: '필러', nameEn: 'Filler', duration: 45, price: 350 },
-    doctor: { id: 'dr-lee', name: 'Dr. Lee', nameKo: '이 원장', specialty: '성형외과 전문의' },
+    service: { id: 'massage', name: '마사지', nameEn: 'Massage', duration: 45, price: 350 },
+    doctor: { id: 'sp-lee', name: 'Lee', nameKo: '이 스태프', specialty: '스킨케어 전문가' },
     date: (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString(); })(),
     time: '11:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
@@ -112,8 +112,8 @@ const MOCK_HISTORY: BookingRecord[] = [
   },
   {
     id: 'bk003',
-    service: { id: 'laser', name: '레이저', nameEn: 'Laser', duration: 60, price: 300 },
-    doctor: { id: 'dr-park', name: 'Dr. Park', nameKo: '박 원장', specialty: '피부과 전문의' },
+    service: { id: 'nail', name: '네일', nameEn: 'Nail', duration: 60, price: 300 },
+    doctor: { id: 'sp-park', name: 'Park', nameKo: '박 스태프', specialty: '웰니스 전문가' },
     date: (() => { const d = new Date(); d.setDate(d.getDate() - 14); return d.toISOString(); })(),
     time: '10:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
