@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.abeautymedspa.app",
-      "buildNumber": "14",
+      "buildNumber": "15",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "프로필 사진을 업로드하기 위해 사진에 접근합니다.",
