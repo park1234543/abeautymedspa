@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.abeautymedspa.app",
-      "buildNumber": "17",
+      "buildNumber": "18",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "프로필 사진을 업로드하기 위해 사진에 접근합니다.",
@@ -53,8 +53,7 @@
     "owner": "parkyoungsun",
     "plugins": [
       "expo-secure-store",
-      "expo-web-browser",
-      "@react-native-google-signin/google-signin"
+      "expo-web-browser"
     ]
   }
 }
