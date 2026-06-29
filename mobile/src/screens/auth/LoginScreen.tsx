@@ -9,7 +9,6 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -20,7 +19,6 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { useAuthStore } from '../../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../../constants/theme';
-import { signInWithGoogle, isExpoGo } from '../../services/googleAuth';
 import { useTranslation } from '../../i18n/useTranslation';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -28,39 +26,14 @@ type NavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 export function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
-  const { login, loginWithGoogle, loginWithApple } = useAuthStore();
+  const { login, loginWithApple } = useAuthStore();
   const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const handleGoogleLogin = async () => {
-    if (isExpoGo) {
-      Alert.alert(
-        'Google 로그인',
-        'Expo Go에서는 Google 로그인이 지원되지 않습니다.\n\n실제 앱 빌드(APK/IPA) 설치 후 사용하거나,\n이메일로 로그인해 주세요.',
-        [{ text: '확인' }]
-      );
-      return;
-    }
-    setIsGoogleLoading(true);
-    setError('');
-    try {
-      const googleUser = await signInWithGoogle();
-      const success = await loginWithGoogle(googleUser);
-      if (!success) setError(t('login', 'errorInvalid'));
-    } catch (e: any) {
-      if (e.code !== 'SIGN_IN_CANCELLED') {
-        setError(t('login', 'errorInvalid'));
-      }
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
 
   const handleLogin = async () => {
     setError('');
@@ -120,22 +93,6 @@ export function LoginScreen() {
             />
           </View>
         )}
-
-        {Platform.OS !== 'ios' && <TouchableOpacity
-          style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]}
-          onPress={handleGoogleLogin}
-          disabled={isGoogleLoading}
-          activeOpacity={0.8}
-        >
-          {isGoogleLoading ? (
-            <ActivityIndicator color={COLORS.text} size="small" />
-          ) : (
-            <>
-              <GoogleIcon />
-              <Text style={styles.googleButtonText}>{t('login', 'google')}</Text>
-            </>
-          )}
-        </TouchableOpacity>}
 
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
@@ -204,14 +161,6 @@ export function LoginScreen() {
   );
 }
 
-function GoogleIcon() {
-  return (
-    <View style={styles.googleIconWrap}>
-      <Text style={styles.googleIconText}>G</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   scrollContent: { flexGrow: 1, paddingHorizontal: SPACING.lg },
@@ -223,10 +172,6 @@ const styles = StyleSheet.create({
   appleSection: { marginBottom: SPACING.sm },
   appleLabel: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.textSecondary, marginBottom: SPACING.xs },
   appleButton: { height: 50 },
-  googleButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, paddingVertical: SPACING.md, gap: SPACING.sm, ...SHADOWS.small },
-  googleIconWrap: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#4285F4', alignItems: 'center', justifyContent: 'center' },
-  googleIconText: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },
-  googleButtonText: { fontSize: FONTS.sizes.md, fontWeight: '600', color: COLORS.text },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: SPACING.lg, gap: SPACING.sm },
   dividerLine: { flex: 1, height: 1, backgroundColor: COLORS.border },
   dividerText: { fontSize: FONTS.sizes.sm, color: COLORS.textLight, paddingHorizontal: SPACING.xs },
