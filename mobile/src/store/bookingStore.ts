@@ -11,9 +11,10 @@ interface Service {
 
 interface Doctor {
   id: string;
-  name: string;
-  nameKo: string;
-  specialty: string;
+  names: { ko: string; en: string; es: string; zh: string };
+  specialties: { ko: string; en: string; es: string; zh: string };
+  experience: string;
+  image: any;
 }
 
 export type BookingStatus = 'upcoming' | 'completed' | 'cancelled';
@@ -91,7 +92,7 @@ const MOCK_HISTORY: BookingRecord[] = [
   {
     id: 'bk001',
     service: { id: 'facial', name: '페이셜', nameEn: 'Facial', duration: 30, price: 200 },
-    doctor: { id: 'sp-kim', name: 'Kim', nameKo: '김 스태프', specialty: '뷰티 전문가' },
+    doctor: { id: 'specialist-kim', names: { ko: '김 원장', en: 'Kim', es: 'Kim', zh: '金' }, specialties: { ko: '뷰티 전문가', en: 'Beauty Specialist', es: 'Especialista en Belleza', zh: '美容专家' }, experience: '15', image: require('../../assets/images/doctor-1.jpg') },
     date: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString(); })(),
     time: '14:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
@@ -102,7 +103,7 @@ const MOCK_HISTORY: BookingRecord[] = [
   {
     id: 'bk002',
     service: { id: 'massage', name: '마사지', nameEn: 'Massage', duration: 45, price: 350 },
-    doctor: { id: 'sp-lee', name: 'Lee', nameKo: '이 스태프', specialty: '스킨케어 전문가' },
+    doctor: { id: 'specialist-lee', names: { ko: '이 원장', en: 'Lee', es: 'Lee', zh: '李' }, specialties: { ko: '스킨케어 전문가', en: 'Skincare Specialist', es: 'Especialista en Cuidado de Piel', zh: '护肤专家' }, experience: '12', image: require('../../assets/images/doctor-2.jpg') },
     date: (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString(); })(),
     time: '11:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
@@ -113,7 +114,7 @@ const MOCK_HISTORY: BookingRecord[] = [
   {
     id: 'bk003',
     service: { id: 'nail', name: '네일', nameEn: 'Nail', duration: 60, price: 300 },
-    doctor: { id: 'sp-park', name: 'Park', nameKo: '박 스태프', specialty: '웰니스 전문가' },
+    doctor: { id: 'specialist-park', names: { ko: '박 원장', en: 'Park', es: 'Park', zh: '朴' }, specialties: { ko: '웰니스 전문가', en: 'Wellness Specialist', es: 'Especialista en Bienestar', zh: '健康专家' }, experience: '10', image: require('../../assets/images/doctor-3.jpg') },
     date: (() => { const d = new Date(); d.setDate(d.getDate() - 14); return d.toISOString(); })(),
     time: '10:00',
     customerInfo: { name: '', email: '', phone: '', notes: '' },
